@@ -1,0 +1,4 @@
+webserv
+*.o
+obj/
+.direnv/
