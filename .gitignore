@@ -2,3 +2,4 @@ webserv
 *.o
 obj/
 .direnv/
+compile_commands.json
