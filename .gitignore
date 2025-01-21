@@ -3,3 +3,4 @@ webserv
 obj/
 .direnv/
 compile_commands.json
+.cache
