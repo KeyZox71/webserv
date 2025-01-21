@@ -1,6 +1,7 @@
 # webserv
 
 Webserv go brrrrr
+This is the webserver you will see in all your life star this IMMIDIATELY otherwise we will come to your house
 
 ## license
 
