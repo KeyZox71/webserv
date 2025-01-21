@@ -6,7 +6,7 @@
 #    By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/25 16:09:27 by adjoly            #+#    #+#              #
-#    Updated: 2025/01/20 16:51:57 by adjoly           ###   ########.fr        #
+#    Updated: 2025/01/21 13:13:53 by mmoussou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,21 +39,21 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(CC) $(FLAGS) -I . $(OBJS) -o $(NAME)
-	@printf "$(YELLOW)「✨」($(NAME)) Program compiled\n"
+	@printf "$(YELLOW)「✨」 feat($(NAME)): program compiled\n"
 
 $(OBJSDIR)%.o: %.cpp
 	@mkdir -p $(@D)
 	@$(CC) $(FLAGS) -I . -c $< -o $@
-	@printf "$(DELETE)$(GREEN)「🔨」($<) Object compiled\n"
+	@printf "$(DELETE)$(GREEN)「🔨」 build($<): object compiled\n"
 
 clean:
 	@rm -f $(OBJS)
-	@printf "$(DELETE)$(RED)「🗑️」($(OBJS)) Object deleted\n"
+	@printf "$(DELETE)$(RED)「🗑️」 clean($(OBJS)): object deleted\n"
 
 fclean: clean
 	@rm -f $(NAME)
 	@rm -Rf $(OBJSDIR)
-	@printf "$(RED)「🗑️」($(NAME)) Program deleted\n"
+	@printf "$(RED)「🗑️」 fclean($(NAME)): program deleted\n"
 
 re: fclean all
 
