@@ -73,3 +73,43 @@ void example() {
     }
 }
 ```
+## Using _t Suffix for typedef
+The _t suffix is a convention to indicate a type definition or alias. It helps distinguish custom types from standard or built-in types. \
+Use _t consistently for all user-defined types created with typedef or using. \
+Guidelines:
+- Descriptive Names:
+  - The base name should clearly describe the type's purpose.
+  - Add _t to the end of the name for clarity.
+  - Example:
+	```cpp
+	typedef unsigned int uint_t; // Alias for unsigned int
+	```
+- Consistency Across Codebase:
+  - Always use _t for typedefs to maintain consistency and readability.
+  - Example:
+	```cpp
+	typedef struct {
+ 	  int id;
+	  char name[50];
+	} student_t;
+	```
+Examples:
+- Basic Alias:
+```cpp
+typedef double distance_t;
+distance_t radius = 5.5;
+```
+- Pointer Alias:
+```cpp
+typedef char* string_t;
+string_t greeting = "Hello, World!";
+```
+- Struct Alias:
+```cpp
+typedef struct {
+    int x;
+    int y;
+} point_t;
+
+point_t p1 = {10, 20};
+```
