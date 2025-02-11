@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 13:43:52 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/11 22:21:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #ifndef __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
 # define __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
 
-#include "requests/default.hpp"
+#include <requests/HttpIMessage.hpp>
 
 namespace webserv {
 namespace http {
@@ -40,6 +40,8 @@ public:
 	void	setProtocol(std::string const protocol);
 	void	setStatusCode(size_t const status_code);
 	void	setStatusText(std::string const status_text);
+
+	std::string	str(void) const;
 
 private:
 	std::string							_protocol;

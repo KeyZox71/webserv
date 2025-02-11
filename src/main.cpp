@@ -6,12 +6,12 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 13:39:14 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/11 14:54:22 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "webserv.hpp"
-#include "requests/default.hpp"
+#include <webserv.hpp>
+#include <requests/default.hpp>
 
 #define PORT 8080
 #define BUFFER_SIZE 4096

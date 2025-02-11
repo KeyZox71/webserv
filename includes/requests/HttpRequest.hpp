@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 13:49:50 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/11 22:18:34 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 #ifndef __WEBSERV_REQUESTS_HTTP_REQUEST_HPP__
 # define __WEBSERV_REQUESTS_HTTP_REQUEST_HPP__
 
-#include "requests/default.hpp"
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+#include <requests/HttpIMessage.hpp>
+#include <requests/HttpResponse.hpp>
 
 namespace webserv {
 namespace http {
