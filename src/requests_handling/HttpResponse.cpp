@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/03 18:15:12 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/04 15:18:26 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,8 @@ HttpResponse::HttpResponse(const HttpRequest &request): _protocol(request.protoc
 	}
 }
 
-HttpResponse::HttpResponse(const HttpResponse &cpy)
-{
-	(void) cpy;
-}
-
 HttpResponse::~HttpResponse(void)
 {
-}
-
-HttpResponse	&HttpResponse::operator=(const HttpResponse &cpy)
-{
-	(void) cpy;
-	return (*this);
 }
 
 std::string	HttpResponse::str(void) const
