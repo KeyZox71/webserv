@@ -1,33 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webserv.hpp                                        :+:      :+:    :+:   */
+/*   default.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/11 13:29:21 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 13:43:20 by mmoussou         ###   ########.fr       */
+/*   Created: 2025/02/11 13:42:04 by mmoussou          #+#    #+#             */
+/*   Updated: 2025/02/11 13:43:13 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef __WEBSERV_WEBSERV_HPP__
-# define __WEBSERV_WEBSERV_HPP__
 
-#include <string>
-#include <cstring>
-#include <fstream>
-#include <csignal>
-#include <cstdlib>
-#include <iostream>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#ifndef __WEBSERV_DEFAULT_HPP__
+# define __WEBSERV_DEFAULT_HPP__
 
-namespace webserv {
+using namespace webserv; // oh no, cringo D:
 
-
-
-} //-namespace webserv
-
-#endif // __WEBSERV_WEBSERV_HPP__
+#endif //__WEBSERV_DEFAULT_HPP__

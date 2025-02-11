@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/04 15:18:26 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/11 10:20:12 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t		_status_code;
 std::string	_status_text;
 std::map<std::string, std::string> _headers;
 std::string _body;*/
-
+/*
 HttpResponse::HttpResponse(const HttpRequest &request): _protocol(request.protocol)
 {
 	std::ifstream file(request.target.c_str(), std::ios::binary);
@@ -55,4 +55,4 @@ std::string	HttpResponse::str(void) const
 	response << this->_body;
 
 	return (response.str());
-}
+}*/

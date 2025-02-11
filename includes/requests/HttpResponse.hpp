@@ -6,38 +6,49 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/08 05:06:57 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/11 13:43:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef __REQUESTS_HTTP_RESPONSE_HPP__
-# define __REQUESTS_HTTP_RESPONSE_HPP__
+#ifndef __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
+# define __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
 
 #include "requests/default.hpp"
 
-class IHttpResponse {
+namespace webserv {
+namespace http {
+
+class Response: public http::IMessage {
 public:
-	void	parseRequest(const HttpRequest &request) = 0;
+	Response(void);
+	/*
+	 * ? either : (templated)
+	Response<Get>();
+	Response<Post>();
 
-	std::string	str(void) const;
+	 * or : (if too different ? idk tbh)
+	Response(Get const req);
+	Response(Post const req);
+	*/
+	~Response(void);
 
-protected:
-	std::string	_protocol;
-	size_t		_status_code;
-	std::string	_status_text;
-	std::map<std::string, std::string> _headers;
-	std::string _body;
+	std::string	getProtocol(void) const;
+	size_t		getStatusCode(void) const;
+	std::string	getStatusText(void) const;
+
+	void	setProtocol(std::string const protocol);
+	void	setStatusCode(size_t const status_code);
+	void	setStatusText(std::string const status_text);
+
+private:
+	std::string							_protocol;
+	size_t								_status_code;
+	std::string							_status_text;
 
 };
 
-class HttpGet: public IHttpResponse {
-public:
-	HttpGet(void);
-	HttpGet(const HttpRequest	&request);
-	~HttpResponse(void);
+} // -namespace http
+} // -namespace webserv
 
-	void	parseRequest(const HttpRequest &request);
-}
-
-#endif
+#endif // __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__

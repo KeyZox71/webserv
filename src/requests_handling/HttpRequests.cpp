@@ -6,12 +6,12 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/03 18:20:51 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/11 10:19:54 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "requests/default.hpp"
-
+/*
 HttpRequest parseRequest(const std::string &rawRequest)
 {
 	std::istringstream	stream(rawRequest);
@@ -53,3 +53,4 @@ HttpRequest parseRequest(const std::string &rawRequest)
 
 	return request;
 }
+*/
