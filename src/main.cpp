@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 14:54:22 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/12 10:02:11 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int main() {
         std::cerr << "Error registering signal handler!" << std::endl;
         return 1;
     }
-/*
+
     // create a socket
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
@@ -81,26 +81,26 @@ int main() {
 
         // parse the request
         std::string received_data(buffer, bytes_received);
-		HttpRequest request = parseRequest(received_data);
+		//HttpRequest request = parseRequest(received_data);
+		http::Get	request(received_data);
 
-        std::cout << "Received " << request.method << " request for " << request.target << std::endl;
-
+        std::cout << "Received " << request.getMethod() << " request for " << request.getTarget() << std::endl;
 
         // handle the request
-        if (request.method == "GET")
+		std::string	response;
+        if (request.getMethod() == "GET")
 		{
-			HttpResponse response(request);
-            send(client_socket, response.str().c_str(), response.str().length(), 0);
+			response = request.execute().str();
         }
 		else
 		{
-            std::string response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/html\r\n\r\n<html><body><h1>501 Not Implemented</h1></body></html>";
-            send(client_socket, response.c_str(), response.length(), 0);
+			response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/html\r\n\r\n<html><body><h1>501 Not Implemented</h1></body></html>";
         }
 
+        send(client_socket, response.c_str(), response.length(), 0);
         close(client_socket);
     }
 
-    close(server_socket);*/
+    close(server_socket);
     return 0;
 }

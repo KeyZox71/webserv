@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 01:21:31 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/12 08:56:21 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ namespace http {
 
 class IRequest: public http::IMessage {
 public:
-	virtual void			parse(http::IRequest const &request) = 0;
+	virtual void			parse(std::string const &data) = 0;
 	virtual http::Response	execute(void) = 0;
 
-	//std::string	str(void) const;
+	std::string	str(void) const;
 
 	std::string	getMethod(void) const;
 	std::string	getTarget(void) const;
@@ -39,7 +39,7 @@ public:
 	void	setTarget(std::string const target);
 	void	setProtocol(std::string const protocol);
 
-private:
+protected:
 	std::string	_method;
 	std::string	_target;
 	std::string	_protocol;
@@ -51,7 +51,7 @@ public:
 	Get(void);
 	Get(std::string &data);
 
-	void	parse(const http::IRequest &request);
+	void	parse(std::string const &data);
 
 	http::Response	execute(void);
 
@@ -62,7 +62,7 @@ public:
 	Post(void);
 	Post(std::string &data);
 
-	void	parse(const http::IRequest &request);
+	void	parse(std::string const &data);
 
 	http::Response	execute(void);
 
@@ -73,7 +73,7 @@ public:
 	Delete(void);
 	Delete(std::string &data);
 
-	void	parse(const http::IRequest &request);
+	void	parse(std::string const &data);
 
 	http::Response	execute(void);
 
