@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 22:18:34 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/12 01:21:31 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,18 @@ namespace http {
 
 class IRequest: public http::IMessage {
 public:
-	virtual void	parse(const http::IRequest &request) = 0;
+	virtual void			parse(http::IRequest const &request) = 0;
 	virtual http::Response	execute(void) = 0;
 
-	std::string	str(void) const;
+	//std::string	str(void) const;
 
-	std::string							getProtocol(void) const;
-	size_t								getStatusCode(void) const;
-	std::string							getStatusText(void) const;
+	std::string	getMethod(void) const;
+	std::string	getTarget(void) const;
+	std::string	getProtocol(void) const;
 
+	void	setMethod(std::string const method);
+	void	setTarget(std::string const target);
 	void	setProtocol(std::string const protocol);
-	void	setStatusCode(size_t const status_code);
-	void	setStatusText(std::string const status_text);
 
 private:
 	std::string	_method;
@@ -50,7 +50,6 @@ class Get: public http::IRequest {
 public:
 	Get(void);
 	Get(std::string &data);
-	~Get(void);
 
 	void	parse(const http::IRequest &request);
 
@@ -62,7 +61,6 @@ class Post: public http::IRequest {
 public:
 	Post(void);
 	Post(std::string &data);
-	~Post(void);
 
 	void	parse(const http::IRequest &request);
 
@@ -74,7 +72,6 @@ class Delete: public http::IRequest {
 public:
 	Delete(void);
 	Delete(std::string &data);
-	~Delete(void);
 
 	void	parse(const http::IRequest &request);
 

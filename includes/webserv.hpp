@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:21 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 15:00:10 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/12 00:11:41 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,6 @@
 #include <netinet/in.h>
 
 namespace webserv {
-
-
 
 } //-namespace webserv
 

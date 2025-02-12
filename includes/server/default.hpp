@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:05 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 15:00:15 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/12 00:14:11 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 namespace webserv {
 namespace server {
 
-
-
 } // -namespace server
 } // -namespace webserv
+
+using namespace webserv;
 
 #endif // __WEBSERV_SERVER_DEFAULT_HPP__

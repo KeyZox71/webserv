@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 22:13:38 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/11 22:20:53 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/12 00:55:12 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,20 @@ namespace http {
 
 class IMessage {
 public:
-	virtual std::map<std::string, std::string>	getHeaders(void) const;
-	virtual std::string							getBody(void) const;
+	virtual std::multimap<std::string, std::string>	getHeaders(void) const;
+	virtual std::string								getBody(void) const;
 
-	virtual void	setHeaders(std::map<std::string, std::string> const headers);
+	virtual void	setHeaders(std::multimap<std::string, std::string> const headers);
 	virtual void	setBody(std::string const body);
 
-	virtual void	addHeader(std::string const name, std::string const value);
-	virtual void	rmHeader(std::string const name);
+	virtual void	addHeader(std::string const key, std::string const value);
+	virtual void	rmHeader(std::string const key);
 
 	virtual std::string	str(void) const = 0;
 
 protected:
-	std::map<std::string, std::string>	_headers;
-	std::string							_body;
+	std::multimap<std::string, std::string>	_headers;
+	std::string								_body;
 
 };
 
