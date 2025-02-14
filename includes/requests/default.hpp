@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   webserv.cpp                                        :+:      :+:    :+:   */
+/*   default.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/20 16:33:31 by adjoly            #+#    #+#             */
-/*   Updated: 2025/01/20 16:35:02 by adjoly           ###   ########.fr       */
+/*   Created: 2025/02/03 15:48:22 by mmoussou          #+#    #+#             */
+/*   Updated: 2025/02/12 00:11:33 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
+#pragma once
+#ifndef __WEBSERV_REQUESTS_DEFAULT_HPP__
+# define __WEBSERV_REQUESTS_DEFAULT_HPP__
 
-int	main(int ac, char **av, char **env) {
-	(void)ac;
-	(void)av;
-	(void)env;
-	std::cout << "test" << std::endl;
-}
+#include <requests/HttpRequest.hpp>
+#include <requests/HttpResponse.hpp>
+
+using namespace webserv;
+
+#endif // __WEBSERV_REQUESTS_DEFAULT_HPP__

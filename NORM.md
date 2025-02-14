@@ -2,14 +2,14 @@
 
 ## File Structure
 
-- Header Files (.h):
+- Header Files (.hpp/.h):
   - Include declarations of classes, functions, constants, and macros.
   - Use include guards or #pragma once to prevent multiple inclusions.
 - Source Files (.cpp):
   - Contain the implementation of functions and classes.
 
 ## Naming Conventions
-- Variables: camelCase (e.g., int studentAge;)
+- Variables: snake_case (e.g., int student_age;)
 - Functions: camelCase (e.g., void calculateSum();)
 - Classes: PascalCase (e.g., class UserAccount {};)
 - Constants: ALL_CAPS_SNAKE_CASE (e.g., const int MAX_SIZE = 100;)

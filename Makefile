@@ -6,7 +6,7 @@
 #    By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/25 16:09:27 by adjoly            #+#    #+#              #
-#    Updated: 2025/01/21 13:13:53 by mmoussou         ###   ########.fr        #
+#    Updated: 2025/02/03 16:43:32 by mmoussou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ NAME = webserv
 CC = c++
 
 OBJSDIR = obj/
+
+INCLUDES = ./includes
 
 SRCS = $(shell find . -name '*.cpp')
 
@@ -38,12 +40,12 @@ endif
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(FLAGS) -I . $(OBJS) -o $(NAME)
+	@$(CC) $(FLAGS) -I$(INCLUDES) $(OBJS) -o $(NAME)
 	@printf "$(YELLOW)「✨」 feat($(NAME)): program compiled\n"
 
 $(OBJSDIR)%.o: %.cpp
 	@mkdir -p $(@D)
-	@$(CC) $(FLAGS) -I . -c $< -o $@
+	@$(CC) $(FLAGS) -I$(INCLUDES) -c $< -o $@
 	@printf "$(DELETE)$(GREEN)「🔨」 build($<): object compiled\n"
 
 clean:
