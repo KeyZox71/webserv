@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 10:04:33 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:46:44 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,8 @@ void	http::Get::parse(std::string const &data)
 		body_stream << line << "\n";
 	this->_body = body_stream.str();
 
-	/*
+	///*
+	std::cout << "-- start-line --" << std::endl;
 	std::cout << "method: " << this->_method << std::endl;
 	std::cout << "target: " << this->_target << std::endl;
 	std::cout << "protocol: " << this->_protocol << std::endl;
@@ -112,7 +113,7 @@ void	http::Get::parse(std::string const &data)
 	  std::cout << it->first << ": " << it->second << std::endl;
 	std::cout << std::endl;
 	std::cout << "-- body --" << std::endl << this->_body << std::endl;
-	*/
+	//*/
 }
 
 http::Response	http::Get::execute(void)
@@ -142,3 +143,82 @@ http::Response	http::Get::execute(void)
 }
 
 // ------------------------------------------------------------------
+
+http::Delete::Delete(void)
+{
+}
+
+http::Delete::Delete(std::string &data)
+{
+	this->parse(data);
+}
+
+void	http::Delete::parse(std::string const &data)
+{
+	std::istringstream	stream(data);
+	std::string			line;
+
+	if (std::getline(stream, line))
+	{
+		std::istringstream line_stream(line);
+		line_stream >> this->_method >> this->_target >> this->_protocol;
+		this->_target.insert(this->_target.begin(), '.');
+	}
+
+	while (std::getline(stream, line) && line != "\r")
+	{
+		size_t delimiter_index = line.find(':');
+		if (delimiter_index != std::string::npos)
+		{
+			std::string key = line.substr(0, delimiter_index);
+			std::string value = line.substr(delimiter_index + 2);
+			this->_headers.insert(std::make_pair(key, value));
+		}
+	}
+
+	std::ostringstream body_stream;
+	while (std::getline(stream, line))
+		body_stream << line << "\n";
+	this->_body = body_stream.str();
+
+	///*
+	std::cout << "-- start-line --" << std::endl;
+	std::cout << "method: " << this->_method << std::endl;
+	std::cout << "target: " << this->_target << std::endl;
+	std::cout << "protocol: " << this->_protocol << std::endl;
+	std::cout << std::endl;
+	std::cout << "-- headers --" << std::endl;
+	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
+	  std::cout << it->first << ": " << it->second << std::endl;
+	std::cout << std::endl;
+	std::cout << "-- body --" << std::endl << this->_body << std::endl;
+	//*/
+}
+
+http::Response	http::Delete::execute(void)
+{
+	http::Response	response;
+
+	try
+	{
+		if (std::remove(this->_target.c_str()))
+			throw;
+		response.setProtocol(this->_protocol);
+		response.setStatusCode(204);
+		response.setStatusText("No Content");
+		time_t now = std::time(NULL);
+		response.addHeader("Date", std::string(std::ctime(&now)));
+	}
+	catch (...)
+	{
+		// TODO: replace with a predefined array of error pages
+		response.setProtocol(this->_protocol);
+		response.setStatusCode(404);
+		response.setStatusText("Not Found");
+		response.addHeader("Content-Type", "text/html");
+		response.setBody("<html><body>nuh uh, get 404'd >:D</body></html>");
+	}
+
+	return (response);
+}
+
