@@ -3,6 +3,7 @@
 ## File Structure
 
 - Header Files (.hpp/.h):
+  - Header folder must have a default.hpp which will be used for including in .cpp
   - Include declarations of classes, functions, constants, and macros.
   - Use include guards or #pragma once to prevent multiple inclusions.
 - Source Files (.cpp):
