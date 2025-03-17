@@ -6,16 +6,19 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 01:00:54 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/17 14:13:13 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "requests/HttpResponse.hpp"
+#include <requests/HttpResponse.hpp>
 
 /*
 - do a map of all the status_text and get it from here, not storing them
 - get error pages from an array of predefined response, that would be modified by the config
 */
+
+// tmp, need to be cleaned
+#include <iostream>
 
 using namespace webserv;
 
@@ -36,6 +39,7 @@ std::string	http::Response::str(void) const
 	response << "\r\n";
 	response << this->_body;
 
+	std::cout << "------------ RESPONSE -------------" << std::endl << response.str();
 	return (response.str());
 }
 
