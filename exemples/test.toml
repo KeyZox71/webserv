@@ -1,0 +1,21 @@
+[server]
+server_names = { "localhost", "2B5.local" } # can be a array or a str
+port = { 8080, 8090 } # can be a array or a int
+
+root = "/nfs/adjoly/workspace/kanel.ovh"
+max_post_size = "10M"
+
+cookies = true
+uploads = false
+dirlist = true
+
+methods = {"GET", "POST", "DELETE"}
+index = "index.html"
+
+[server.error_page]
+404 = "not_found.html"
+401 = "unauthorized.html"
+402 = "uwu.html"
+
+[server.cgi]
+py = "/usr/bin/python3"
