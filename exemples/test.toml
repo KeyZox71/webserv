@@ -10,8 +10,7 @@ dirlist = false
 uploads = false
 cookies = false
 
-cgi_path = "/bin/php"
-cgi_ext = ".php"
+cgi.py = "/usr/bin/python3"
 
 client_max_body_size = "10M"
 
@@ -24,14 +23,17 @@ client_max_body_size = "10M"
 methods = { "GET" }
 root = "/var/www/html"
 dirlist = true
+client_max_body_size = "10M"
+
+[server.location./.error_pages]
+500 = "uwu.html"
 
 [server.location./api]
 methods = { "GET", "POST" }
 uploads = true
 root = "/var/www/api"
 upload_path = "/etc/webserv/up"
-cgi_path = "/bin/go"
-cgi_ext = ".go"
+cgi.go = "/bin/go"
 
 [server.location./redir]
 redirect = "https://kanel.ovh"
