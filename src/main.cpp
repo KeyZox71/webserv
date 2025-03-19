@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/17 13:54:48 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/19 03:11:14 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,12 @@
 #define BUFFER_SIZE 4096
 
 int server_socket;
+int client_socket;
 
 void	close_socket(int signal)
 {
 	std::cerr << std::endl << "closing..." << std::endl;
+	close(client_socket);
 	close(server_socket);
 	exit(signal);
 }
@@ -67,7 +69,8 @@ int main()
         // accept an incoming connection
         sockaddr_in client_address;
         socklen_t client_address_len = sizeof(client_address);
-        int client_socket = accept(server_socket, (sockaddr*)&client_address, &client_address_len);
+        //int client_socket = accept(server_socket, (sockaddr*)&client_address, &client_address_len);
+        client_socket = accept(server_socket, (sockaddr*)&client_address, &client_address_len);
         if (client_socket == -1) {
             std::cerr << "Failed to accept connection" << std::endl;
             continue;

@@ -6,11 +6,16 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/17 14:20:31 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/19 03:04:40 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <vector>
+#include <algorithm>
+
 #include <requests/HttpRequest.hpp>
+#include <sys/stat.h>
+#include <dirent.h>
 
 using namespace webserv;
 
@@ -116,32 +121,86 @@ void	http::Get::parse(std::string const &data)
 	//*/
 }
 
+char	isDirectory(const std::string& path) {
+	struct stat fileStat;
+	if (stat(path.c_str(), &fileStat) != 0)
+		throw;
+	return S_ISDIR(fileStat.st_mode);
+}
+
 http::Response	http::Get::execute(void)
 {
 	http::Response	response;
 
 	try
 	{
-		std::ifstream file(this->_target.c_str(), std::ios::binary);
-		response.setProtocol(this->_protocol);
-		response.setStatusCode(200);
-		response.setStatusText("OK");
-		response.addHeader("Content-Type", "text/html"); // TODO: change it to check the file extension and set it to the corresponding MIME or text/plain if unkown. we will only implement the important MIME types in the Mozilla documentation because https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
+		if (isDirectory(this->_target))
+		{
+			DIR *dir;
+			struct dirent *entry;
+			struct stat file_stat;
+			std::vector<std::string> files;
+			
+			if ((dir = opendir(this->_target.c_str())) == NULL)
+				throw;
+			while ((entry = readdir(dir)) != NULL)
+			{
+				std::string file_name = entry->d_name;
+				if (file_name == ".")
+					continue;
+				std::string file_path = this->_target + "/" + file_name;
+				if (stat(file_path.c_str(), &file_stat) == 0)
+				{
+					if (S_ISDIR(file_stat.st_mode))
+						files.push_back(file_name + "/");
+					else
+						files.push_back(file_name);
+				}
+			}
+			closedir(dir);
 
-		std::ifstream file_end(this->_target.c_str(), std::ios::binary | std::ios::ate);
-		std::stringstream	length;
-		length << (file_end.tellg() - file.tellg());
-		std::cout << length.str();
-		response.addHeader("Content-Length", length.str());
+			std::sort(files.begin(), files.end());
 
-		response.setBody(std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()));
+			std::string body = "<html><body><ul>\n";
+			for (size_t i = 0; i < files.size(); i++)
+				body += "<li><a href=\"" + files[i] + "\">" + files[i] + "</a></li>\n";
+			body += "</ul></body></html>";
+
+			response.setProtocol(this->_protocol);
+			response.setStatusCode(200);
+			std::stringstream	length;
+			length << body.length();
+			response.addHeader("Content-Length", length.str());
+			response.addHeader("Content-Type", "text/html");
+			response.setBody(body);
+			
+		}
+		else
+		{
+			std::ifstream file(this->_target.c_str(), std::ios::binary);
+			std::streampos file_start = file.tellg();
+			response.setBody(std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()));
+			std::stringstream	length;
+			length << (file.tellg() - file_start);
+			std::cout << length.str() << std::endl;
+			response.addHeader("Content-Length", length.str());
+
+			response.setProtocol(this->_protocol);
+			response.setStatusCode(200);
+			response.addHeader("Content-Type", "text/html"); // TODO: change it to check the file extension and set it to the corresponding MIME or text/plain if unkown. we will only implement the important MIME types in the Mozilla documentation because https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
+
+			//std::ifstream file_end(this->_target.c_str(), std::ios::binary | std::ios::ate);
+			//std::stringstream	length;
+			//length << (file_end.tellg() - file.tellg());
+			//std::cout << length.str() << std::endl;
+			//response.addHeader("Content-Length", length.str());
+		}
 	}
 	catch (...)
 	{
 		// TODO: replace with a predefined array of error pages
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
-		response.setStatusText("Not Found");
 		response.addHeader("Content-Type", "text/html");
 		response.setBody("<html><body>nuh uh, get 404'd >:D</body></html>");
 	}
@@ -212,7 +271,6 @@ http::Response	http::Delete::execute(void)
 			throw;
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(204); // this cool dude on the internet said i should not do that so i'll change it https://blog.ploeh.dk/2013/04/30/rest-lesson-learned-avoid-204-responses/
-		response.setStatusText("No Content");
 		time_t now = std::time(NULL);
 		response.addHeader("Date", std::string(std::ctime(&now)));
 	}
@@ -222,7 +280,6 @@ http::Response	http::Delete::execute(void)
 
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
-		response.setStatusText("Not Found");
 		response.addHeader("Content-Type", "text/html");
 		response.setBody("<html><body>nuh uh, get 404'd >:D</body></html>");
 	}

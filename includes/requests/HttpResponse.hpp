@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 00:50:47 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/19 02:09:01 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ public:
 
 	void	setProtocol(std::string const protocol);
 	void	setStatusCode(size_t const status_code);
-	void	setStatusText(std::string const status_text);
 
 	std::string	str(void) const;
 

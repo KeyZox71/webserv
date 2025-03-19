@@ -6,11 +6,12 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/17 14:13:13 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/19 02:05:31 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <requests/HttpResponse.hpp>
+#include <requests/Errors.hpp>
 
 /*
 - do a map of all the status_text and get it from here, not storing them
@@ -66,9 +67,5 @@ void	http::Response::setProtocol(std::string const protocol)
 void	http::Response::setStatusCode(size_t const status_code)
 {
 	this->_status_code = status_code;
-}
-
-void	http::Response::setStatusText(std::string const status_text)
-{
-	this->_status_text = status_text;
+	this->_status_text = Errors::message[status_code];
 }
