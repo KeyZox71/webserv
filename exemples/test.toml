@@ -1,21 +1,37 @@
 [server]
-server_names = { "localhost", "2B5.local" } # can be a array or a str
-port = { 8080, 8090 } # can be a array or a int
+server_names = { "localhost", "2B5.local" }
+host = "localhost"
+port = 8080
 
-root = "/nfs/adjoly/workspace/kanel.ovh"
-max_post_size = "10M"
+root = "/var/www/html"
+methods = { "GET", "POST", "DELETE" }
 
-cookies = true
+dirlist = false
 uploads = false
-dirlist = true
+cookies = false
 
-methods = {"GET", "POST", "DELETE"}
-index = "index.html"
+cgi_path = "/bin/php"
+cgi_ext = ".php"
 
-[server.error_page]
+client_max_body_size = "10M"
+
+[server.error_pages]
 404 = "not_found.html"
 401 = "unauthorized.html"
 402 = "uwu.html"
 
-[server.cgi]
-py = "/usr/bin/python3"
+[server.location./]
+methods = { "GET" }
+root = "/var/www/html"
+dirlist = true
+
+[server.location./api]
+methods = { "GET", "POST" }
+uploads = true
+root = "/var/www/api"
+upload_path = "/etc/webserv/up"
+cgi_path = "/bin/go"
+cgi_ext = ".go"
+
+[server.location./redir]
+redirect = "https://kanel.ovh"

@@ -1,15 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   ARoute.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
+/*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
+/*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
 /*   Updated: 2025/03/19 15:52:16 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <tomlpp.hpp>
-
-int main(int, char **) { return 0; }
+class Route {
+	
+};
