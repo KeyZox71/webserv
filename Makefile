@@ -6,7 +6,7 @@
 #    By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/25 16:09:27 by adjoly            #+#    #+#              #
-#    Updated: 2025/02/03 16:43:32 by mmoussou         ###   ########.fr        #
+#    Updated: 2025/03/19 14:01:12 by adjoly           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,7 +45,7 @@ $(NAME): $(OBJS)
 
 $(OBJSDIR)%.o: %.cpp
 	@mkdir -p $(@D)
-	@$(CC) $(FLAGS) -I$(INCLUDES) -c $< -o $@
+	@$(CC) $(FLAGS) -I$(INCLUDES) -Ilib/tomlpp/includes -c $< -o $@
 	@printf "$(DELETE)$(GREEN)「🔨」 build($<): object compiled\n"
 
 clean:
