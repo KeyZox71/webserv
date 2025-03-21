@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/20 14:42:26 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/03/20 14:55:09 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ class Logger {
 
 	~Logger(void) { _file.close(); }
 
-	void info(std::string &msg) {
+	void info(std::string msg) {
 		std::stringstream ss = printPogitMsg("✏️", "webserv", "info", msg);
 		std::cerr << ss << std::endl;
 		if (!_ttyOnly) {
 			_file << ss << std::endl;
 		}
 	}
-	void warn(std::string &msg) {
+	void warn(std::string msg) {
 		std::stringstream ss = printPogitMsg("🔨", "webserv", "warning", msg);
 		std::cerr << ss << std::endl;
 		if (!_ttyOnly) {
@@ -50,7 +50,7 @@ class Logger {
 		}
 
 	}
-	void error(std::string &msg) {
+	void error(std::string msg) {
 		std::stringstream ss = printPogitMsg("🚧", "webserv", "error", msg);
 		std::cerr << ss << std::endl;
 		if (!_ttyOnly) {
