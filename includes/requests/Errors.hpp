@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 17:51:46 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/19 02:05:59 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:05:53 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ namespace http {
 
 class Errors {
 public:
-	static http::Response	&getRequest(int error_code);
-	static void				setEntry(const std::string &key, int value);
+	//static http::Response	&getRequest(int error_code);
+	static std::string	getResponseBody(int error_code);
+	static void			setEntry(const std::string &key, int value);
 
 	static std::map<int, std::string>	message;
 private:

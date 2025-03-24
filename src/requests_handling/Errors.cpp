@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 14:08:12 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/19 01:51:36 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:12:50 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,14 @@
 
 using namespace webserv;
 
-http::Response	&http::Errors::getRequest(int error_code)
+std::string	http::Errors::getResponseBody(int error_code)
 {
-	http::Response	*result = new http::Response;
+	std::string	body;
 
 	if (http::Errors::set_error_pages.find(error_code) != http::Errors::set_error_pages.end())
-		result->setBody(Errors::set_error_pages[error_code]);
+		return(Errors::set_error_pages[error_code]);
 	else
-		result->setBody("<html><body><h1>" + http::Errors::message[error_code] + "</h1></body></html>");
-	return (*result);
+		return("<html><body><h1>" + http::Errors::message[error_code] + "</h1></body></html>");
 }
 
 std::map<int, std::string>	http::Errors::message = Errors::populateMessages();
