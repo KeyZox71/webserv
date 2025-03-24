@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/19 03:04:40 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/24 13:10:58 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,10 +122,10 @@ void	http::Get::parse(std::string const &data)
 }
 
 char	isDirectory(const std::string& path) {
-	struct stat fileStat;
-	if (stat(path.c_str(), &fileStat) != 0)
+	struct stat file_stat;
+	if (stat(path.c_str(), &file_stat) != 0)
 		throw;
-	return S_ISDIR(fileStat.st_mode);
+	return S_ISDIR(file_stat.st_mode);
 }
 
 http::Response	http::Get::execute(void)
