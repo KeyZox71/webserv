@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/19 02:05:31 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:17:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ std::string	http::Response::getProtocol(void) const
 	return (this->_protocol);
 }
 
-size_t		http::Response::getStatusCode(void) const
+uint		http::Response::getStatusCode(void) const
 {
 	return (this->_status_code);
 }
@@ -64,7 +64,7 @@ void	http::Response::setProtocol(std::string const protocol)
 	this->_protocol = protocol;
 }
 
-void	http::Response::setStatusCode(size_t const status_code)
+void	http::Response::setStatusCode(uint const status_code)
 {
 	this->_status_code = status_code;
 	this->_status_text = Errors::message[status_code];

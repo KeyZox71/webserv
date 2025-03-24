@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/24 13:10:58 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/24 16:00:41 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <algorithm>
 
 #include <requests/HttpRequest.hpp>
+#include <requests/Errors.hpp>
 #include <sys/stat.h>
 #include <dirent.h>
 
@@ -107,7 +108,7 @@ void	http::Get::parse(std::string const &data)
 		body_stream << line << "\n";
 	this->_body = body_stream.str();
 
-	///*
+	/*
 	std::cout << "-- start-line --" << std::endl;
 	std::cout << "method: " << this->_method << std::endl;
 	std::cout << "target: " << this->_target << std::endl;
@@ -118,13 +119,17 @@ void	http::Get::parse(std::string const &data)
 	  std::cout << it->first << ": " << it->second << std::endl;
 	std::cout << std::endl;
 	std::cout << "-- body --" << std::endl << this->_body << std::endl;
-	//*/
+	*/
 }
 
-char	isDirectory(const std::string& path) {
+char	isDirectory(const std::string& path)
+{
 	struct stat file_stat;
+
 	if (stat(path.c_str(), &file_stat) != 0)
-		throw;
+	{
+		throw std::runtime_error("can't open file (non-existant ?)");
+	}
 	return S_ISDIR(file_stat.st_mode);
 }
 
@@ -202,7 +207,7 @@ http::Response	http::Get::execute(void)
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");
-		response.setBody("<html><body>nuh uh, get 404'd >:D</body></html>");
+		response.setBody(http::Errors::getResponseBody(response.getStatusCode()));
 	}
 
 	return (response);
@@ -247,7 +252,7 @@ void	http::Delete::parse(std::string const &data)
 		body_stream << line << "\n";
 	this->_body = body_stream.str();
 
-	///*
+	/*
 	std::cout << "-- start-line --" << std::endl;
 	std::cout << "method: " << this->_method << std::endl;
 	std::cout << "target: " << this->_target << std::endl;
@@ -258,7 +263,7 @@ void	http::Delete::parse(std::string const &data)
 	  std::cout << it->first << ": " << it->second << std::endl;
 	std::cout << std::endl;
 	std::cout << "-- body --" << std::endl << this->_body << std::endl;
-	//*/
+	*/
 }
 
 http::Response	http::Delete::execute(void)
@@ -268,7 +273,7 @@ http::Response	http::Delete::execute(void)
 	try
 	{
 		if (std::remove(this->_target.c_str()))
-			throw;
+			throw std::runtime_error("can't remove file, FF");
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(204); // this cool dude on the internet said i should not do that so i'll change it https://blog.ploeh.dk/2013/04/30/rest-lesson-learned-avoid-204-responses/
 		time_t now = std::time(NULL);
@@ -281,7 +286,7 @@ http::Response	http::Delete::execute(void)
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");
-		response.setBody("<html><body>nuh uh, get 404'd >:D</body></html>");
+		response.setBody(http::Errors::getResponseBody(response.getStatusCode()));
 	}
 
 	return (response);
