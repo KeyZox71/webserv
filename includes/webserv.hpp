@@ -6,26 +6,22 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:21 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 00:11:41 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/26 20:31:42 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef __WEBSERV_WEBSERV_HPP__
-# define __WEBSERV_WEBSERV_HPP__
 
-#include <string>
-#include <cstring>
-#include <fstream>
+#define WSRV_VERSION "0.1"
+
 #include <csignal>
 #include <cstdlib>
+#include <cstring>
+#include <fstream>
 #include <iostream>
-#include <unistd.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
+#include <string>
+#include <sys/socket.h>
+#include <unistd.h>
 
-namespace webserv {
-
-} //-namespace webserv
-
-#endif // __WEBSERV_WEBSERV_HPP__
+namespace webserv {} // namespace webserv
