@@ -6,7 +6,7 @@
 #    By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/25 16:09:27 by adjoly            #+#    #+#              #
-#    Updated: 2025/03/19 14:01:12 by adjoly           ###   ########.fr        #
+#    Updated: 2025/03/25 18:13:53 by adjoly           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ SRCS = $(shell find . -name '*.cpp')
 
 OBJS = $(addprefix $(OBJSDIR), $(SRCS:.cpp=.o))
 
-FLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP
+FLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP -g
 
 RED = \033[0;31m
 GREEN = \033[0;32m

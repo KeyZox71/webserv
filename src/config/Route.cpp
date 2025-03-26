@@ -1,59 +1,40 @@
-/* ************************************************************************** */
-/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   Route.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/21 20:37:02 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/24 10:51:29 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/03/26 08:19:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
 #include "log.hpp"
-#include "node/ANode.hpp"
 #include "node/default.hpp"
-#include <config/Route.hpp>
+#include <config/default.hpp>
 #include <map>
 #include <string>
 
 using namespace webserv::config;
 
-std::map<std::string, std::string> *
-Route::_parseCGI(std::map<std::string, toml::ANode *> *table) {
+std::map<std::string, std::string> *Route::_parseCGI(toml::ANode *table) {
 	std::map<std::string, std::string> *cgi =
 		new std::map<std::string, std::string>;
 	void *val;
 
-	for (std::map<std::string, toml::ANode *>::iterator it = table->begin();
-		 it != table->end(); it++) {
-		val = accessValue(it->first, toml::STRING);
-		if (val != not_nullptr)
-			cgi->insert(it->first, *static_cast<std::string *>(val));
+	for (std::map<std::string, toml::ANode *>::iterator it =
+			 table->getTable()->begin();
+		 it != table->getTable()->end(); it++) {
+		val = accessValue(it->first, toml::STRING, table, _log);
+		if (val != not_nullptr) {
+			if (cgi->find(it->first) != cgi->end())
+				continue;
+			else
+				(*cgi)[it->first] = *static_cast<std::string *>(val);
+		}
 	}
 
 	return cgi;
-}
-
-std::map<int, std::string> *
-Route::_parseErrPages(std::map<std::string, toml::ANode *> *table) {
-	std::map<int, std::string> *errPages = new std::map<int, std::string>;
-	void					   *val;
-	int							nb;
-
-	for (std::map<std::string, toml::ANode *>::iterator it = table->begin();
-		 it != table->end(); it++) {
-		val = accessValue(it->first, toml::STRING);
-		if (val != not_nullptr) {
-			nb = std::atoi(it->first.c_str());
-			if (nb != 0 && (nb >= 400 && nb <= 599))
-				(*errPages)[nb] = *static_cast<std::string *>(val);
-			else
-				_log->warn("error page - " + it->first + " is not valid :(");
-		}
-	}
-	return errPages;
 }
 
 void Route::_parseMethods(std::vector<toml::ANode *> *table) {
@@ -76,40 +57,46 @@ void Route::_parseMethods(std::vector<toml::ANode *> *table) {
 	}
 }
 
-void Route::_defaultErrPages(void) {
-	_err_pages = new std::map<int, std::string>;
-
-	(*_err_pages)[400] = _root + "/400.html";
-	(*_err_pages)[403] = _root + "/403.html";
-	(*_err_pages)[404] = _root + "/404.html";
-}
-
 Route::Route(toml::ANode *table, Logger *logger)
 	: _max_body(10485760), _log(logger) {
 	void *val;
+	bool  found;
 
-	_table = table;
 	_log = logger;
-	val = accessValue("redirect", toml::STRING);
+	_table = table;
+	if (_table->type() != toml::TABLE) {
+		_log->warn("location need to be a table and not a :" +
+				   toml::nodeTypeToStr(_table->type()));
+		return;
+	}
+	val = accessValue("redirect", toml::STRING, _table, _log);
 	if (val != not_nullptr) {
 		_root = *static_cast<std::string *>(val);
 		_redirect = true;
 		return;
-	}
-	val = accessValue("dirlist", toml::BOOL);
+	} else
+		_redirect = false;
+	val = accessValue("dirlist", toml::BOOL, _table, _log);
 	if (val != not_nullptr)
 		_dirlist = *static_cast<bool *>(val);
 	else
 		_dirlist = true;
-	val = accessValue("cookies", toml::BOOL);
+	val = accessValue("cookies", toml::BOOL, _table, _log);
 	if (val != not_nullptr)
 		_cookies = *static_cast<bool *>(val);
-	else 
+	else
 		_cookies = false;
-	val = accessValue("uploads", toml::BOOL);
+	val = accessValue("upload_path", toml::STRING, _table, _log);
 	if (val != not_nullptr)
-		_uploads = *static_cast<bool *>(val);
-	val = accessValue("root", toml::STRING);
+		_up_root = *static_cast<std::string *>(val);
+	else
+		_up_root = "";
+	val = accessValue("index", toml::STRING, _table, _log);
+	if (val != not_nullptr)
+		_index = *static_cast<std::string *>(val);
+	else
+		_index = "index.html";
+	val = accessValue("root", toml::STRING, _table, _log);
 	if (val != not_nullptr)
 		_root = *static_cast<std::string *>(val);
 	else
@@ -118,25 +105,17 @@ Route::Route(toml::ANode *table, Logger *logger)
 #else
 		_root = "./html";
 #endif
-			val = accessValue("upload_path", toml::STRING);
-	if (val != not_nullptr)
-		_upRoot = *static_cast<std::string *>(val);
-	val = accessValue("client_max_body_size", toml::STRING);
+			val =
+				accessValue("client_max_body_size", toml::STRING, _table, _log);
 	if (val != not_nullptr)
 		_max_body = _parseSize(*static_cast<std::string *>(val));
-	val = accessValue("cgi", toml::TABLE);
-	if (val != not_nullptr)
-		_cgi =
-			_parseCGI(static_cast<std::map<std::string, toml::ANode *> *>(val));
+	std::map<std::string, toml::ANode *>::iterator it =
+		_table->accessIt("cgi", toml::TABLE, found);
+	if (found == true && it != _table->getTable()->end())
+		_cgi = _parseCGI(it->second);
 	else
 		_cgi = not_nullptr;
-	val = accessValue("error_pages", toml::TABLE);
-	if (val != not_nullptr)
-		_err_pages = _parseErrPages(
-			static_cast<std::map<std::string, toml::ANode *> *>(val));
-	else
-		_err_pages = _defaultErrPages();
-	val = accessValue("methods", toml::ARRAY);
+	val = accessValue("methods", toml::ARRAY, _table, _log);
 	if (val != not_nullptr)
 		_parseMethods(static_cast<std::vector<toml::ANode *> *>(val));
 	else {
@@ -146,20 +125,8 @@ Route::Route(toml::ANode *table, Logger *logger)
 	}
 }
 
-void *Route::accessValue(std::string name, toml::nodeType type) {
-	void *val;
-	bool  found;
-
-	val = _table->access(name, type, found);
-	if (val != not_nullptr) {
-		return val;
-	} else {
-		if (found == false) {
-			return not_nullptr;
-		} else {
-			_log->warn("found - " + name + " but is not " +
-					   toml::nodeTypeToStr(type) + ", skipping...");
-			return not_nullptr;
-		}
-	}
+Route::~Route(void) {
+	if (_redirect == false)
+		if (_cgi != not_nullptr)
+			delete _cgi;
 }

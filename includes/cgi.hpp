@@ -1,19 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Config.hpp                                         :+:      :+:    :+:   */
+/*   cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/23 11:36:01 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/23 12:09:10 by adjoly           ###   ########.fr       */
+/*   Created: 2025/03/24 14:17:34 by adjoly            #+#    #+#             */
+/*   Updated: 2025/03/24 14:20:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stdexcept>
-
-namespace webserv {
-namespace config {};
-}; // namespace webserv
+#include <sstream>
+class cgi {
+	public:
+		cgi();
+		~cgi(void);
+	protected:
+	private:
+		std::string	_request;
+};

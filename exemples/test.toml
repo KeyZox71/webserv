@@ -3,17 +3,6 @@ server_names = { "localhost", "2B5.local" }
 host = "localhost"
 port = 8080
 
-root = "/var/www/html"
-methods = { "GET", "POST", "DELETE" }
-
-dirlist = false
-uploads = false
-cookies = false
-
-cgi.py = "/usr/bin/python3"
-
-client_max_body_size = "10M"
-
 [server.error_pages]
 404 = "not_found.html"
 401 = "unauthorized.html"
@@ -25,12 +14,8 @@ root = "/var/www/html"
 dirlist = true
 client_max_body_size = "10M"
 
-[server.location./.error_pages]
-500 = "uwu.html"
-
 [server.location./api]
 methods = { "GET", "POST" }
-uploads = true
 root = "/var/www/api"
 upload_path = "/etc/webserv/up"
 cgi.go = "/bin/go"
