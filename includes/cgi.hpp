@@ -24,11 +24,12 @@ public:
    *	@brief	Contructor that can be used to execute a cgi file
    *
    *	@param	The path of the cgi program
-   *	@param	The cgi script that will be executed
+   *	@param	The location where the script will be executed
+   *	@param	The name of cgi script that will be executed
    *	@param	A map of the http header
    *	@param	A string of the http method used
    */
-  Cgi(std::string &, std::string &, std::map<std::string, std::string> &,
+  Cgi(std::string &, std::string &, std::string &, std::map<std::string, std::string> &,
       std::string &);
   ~Cgi(void);
 
