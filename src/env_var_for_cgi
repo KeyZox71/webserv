@@ -1,0 +1,28 @@
+SERVER_SOFTWARE="Webserv/webservVersion"	- mandatory
+SERVER_NAME="header:Host"					- mandatory
+SERVER_PROTOCOL= header: protocol			- mandatory
+SERVER_PORT= header: port					- mandatory
+
+GATEWAY_INTERFACE=CGI/1.1					- mandatory
+
+PATH_TRANSLATED=header: filepath			- optional
+PATH_INFO= ??								- optional
+
+CONTENT_LENGH= content lengh of the body in the case of a post request - optional (in the case of a get request)
+CONTENT_TYPE= content mimme type			- optional (in the case of a get request)
+
+REQUEST_METHODS= header: methods			- mandatory
+REQUEST_URI= header: path
+
+REMOTE_ADDR= ip of the client probably no usefull - mandatory
+
+HTTP_ACCEPT= header: Accept					- not spe
+HTTP_ACCEPT_LANGUAGE= header: Accept-Language
+HTTP_COOKIE= header: Cookie
+HTTP_HOST=header: Host
+HTTP_REFERER= header: url
+HTTP_USER_AGENT= header: User_agent
+
+SCRIPT_NAME= virtual path to the file executed
+
+QUERY_STRING= in the case of a get request : ?QUERY_STRING
