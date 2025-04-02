@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/19 03:11:14 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/02 05:24:59 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@ void	close_socket(int signal)
 	close(client_socket);
 	close(server_socket);
 	exit(signal);
+}
+
+std::string getMethod(std::string &data)
+{
+	return (data.substr(0, data.substr(0, 4).find_last_not_of(" ") + 1));
 }
 
 int main()
@@ -89,21 +94,33 @@ int main()
 
         // parse the request
         std::string received_data(buffer, bytes_received);
-		http::Get	request(received_data);
-
-        std::cout << "Received " << request.getMethod() << " request for " << request.getTarget() << std::endl;
 
         // handle the request
 		std::string	response;
-        if (request.getMethod() == "GET" || request.getMethod() == "POST")
+
+		std::cout << getMethod(received_data) << std::endl;
+
+        if (getMethod(received_data) == "GET")
+		{
+			std::cout << "------------ GET REQUEST ------------" << std::endl;
+			http::Get	request(received_data);
+
 			response = request.execute().str();
+		}
+		else if (getMethod(received_data) == "POST")
+		{
+			std::cout << "------------ POST REQUEST ------------" << std::endl;
+			http::Post	request(received_data);
+
+			response = request.execute().str();
+		}
 		else
 		{
 			response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/html\r\n\r\n<html><body><h1>501 Not Implemented</h1></body></html>";
         }
 
         send(client_socket, response.c_str(), response.length(), 0);
-        close(client_socket);
+        //close(client_socket);
     }
 
     close(server_socket);

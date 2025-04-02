@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/24 16:00:41 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/02 05:24:17 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ std::string	http::IRequest::str(void) const
 	response << this->_method << " " << this->_target << " " << this->_protocol;
 	response << "\r\n";
 
-	for (std::multimap<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
+	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
 		response << it->first << ": " << it->second << "\r\n";
 
 	response << "\r\n";
@@ -187,7 +187,6 @@ http::Response	http::Get::execute(void)
 			response.setBody(std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>()));
 			std::stringstream	length;
 			length << (file.tellg() - file_start);
-			std::cout << length.str() << std::endl;
 			response.addHeader("Content-Length", length.str());
 
 			response.setProtocol(this->_protocol);
@@ -345,12 +344,64 @@ void	http::Post::parse(std::string const &data)
 	//*/
 }
 
+std::string extractFilename(const std::string &header)
+{
+	size_t start = header.find("filename=\"") + 10;
+	size_t end = header.find("\"", start);
+	return header.substr(start, end - start);
+}
+
+void handleMultipartData(const std::string &body, const std::string &boundary)
+{
+	size_t		i = 0;
+	std::string	delim = "--" + boundary;
+	delim.erase(delim.size() - 1);
+
+	while ((i = body.find(delim, i)) != std::string::npos)
+	{
+		size_t	start = i + delim.length();
+		size_t end = body.find("\r\n\r\n", start);
+
+		if (end != std::string::npos)
+		{
+			std::string part_header = body.substr(start, end - start);
+			std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
+			std::string part_content = body.substr(end + 4, body.find(delim, end) - end - 4);
+
+			std::ofstream outfile(extractFilename(part_header).c_str(), std::ios::binary);
+			if (outfile.is_open())
+			{
+				outfile.write(part_content.c_str(), part_content.length());
+				outfile.close();
+			}
+			else
+			{
+				std::cerr << "open failed" << std::endl;
+			}
+		}
+
+		i += delim.length();
+	}
+}
+
 http::Response	http::Post::execute(void)
 {
 	http::Response	response;
 
-	// uh idk anymore
-	
+	try
+	{
+		handleMultipartData(this->_body, this->getHeaders()["Content-Type"].substr(this->getHeaders()["Content-Type"].find("=", this->getHeaders()["Content-Type"].find(";")) + 1));
+
+		response.setProtocol(this->_protocol);
+		response.setStatusCode(204);
+	}
+	catch (...)
+	{
+		response.setProtocol(this->_protocol);
+		response.setStatusCode(500);
+		response.addHeader("Content-Type", "text/html");
+		response.setBody(http::Errors::getResponseBody(response.getStatusCode()));
+	}
 	return (response);
 }
 

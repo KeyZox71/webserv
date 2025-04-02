@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/24 15:17:52 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/02 01:48:39 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ std::string	http::Response::str(void) const
 	response << this->_protocol << " " << this->_status_code << " " << this->_status_text;
 	response << "\r\n";
 
-	for (std::multimap<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
+	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
 		response << it->first << ": " << it->second << "\r\n";
 
 	response << "\r\n";
