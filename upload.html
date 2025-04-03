@@ -1,0 +1,90 @@
+<meta charset="utf-8">
+<html>
+    <head>
+        <title>upload</title>
+    </head>
+    <body>
+        <!-- j'ai pas volé le code (c'est faux) -->
+        <!-- putain les pubs spotify c'est chiant -->
+        <!-- je m'en fous de leur bière -->
+        <form id="upload_form" enctype="multipart/form-data" method="post">
+          <input type="file" name="file1" id="file1" onchange="uploadFile()"><br>
+          <progress id="progressBar" value="0" max="100" style="width:300px;"></progress>
+          <h3 id="status"></h3>
+          <p id="loaded_n_total"></p>
+        </form>
+        <button id="abort" hidden>annuler le tranfert</button>
+        <script>
+            function _(el) {
+  return document.getElementById(el);
+}
+
+function uploadFile() {
+  bouton = document.getElementById("abort")
+  var file = _("file1").files[0];
+
+  // alert(file.name+" | "+file.size+" | "+file.type);
+  var formdata = new FormData();
+  formdata.append("file1", file);
+  var ajax = new XMLHttpRequest();
+  bouton.onclick = function(){
+    ajax.abort()
+  }
+  bouton.removeAttribute("hidden")
+  ajax.upload.addEventListener("progress", progressHandler, false);
+  ajax.addEventListener("load", completeHandler, false);
+  ajax.addEventListener("error", errorHandler, false);
+  ajax.addEventListener("abort", abortHandler, false);
+  ajax.open("POST", "/upload.html");
+  ajax.send(formdata);
+  startmillis = Date.now()
+}
+
+function copy(){
+window.getSelection().removeAllRanges()
+range = document.createRange()
+range.selectNodeContents(_("addr"))
+window.getSelection().addRange(range)
+document.execCommand('copy')
+window.getSelection().removeAllRanges()
+temp = _("addr").innerHTML
+_("addr").innerHTML = "copié !"
+setTimeout(()=>{_("addr").innerHTML = temp},500)
+}
+
+function progressHandler(event) {
+  // console.log(Math.round((event.loaded/1024/1024)*100)/100)
+  // console.log((Date.now()-startmillis)/1000+'s')
+  //console.log((event.loaded/1024/1024) /((Date.now()-startmillis)*1000)+"Mo/s")
+  // console.log((event.loaded/1024/1024))
+
+  console.log(`${(event.loaded/1024/1024)} / ${(Date.now()-startmillis)} / 1000`)
+  console.log((event.loaded/1024/1024)/((Date.now()-startmillis)/1000))
+
+
+
+
+  _("loaded_n_total").innerHTML = Math.round((event.loaded/1024/1024)*100)/100 + "Mo / " + Math.round((event.total/1024/1024)*100)/100+"Mo envoyé<br/>"+Math.round((event.loaded/1024/1024)/((Date.now()-startmillis)/1000)*100)/100+"Mo/s en moyenne";
+  var percent = (event.loaded / event.total) * 100;
+  _("progressBar").value = Math.round(percent);
+  _("status").innerHTML = Math.round(percent * 100) / 100 + "% envoyé... veuillez patienter";
+}
+
+function completeHandler(event) {
+  _("status").innerHTML = event.target.responseText;
+  _("progressBar").value = 0; //wil clear progress bar after successful upload
+  console.log("fin de l'envoi")
+  _("abort").setAttribute("hidden",true)
+}
+
+function errorHandler(event) {
+  _("status").innerHTML = "Upload Failed";
+}
+
+function abortHandler(event) {
+  _("status").innerHTML = "envoi annulé";
+}
+        </script>
+    </body>
+</html>
+

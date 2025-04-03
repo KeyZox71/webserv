@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 08:56:21 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/02/14 15:43:32 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #ifndef __WEBSERV_REQUESTS_HTTP_REQUEST_HPP__
 # define __WEBSERV_REQUESTS_HTTP_REQUEST_HPP__
 
+#include <ctime>
 #include <fstream>
 #include <sstream>
 #include <iostream>

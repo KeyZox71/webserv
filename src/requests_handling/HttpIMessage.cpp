@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 23:34:45 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 00:59:22 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/02 01:46:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 using namespace webserv;
 
-std::multimap<std::string, std::string>	http::IMessage::getHeaders(void) const
+std::map<std::string, std::string>	http::IMessage::getHeaders(void) const
 {
 	return (this->_headers);
 }
@@ -24,7 +24,7 @@ std::string	http::IMessage::getBody(void) const
 	return (this->_body);
 }
 
-void	http::IMessage::setHeaders(std::multimap<std::string, std::string> const headers)
+void	http::IMessage::setHeaders(std::map<std::string, std::string> const headers)
 {
 	this->_headers = headers;
 }
