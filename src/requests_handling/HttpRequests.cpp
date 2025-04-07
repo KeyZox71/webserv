@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/02 05:24:17 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/08 01:11:09 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,7 @@ http::Response	http::Delete::execute(void)
 		if (std::remove(this->_target.c_str()))
 			throw std::runtime_error("can't remove file, FF");
 		response.setProtocol(this->_protocol);
-		response.setStatusCode(204); // this cool dude on the internet said i should not do that so i'll change it https://blog.ploeh.dk/2013/04/30/rest-lesson-learned-avoid-204-responses/
+		response.setStatusCode(204);
 		time_t now = std::time(NULL);
 		response.addHeader("Date", std::string(std::ctime(&now)));
 	}
@@ -330,7 +330,7 @@ void	http::Post::parse(std::string const &data)
 		body_stream << line << "\n";
 	this->_body = body_stream.str();
 
-	///*
+	/*
 	std::cout << "-- start-line --" << std::endl;
 	std::cout << "method: " << this->_method << std::endl;
 	std::cout << "target: " << this->_target << std::endl;
@@ -340,8 +340,8 @@ void	http::Post::parse(std::string const &data)
 	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
 	  std::cout << it->first << ": " << it->second << std::endl;
 	std::cout << std::endl;
-	std::cout << "-- body --" << std::endl << this->_body << std::endl;
-	//*/
+	//std::cout << "-- body --" << std::endl << this->_body << std::endl;
+	*/
 }
 
 std::string extractFilename(const std::string &header)
@@ -365,7 +365,7 @@ void handleMultipartData(const std::string &body, const std::string &boundary)
 		if (end != std::string::npos)
 		{
 			std::string part_header = body.substr(start, end - start);
-			std::cout << std::endl<< std::endl<< std::endl<< std::endl<< std::endl;
+			//std::cout << std::endl << std::endl << std::endl << std::endl;
 			std::string part_content = body.substr(end + 4, body.find(delim, end) - end - 4);
 
 			std::ofstream outfile(extractFilename(part_header).c_str(), std::ios::binary);

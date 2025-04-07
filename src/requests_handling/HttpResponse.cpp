@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/02 01:48:39 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/08 01:11:40 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ std::string	http::Response::str(void) const
 	response << "\r\n";
 	response << this->_body;
 
-	std::cout << "------------ RESPONSE -------------" << std::endl << response.str();
+	//std::cout << "------------ RESPONSE -------------" << std::endl << response.str();
 	return (response.str());
 }
 
