@@ -1,19 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
+/*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/25 17:10:29 by adjoly           ###   ########.fr       */
+/*   Created: 2025/03/24 14:17:34 by adjoly            #+#    #+#             */
+/*   Updated: 2025/03/24 14:20:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "config/Server.hpp"
-#include <tomlpp.hpp>
+#pragma once
 
-int main(int, char **) {
-	webserv::config::Server serverConf("exemples/test.toml");
-	return 0;
-}
+#include <sstream>
+class cgi {
+	public:
+		cgi();
+		~cgi(void);
+	protected:
+	private:
+		std::string	_request;
+};
