@@ -38,6 +38,14 @@ ifeq ($(VERBOSE),true)
 	FLAGS += -D VERBOSE
 endif
 
+ifeq ($(TTY),true)
+	FLAGS += -D TTY
+endif
+
+ifeq ($(PKGS),true)
+	FLAGS += -D PKGS
+endif
+
 all: $(NAME)
 
 $(NAME): $(OBJS)

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/25 17:50:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/10 13:56:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,7 @@ class Logger {
 			_ttyOnly = false;
 		}
 		if (!_file.is_open() && !_ttyOnly) {
-			throw std::runtime_error(
-				"could not open fileeee"); // TODO change that shit but i dont
-										   // know what to put other than a
-										   // htrow
+			warn("could not open logfile, going tty only");
 		}
 	}
 
@@ -97,7 +94,8 @@ class Logger {
 									const std::string &what,
 									const std::string &msg) {
 		std::stringstream os;
-#ifdef tty
+#ifdef TTY
+		(void)emoji;
 		if (what.empty())
 			os << type << ":" << msg;
 		else
