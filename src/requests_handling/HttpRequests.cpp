@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/08 01:11:09 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/10 11:50:48 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,7 +393,9 @@ http::Response	http::Post::execute(void)
 		handleMultipartData(this->_body, this->getHeaders()["Content-Type"].substr(this->getHeaders()["Content-Type"].find("=", this->getHeaders()["Content-Type"].find(";")) + 1));
 
 		response.setProtocol(this->_protocol);
-		response.setStatusCode(204);
+		response.setStatusCode(200);
+		response.addHeader("Content-Type", "text/html");
+		response.setBody(http::Errors::getResponseBody(response.getStatusCode()));
 	}
 	catch (...)
 	{

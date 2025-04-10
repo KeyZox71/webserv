@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/02 05:24:59 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/10 12:18:39 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,22 +82,29 @@ int main()
         }
 
         // receive the HTTP request
+        std::string received_data;
         char buffer[BUFFER_SIZE];
+		ssize_t bytes_received;
+		do
+		{
         std::memset(buffer, 0, BUFFER_SIZE);
-        ssize_t bytes_received = recv(client_socket, buffer, BUFFER_SIZE - 1, 0);
+		bytes_received = recv(client_socket, buffer, BUFFER_SIZE - 1, 0);
         if (bytes_received == -1)
 		{
             std::cerr << "Failed to receive request" << std::endl;
             close(client_socket);
             continue;
         }
+        received_data += std::string(buffer, bytes_received);
+		}
+		while (buffer[bytes_received]);
 
         // parse the request
-        std::string received_data(buffer, bytes_received);
 
         // handle the request
 		std::string	response;
 
+		//std::cout << received_data << std::endl;
 		std::cout << getMethod(received_data) << std::endl;
 
         if (getMethod(received_data) == "GET")
@@ -113,6 +120,7 @@ int main()
 			http::Post	request(received_data);
 
 			response = request.execute().str();
+			//std::cout << "worked" << std::endl;
 		}
 		else
 		{
