@@ -1,0 +1,24 @@
+[server]
+server_names = { "localhost", "2B5.local" }
+host = "localhost"
+port = 8080
+
+[server.error_pages]
+404 = "not_found.html"
+401 = "unauthorized.html"
+402 = "uwu.html"
+
+[server.location./]
+methods = { "GET" }
+root = "/var/www/html"
+dirlist = true
+client_max_body_size = "10M"
+
+[server.location./api]
+methods = { "GET", "POST" }
+root = "/var/www/api"
+upload_path = "/etc/webserv/up"
+cgi.go = "/bin/go"
+
+[server.location./redir]
+redirect = "https://kanel.ovh"

@@ -7,6 +7,7 @@
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/25 16:09:27 by adjoly            #+#    #+#              #
 #    Updated: 2025/04/10 11:52:13 by mmoussou         ###   ########.fr        #
+#    Updated: 2025/03/25 18:13:53 by adjoly           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +25,7 @@ SRCS = $(shell find . -name '*.cpp')
 
 OBJS = $(addprefix $(OBJSDIR), $(SRCS:.cpp=.o))
 
-FLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP
+FLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP -g
 
 RED = \033[0;31m
 GREEN = \033[0;32m
@@ -45,7 +46,7 @@ $(NAME): $(OBJS)
 
 $(OBJSDIR)%.o: %.cpp
 	@mkdir -p $(@D)
-	@$(CC) $(FLAGS) -I$(INCLUDES) -c $< -o $@
+	@$(CC) $(FLAGS) -I$(INCLUDES) -Ilib/tomlpp/includes -c $< -o $@
 	@printf "$(DELETE)$(GREEN)「🔨」 build($<): object compiled\n"
 
 clean:
