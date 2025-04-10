@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/12 00:50:47 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/03/24 15:16:39 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 
 #include <requests/HttpIMessage.hpp>
 
+typedef unsigned int uint;
+
 namespace webserv {
 namespace http {
 
@@ -26,18 +28,17 @@ public:
 	Response(void);
 
 	std::string	getProtocol(void) const;
-	size_t		getStatusCode(void) const;
+	uint		getStatusCode(void) const;
 	std::string	getStatusText(void) const;
 
 	void	setProtocol(std::string const protocol);
-	void	setStatusCode(size_t const status_code);
-	void	setStatusText(std::string const status_text);
+	void	setStatusCode(uint const status_code);
 
 	std::string	str(void) const;
 
 private:
 	std::string	_protocol;
-	size_t		_status_code;
+	uint		_status_code;
 	std::string	_status_text;
 
 };
