@@ -11,8 +11,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "config/Server.hpp"
+#include <config/Server.hpp>
 #include <tomlpp.hpp>
+#include <webserv.hpp>
+#include <requests/default.hpp>
 
 #define PORT 8080
 #define BUFFER_SIZE 4096
