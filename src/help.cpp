@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/10 14:19:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/10 14:20:36 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void help(int ac, char **av) {
 		return;
 	}
 	std::string option = av[1];
-	if (option == "--help")
+	if (option == "--help" || option == "-v")
 		_printHelp();
 	else if (option == "--generate" || option == "-g")
 		_generateConf();

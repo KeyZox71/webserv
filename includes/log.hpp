@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/10 13:56:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/10 14:21:46 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ class Logger {
 			_ttyOnly = false;
 		}
 		if (!_file.is_open() && !_ttyOnly) {
-			warn("could not open logfile, going tty only");
+			_ttyOnly = true;
+			warn("could not open log file, going tty only");
 		}
 	}
 
