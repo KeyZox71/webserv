@@ -6,8 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/10 12:18:39 by mmoussou         ###   ########.fr       */
-/*   Updated: 2025/03/25 17:10:29 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/11 14:52:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +36,6 @@ int main(int ac, char **av) {
 		std::cout << e.what() << std::endl;
 		return 1;
 	}
-	(void)conf;
+	conf->getLogger()->info("testtt");
 	delete conf;
 }
