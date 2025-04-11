@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 15:09:59 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/11 15:19:58 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static inline void log(std::string emoji, std::string who,
 		std::cout << "「" << emoji << "」debug(" << who << "): " << str
 				  << std::endl;
 #else
-	(void)emoji, (void)what, (void)who, (void)str;
+	(void)emoji, (void)who, (void)str;
 #endif
 }
 
@@ -45,7 +45,6 @@ class Logger {
 		if (!fileName.empty()) {
 			_ttyOnly = true;
 		} else {
-			std::cout << "wtfff: " << _fileName << std::endl;
 			_file.open(fileName.c_str(), std::ios::app);
 			if (!_file.is_open() && !_ttyOnly) {
 				_ttyOnly = true;
