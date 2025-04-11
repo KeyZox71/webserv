@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 15:19:58 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/11 15:49:38 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Logger {
   public:
 	Logger(const std::string &fileName) : _fileName(fileName) {
 		log("➕", "Logger", "filename constructor called");
-		if (!fileName.empty()) {
+		if (fileName.empty()) {
 			_ttyOnly = true;
 		} else {
 			_file.open(fileName.c_str(), std::ios::app);

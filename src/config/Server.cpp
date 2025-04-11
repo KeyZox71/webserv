@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 14:56:56 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/11 15:44:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,7 @@ Server::Server(std::string file_name) {
 	void	   *val = _table->access("log_file", toml::STRING, found);
 	std::string log_file = "";
 	if (found == true && val != not_nullptr) {
-		std::string log_file = *static_cast<std::string *>(val);
-		std::cout << log_file << std::endl;
+		log_file = *static_cast<std::string *>(val);
 	}
 	_log = new Logger(log_file);
 
