@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/10 14:21:46 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/11 11:54:37 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,9 @@ class Logger {
 			os << type << "(" << what << "):" << msg;
 #else
 		if (what.empty())
-			os << "「" << emoji << "」" << type << ":" << msg;
+			os << "「" << emoji << "」" << type << ": " << msg;
 		else
-			os << "「" << emoji << "」" << type << "(" << what << "):" << msg;
+			os << "「" << emoji << "」" << type << "(" << what << "): " << msg;
 #endif
 		return os.str();
 	}

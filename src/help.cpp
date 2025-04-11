@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/10 14:20:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/11 11:39:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void _generateConf(void) {
 			file << "[server]\nhost = \"localhost\"\nport = "
 				"8080\n\n[server.location./]\nmethods = { \"GET\" }\nroot "
 				"= \"/var/www/html\"\ndirlist = true\nclient_max_body_size "
-				"= \"10M\"";
+				"= \"10M\"\n";
 			file.close();
 			_log.info("config file successfully generated");
 		} else {
@@ -50,16 +50,24 @@ void _printVersion(void) {
 	std::cout << "You are running : Webserv " << WEBSRV_VERSION << std::endl;
 }
 
-void help(int ac, char **av) {
+bool help(int ac, char **av) {
 	if (ac < 2) {
 		_printHelp();
-		return;
+		return true;
 	}
 	std::string option = av[1];
-	if (option == "--help" || option == "-v")
+	if (option == "--help" || option == "-v") {
 		_printHelp();
-	else if (option == "--generate" || option == "-g")
+		return true;
+	}
+	else if (option == "--generate" || option == "-g") {
 		_generateConf();
-	else if (option == "--version" || option == "-v")
+		return true;
+	}
+	else if (option == "--version" || option == "-v") {
 		_printVersion();
+		return true;
+	}
+	else
+		return false;
 }
