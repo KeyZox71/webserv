@@ -30,7 +30,7 @@
 						git
 						gdb
 						inputs.pogit.packages.${pkgs.system}.default
-						python312Packages.compiledb
+						compiledb
 					];
 				};
 			});
