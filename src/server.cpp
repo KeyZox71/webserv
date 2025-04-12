@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setup.cpp                                          :+:      :+:    :+:   */
+/*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 19:22:50 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/12 10:16:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "log.hpp"
-#include "server/default.hpp"
 #include <cmath>
+#include <log.hpp>
 #include <netinet/in.h>
+#include <server/default.hpp>
 #include <stdexcept>
 #include <sys/socket.h>
 #include <webserv.hpp>
@@ -63,7 +63,7 @@ void Server::_run(void) {
 				_log->error("accept failed");
 				continue;
 			}
-			//if (nbr_client ) TODO do we need a max client probably not
+			// if (nbr_client ) TODO do we need a max client probably not :D
 		}
 		for (int i = 1; i <= nbr_client; ++i) {
 			if (_client_fds[i].revents & POLLIN) {
@@ -73,4 +73,17 @@ void Server::_run(void) {
 			}
 		}
 	}
+}
+
+Server::Server(config::Server *conf) : _conf(conf) {
+	log("➕", "Server::Server", "config constructor called");
+	_log = conf->getLogger();
+}
+
+Server::~Server(void) {
+	log("➖", "Server::Server", "destructor called");
+	for (std::vector<struct pollfd>::iterator it = _client_fds.begin();
+		 it != _client_fds.end(); it++)
+		close(it->fd);
+	close(_fd_server);
 }
