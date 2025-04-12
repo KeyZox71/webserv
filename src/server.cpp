@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/12 10:16:00 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/12 11:17:30 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void Server::_run(void) {
 Server::Server(config::Server *conf) : _conf(conf) {
 	log("➕", "Server::Server", "config constructor called");
 	_log = conf->getLogger();
+	_setup();
+	_run();
 }
 
 Server::~Server(void) {
