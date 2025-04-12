@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/12 11:17:30 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/12 18:53:45 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,11 @@
 #include <webserv.hpp>
 
 using namespace webserv;
+
+void Server::_handle_client(int fd)
+{
+	(void) fd;
+}
 
 void Server::_setup(void) {
 	_fd_server = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
@@ -42,35 +47,53 @@ void Server::_setup(void) {
 }
 
 void Server::_run(void) {
-	_client_fds[0].fd = _fd_server;
-	_client_fds[0].events = POLLIN;
+	struct pollfd fd;
+
+	fd.fd = _fd_server;
+	fd.events = POLLIN;
+	_client_fds.clear();
+	_client_fds.push_back(fd);
 
 	int nbr_client = 0;
 
-	while (727) {
+	while (727)
+	{
 		int ret = poll(_client_fds.data(), nbr_client + 1, -1);
-		if (ret < 0) {
+		if (ret < 0)
+		{
 			close(_fd_server);
 			throw std::runtime_error("poll failed :(");
 		}
 
-		if (_client_fds[0].revents & POLLIN) {
+		if (_client_fds[0].revents & POLLIN)
+		{
 			struct sockaddr_in client_addr;
 			socklen_t		   addrlen = sizeof(client_addr);
-			int				   client_fd =
-				accept(_fd_server, (struct sockaddr *)&client_addr, &addrlen);
-			if (client_fd < 0) {
+			int				   client_fd = accept(_fd_server, (struct sockaddr *)&client_addr, &addrlen);
+			if (client_fd < 0)
+			{
 				_log->error("accept failed");
 				continue;
 			}
+			struct pollfd client_pollfd;
+			client_pollfd.fd = client_fd;
+			client_pollfd.events = POLLIN;
+			_client_fds.push_back(client_pollfd);
+			++nbr_client;
+
 			// if (nbr_client ) TODO do we need a max client probably not :D
 		}
-		for (int i = 1; i <= nbr_client; ++i) {
-			if (_client_fds[i].revents & POLLIN) {
+		for (int i = 1; i <= nbr_client; )
+		{
+			if (_client_fds[i].revents & POLLIN)
+			{
 				_handle_client(i);
 				close(_client_fds[i].fd);
 				_client_fds[i] = _client_fds[nbr_client--];
+                _client_fds.pop_back();
 			}
+			else
+				++i;
 		}
 	}
 }

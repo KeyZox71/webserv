@@ -6,11 +6,12 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/11 17:51:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/12 15:48:12 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <config/Server.hpp>
+#include <server/default.hpp>
 #include <cstdlib>
 #include <exception>
 #include <help.hpp>
@@ -37,5 +38,8 @@ int main(int ac, char **av) {
 		return 1;
 	}
 
+	webserv::Server *serv = new webserv::Server(conf);
+
+	delete serv;
 	delete conf;
 }

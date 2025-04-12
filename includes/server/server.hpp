@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 19:22:43 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/12 15:39:14 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Server {
 	 *
 	 *	@param	The number of the client fd
 	 */
-	void _handle_client(int);
+	void _handle_client(int fd);
 
 	config::Server
 		   *_conf; ///> Pointer to the configuration class (with all config in)
