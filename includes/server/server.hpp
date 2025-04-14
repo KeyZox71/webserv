@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/14 13:42:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/14 14:21:41 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "log.hpp"
 #include <config/default.hpp>
 #include <fcntl.h>
+#include <netinet/in.h>
 #include <stdexcept>
 #include <sys/poll.h>
 #include <vector>
@@ -42,7 +43,7 @@ class Server {
 	 *
 	 *	@param	The number of the client fd
 	 */
-	void _handle_client(int fd);
+	void _handle_client(Client);
 
 	config::Config
 		   *_conf; ///> Pointer to the configuration class (with all config in)
