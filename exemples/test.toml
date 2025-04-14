@@ -22,3 +22,17 @@ cgi.go = "/bin/go"
 
 [server.location./redir]
 redirect = "https://kanel.ovh"
+
+[server1]
+server_names = { "ptnnnn.local"}
+host = "0.0.0.0"
+port = 90
+
+[server1.error_pages]
+404 = "existepasfd***.html"
+
+[server1.location./]
+methods = { "GET", "DELETE" }
+root = "/var/lib/docker/volumes/test_data/_data"
+dirlist = false
+cgi.py = "/bin/python"
