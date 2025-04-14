@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 15:49:38 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/14 13:03:31 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ namespace webserv {
  *
  *	@note	Only work if VERBOSE mode is active
  */
-static inline void log(std::string emoji, std::string who,
-					   std::string str) {
+static inline void log(std::string emoji, std::string who, std::string str) {
 #ifdef VERBOSE
 	if (who.empty())
 		std::cout << "「" << emoji << "」debug: " << str << std::endl;
@@ -40,18 +39,17 @@ static inline void log(std::string emoji, std::string who,
 
 class Logger {
   public:
+	Logger(void) : _ttyOnly(true) {
+		log("➕", "Logger", "default constructor called");
+	}
 	Logger(const std::string &fileName) : _fileName(fileName) {
 		log("➕", "Logger", "filename constructor called");
-		if (fileName.empty()) {
+		_file.open(fileName.c_str(), std::ios::app);
+		if (!_file.is_open() && !_ttyOnly) {
 			_ttyOnly = true;
-		} else {
-			_file.open(fileName.c_str(), std::ios::app);
-			if (!_file.is_open() && !_ttyOnly) {
-				_ttyOnly = true;
-				warn("could not open log file, going tty only");
-			} else
-				_ttyOnly = false;
-		}
+			warn("could not open log file, going tty only");
+		} else
+			_ttyOnly = false;
 	}
 
 	Logger(const Logger &other) : _ttyOnly(other._ttyOnly) {

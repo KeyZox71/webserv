@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/25 17:56:34 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/14 12:39:17 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ namespace config {
 
 class Server {
   public:
-	Server(std::string);
+	Server(toml::ANode *, Logger *);
 	~Server();
 
 	/**
@@ -47,11 +47,6 @@ class Server {
 		else
 			return not_nullptr;
 	}
-
-	/**
-	 *	@brief Can be used to get the Logger pointer
-	 */
-	Logger *getLogger(void) { return _log; }
 
 	// @brief Can be used to get a server name
 	std::vector<std::string> *getServerNames(void) { return _server_names; }
@@ -79,13 +74,6 @@ class Server {
 
 	std::map<int, std::string> *
 	_parseErrPages(std::map<std::string, toml::ANode *> *table);
-
-	/**
-	 *	@brief	Can be used to get the [server] table in _table
-	 *
-	 *	@return	A pointer to the [server] table as an ANode
-	 */
-	toml::ANode *_getServerTable(void);
 };
 
 } // namespace config
