@@ -6,27 +6,19 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/14 13:25:09 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/14 13:32:56 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cppeleven.hpp"
-#include "node/ANode.hpp"
 #include <config/default.hpp>
-#include <exception>
 
 using namespace webserv::config;
 
 Config::Config(std::string &filename) {
-	toml::Toml file(filename);
+	toml::Toml *file = new toml::Toml(filename);
 
-	try {
-		file.parse();
-	} catch (std::exception &e) {
-		throw e;
-	}
-
-	_table = file.getParsedFile();
+	file->parse();
+	_table = file->getParsedFile();
 
 	bool  found = false;
 	void *logFile = _table->access("log_file", toml::STRING, found);
@@ -42,4 +34,14 @@ Config::Config(std::string &filename) {
 		Server *srv = new Server(it->second, _log);
 		_servers->push_back(srv);
 	}
+	delete _table;
+	delete file;
+}
+
+Config::~Config(void) {
+	std::vector<Server *>::iterator it = _servers->begin();
+	for (; it != _servers->end() ; it++) {
+		delete *it;
+	}
+	delete _servers;
 }
