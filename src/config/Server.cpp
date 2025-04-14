@@ -6,84 +6,33 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 15:44:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/14 12:57:30 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "config/Server.hpp"
-#include "config/Route.hpp"
-#include "cppeleven.hpp"
-#include "log.hpp"
-#include "node/ANode.hpp"
-#include "node/Table.hpp"
-#include "node/default.hpp"
-#include "tomlpp.hpp"
 #include <config/default.hpp>
-#include <exception>
-#include <stdexcept>
-#include <string>
-#include <sys/types.h>
 
 using namespace webserv::config;
 
-toml::ANode *Server::_getServerTable(void) {
-	toml::ANode *serverT;
-
-	std::map<std::string, toml::ANode *>::iterator table =
-		_table->getTable()->find("server");
-	if (table == _table->getTable()->end())
-		throw std::runtime_error(
-				"could not find any [server] table in config file :(");
-	else
-		serverT = table->second;
-	return serverT;
-}
-
-Server::Server(std::string file_name) {
-	toml::Toml *tomlFile = new toml::Toml(file_name);
-
-	try {
-		tomlFile->parse();
-	} catch (std::runtime_error &e) {
-		throw e;
-	}
+Server::Server(toml::ANode *node, Logger *log) : _table(node), _log(log) {
 	bool found;
 
-	std::map<std::string, toml::ANode *> *map;
-	_table = tomlFile->getParsedFile();
-
-	try {
-		_table = _getServerTable();
-	} catch(std::runtime_error &e) {
-		delete _table;
-		delete tomlFile;
-		delete _log;
-		throw e;
-	}
-	void	   *val = _table->access("log_file", toml::STRING, found);
-	std::string log_file = "";
-	if (found == true && val != not_nullptr) {
-		log_file = *static_cast<std::string *>(val);
-	}
-	_log = new Logger(log_file);
-
-	// host and port parsing
+	// host parsing
 	void *host = accessValue("host", toml::STRING, _table, _log);
 	if (host != not_nullptr) {
 		_host = *static_cast<std::string *>(host);
 	} else {
 		delete _table;
-		delete tomlFile;
 		delete _log;
 		throw std::runtime_error(
 			"no host specified - please specify one in server.host");
 	}
+	// port parsing
 	void *port = accessValue("port", toml::INT, _table, _log);
 	if (host != not_nullptr) {
 		_port = *static_cast<unsigned short *>(port);
 	} else {
 		delete _table;
-		delete tomlFile;
 		delete _log;
 		throw std::runtime_error(
 			"no port specified - please specify one in server.port");
@@ -102,13 +51,14 @@ Server::Server(std::string file_name) {
 		}
 	} else {
 		_log->warn(
-				"no server_names all request will be accepted from any hostname");
+			"no server_names all request will be accepted from any hostname");
 		_server_names = not_nullptr;
 	}
 
 	// error_pages parsing
-	map = static_cast<std::map<std::string, toml::ANode *> *>(
-		accessValue("error_pages", toml::TABLE, _table, _log));
+	std::map<std::string, toml::ANode *> *map =
+		static_cast<std::map<std::string, toml::ANode *> *>(
+			accessValue("error_pages", toml::TABLE, _table, _log));
 	if (map != not_nullptr) {
 		_err_pages = _parseErrPages(map);
 	} else
@@ -126,8 +76,7 @@ Server::Server(std::string file_name) {
 			(*_routes)[it->first] = new Route(it->second, _log);
 		}
 	}
-	delete tomlFile->getParsedFile();
-	delete tomlFile;
+	delete _table;
 }
 
 Server::~Server(void) {

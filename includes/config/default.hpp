@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:15:51 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/26 08:39:08 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/14 12:54:29 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "Route.hpp"
 #include "Server.hpp"
+#include "Config.hpp"
 #include "cppeleven.hpp"
 #include "node/Table.hpp"
 #include "node/default.hpp"
