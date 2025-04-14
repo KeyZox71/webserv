@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/12 15:39:14 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/14 13:42:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ namespace webserv {
 
 class Server {
   public:
-	Server(config::Server *);
+	Server(config::Config *);
 	~Server(void);
 
   protected:
@@ -44,7 +44,7 @@ class Server {
 	 */
 	void _handle_client(int fd);
 
-	config::Server
+	config::Config
 		   *_conf; ///> Pointer to the configuration class (with all config in)
 	Logger *_log;  ///> Pointer to the log class
 	int		_fd_server; ///> The fd of the socket
