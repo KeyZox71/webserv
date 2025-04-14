@@ -1,3 +1,5 @@
+log_file = "test.log"
+
 [server]
 server_names = { "localhost", "2B5.local" }
 host = "localhost"
@@ -22,3 +24,17 @@ cgi.go = "/bin/go"
 
 [server.location./redir]
 redirect = "https://kanel.ovh"
+
+[server1]
+server_names = { "ptnnnn.local"}
+host = "0.0.0.0"
+port = 90
+
+[server1.error_pages]
+404 = "existepasfd***.html"
+
+[server1.location./]
+methods = { "GET", "DELETE" }
+root = "/var/lib/docker/volumes/test_data/_data"
+dirlist = false
+cgi.py = "/bin/python"
