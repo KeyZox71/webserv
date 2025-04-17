@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/14 12:57:30 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/17 11:22:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ Server::Server(toml::ANode *node, Logger *log) : _table(node), _log(log) {
 	}
 	// port parsing
 	void *port = accessValue("port", toml::INT, _table, _log);
-	if (host != not_nullptr) {
+	if (port != not_nullptr) {
 		_port = *static_cast<unsigned short *>(port);
 	} else {
 		delete _table;

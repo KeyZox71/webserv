@@ -1,24 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   default.hpp                                        :+:      :+:    :+:   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
+/*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/11 13:29:05 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/17 11:05:59 by adjoly           ###   ########.fr       */
+/*   Created: 2025/04/15 14:44:55 by adjoly            #+#    #+#             */
+/*   Updated: 2025/04/15 18:38:42 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include <config/default.hpp>
+#include <netinet/in.h>
+#include <server/Client.hpp>
 
-#include "Server.hpp"
-#include "Client.hpp"
-
-namespace webserv {
-
-
-
-} // -namespace webserv
-
-using namespace webserv;
+Client::Client(int fd, sockaddr_in sockData, config::Config *conf)
+	: _fd(fd), _client_addr(sockData) {
+	
+}

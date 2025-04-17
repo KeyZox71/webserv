@@ -1,8 +1,9 @@
+log_file = "test.log"
+
 [server]
 server_names = { "localhost", "2B5.local" }
 host = "localhost"
 port = 8080
-log_file = "test.log"
 
 [server.error_pages]
 404 = "not_found.html"
