@@ -6,11 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/12 15:48:12 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/17 14:29:29 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <config/Server.hpp>
+#include <config/default.hpp>
 #include <server/default.hpp>
 #include <cstdlib>
 #include <exception>
@@ -32,7 +32,7 @@ int main(int ac, char **av) {
 
 	config::Server *conf;
 	try {
-		conf = new config::Server(av[1]);
+		conf = new config::Config(std::string(av[1]));
 	} catch (std::exception &e) {
 		std::cout << e.what() << std::endl;
 		return 1;

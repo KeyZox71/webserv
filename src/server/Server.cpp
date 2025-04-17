@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.cpp                                         :+:      :+:    :+:   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/17 12:37:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/17 14:35:01 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ void Server::_setup(void) {
 		throw std::runtime_error("no server present in the config file");
 
 	std::vector<std::string>::iterator itH = hosts.begin();
-	for (std::vector<int>::iterator itP = ports.begin(); itP != ports.end(); itP++, itH++) {
+	for (std::vector<int>::iterator itP = ports.begin(); itP != ports.end();
+		 itP++, itH++) {
 		try {
 			int fd = _createSocket(*itH, *itP);
 			_fds_server.push_back(fd);
@@ -99,47 +100,15 @@ void Server::_setup(void) {
 
 void Server::_run(void) {
 	struct pollfd fd;
+	int			  nbr_client = 0;
 
-	fd.fd = _fd_server;
-	fd.events = POLLIN;
-	_client_fds.clear();
-	_client_fds.push_back(fd);
-
-	int nbr_client = 0;
+	for (std::vector<int>::iterator it = _fds_server.begin();
+		 it != _fds_server.end(); it++, nbr_client++) {
+		fd.fd = *it;
+		fd.events = POLLIN;
+	}
 
 	while (727) {
-		int ret = poll(_client_fds.data(), nbr_client + 1, -1);
-		if (ret < 0) {
-			close(_fd_server);
-			throw std::runtime_error("poll failed :(");
-		}
-
-		if (_client_fds[0].revents & POLLIN) {
-			struct sockaddr_in client_addr;
-			socklen_t		   addrlen = sizeof(client_addr);
-			int				   client_fd =
-				accept(_fd_server, (struct sockaddr *)&client_addr, &addrlen);
-			if (client_fd < 0) {
-				_log->error("accept failed");
-				continue;
-			}
-			struct pollfd client_pollfd;
-			client_pollfd.fd = client_fd;
-			client_pollfd.events = POLLIN;
-			_client_fds.push_back(client_pollfd);
-			++nbr_client;
-
-			// if (nbr_client) TODO do we need a max client probably not :D
-		}
-		for (int i = 1; i <= nbr_client;) {
-			if (_client_fds[i].revents & POLLIN) {
-				_handle_client(_client_fds[i].fd);
-				close(_client_fds[i].fd);
-				_client_fds[i] = _client_fds[nbr_client--];
-				_client_fds.pop_back();
-			} else
-				++i;
-		}
 	}
 }
 
@@ -155,5 +124,4 @@ Server::~Server(void) {
 	for (std::vector<struct pollfd>::iterator it = _client_fds.begin();
 		 it != _client_fds.end(); it++)
 		close(it->fd);
-	close(_fd_server);
 }
