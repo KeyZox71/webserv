@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/17 11:48:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/17 18:08:38 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ class Server {
 	/**
 	 *	@brief	Used to handle client request
 	 *
-	 *	@param	The number of the client fd
+	 *	@param	The fd of the client
 	 */
-	void _handle_client(Client);
+	void _handle_client(int, sockaddr_in, config::Config *, struct pollfd);
 
 	/**
 	 *	@brief	Can be used to fill the vector passed as parameters with all the
