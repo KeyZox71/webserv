@@ -1,15 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   socket.cpp                                         :+:      :+:    :+:   */
+/*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/17 12:35:31 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/17 19:03:27 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "server/Client.hpp"
+#include <netinet/in.h>
 #include <server/default.hpp>
 #include <sys/socket.h>
 
@@ -68,4 +70,8 @@ int Server::_createSocket(std::string host, int port) {
 	}
 
 	return (fd);
+}
+
+void	Server::_handle_client(int fd, sockaddr_in client_addr, struct pollfd poll_fd) {
+	server::Client *client = new server::Client(fd, client_addr, );
 }

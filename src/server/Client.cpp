@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/17 14:25:50 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:48:17 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,31 @@
 
 using namespace server;
 
-Client::Client(int fd, sockaddr_in socket, config::Servr *conf, Logger *log): _fd(fd), _client_addr(socker), _conf(conf), _log(log)
+/*class Client {
+  public:
+	Client(int, sockaddr_in, config::Config *);
+	~Client(void);
+
+	void	answer(void);
+
+  private:
+	void getRequest(void);
+
+	int				   _fd;
+	struct sockaddr_in _client_addr;
+	http::IRequest	  *_request;
+	http::Response	  *_response;
+	config::Server	  *_conf;
+	std::string		  _request_method;
+};*/
+
+Client::Client(int fd, sockaddr_in socket, config::Server *conf, Logger *log)
 {
+	this->_fd = fd;
+	this->_client_addr = socket;
+	this->_conf = conf;
+	this->_log = log;
+
 	std::string received_data;
 	char buffer[BUFFER_SIZE];
 	ssize_t bytes_received;
