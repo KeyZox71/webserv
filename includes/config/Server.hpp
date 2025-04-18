@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/14 12:39:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 10:08:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ namespace config {
 
 class Server {
   public:
-	Server(toml::ANode *, Logger *);
+	Server(toml::ANode *);
 	~Server();
 
 	/**
@@ -70,7 +70,6 @@ class Server {
 
 	toml::ANode *_table; ///> The table used for the parsing (is deleted at the
 						 ///  end of the constructor)
-	Logger *_log;		 ///> A pointer to the logger class
 
 	std::map<int, std::string> *
 	_parseErrPages(std::map<std::string, toml::ANode *> *table);

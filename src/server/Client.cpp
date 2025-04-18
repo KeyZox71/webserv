@@ -6,11 +6,12 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/17 18:48:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 10:03:57 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <server/Client.hpp>
+#include <log.hpp>
 
 using namespace server;
 

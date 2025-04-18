@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/17 18:57:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 09:19:14 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void Server::_run(void) {
 		_client_fds.push_back(fd);
 	}
 
+	// to add signal instead of 727
 	while (727) {
 		int ret = poll(_client_fds.data(), nbr_client, -1);
 		if (ret < 0) {

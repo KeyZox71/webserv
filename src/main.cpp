@@ -6,12 +6,14 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/17 14:29:29 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 09:57:10 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <config/default.hpp>
+#include <csignal>
 #include <server/default.hpp>
+#include <config/Config.hpp>
 #include <cstdlib>
 #include <exception>
 #include <help.hpp>
@@ -19,6 +21,12 @@
 #include <tomlpp.hpp>
 #include <unistd.h>
 #include <webserv.hpp>
+
+int	_sig = 0;
+
+void	ft_sig(int sig) {
+	_sig = sig;
+}
 
 int main(int ac, char **av) {
 	if (help(ac, av)) {
@@ -30,12 +38,18 @@ int main(int ac, char **av) {
 		return EXIT_FAILURE;
 	}
 
-	config::Server *conf;
+
+	config::Config *conf;
 	try {
-		conf = new config::Config(std::string(av[1]));
+		std::string str = av[1];
+		conf = new config::Config(str);
 	} catch (std::exception &e) {
 		std::cout << e.what() << std::endl;
 		return 1;
+	}
+	if (signal(SIGINT, &ft_sig) == SIG_ERR) {
+		conf->getLogger()->error("could not bind sigint :(");
+		return EXIT_FAILURE;
 	}
 
 	webserv::Server *serv = new webserv::Server(conf);

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/26 08:31:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 10:05:22 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ namespace config {
 
 class Route {
   public:
-	Route(toml::ANode *, Logger *);
+	Route(toml::ANode *);
 	~Route(void);
 
   protected:
@@ -41,8 +41,6 @@ class Route {
 	std::string							_up_root;
 	std::string							_index;
 	std::map<std::string, std::string> *_cgi;
-
-	Logger *_log;
 
 	bool _methods[3]; ///> A methods boolean array which correspond to - 0: GET,
 					  ///1: POST, 2: DELETE

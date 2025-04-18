@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/17 11:22:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 10:09:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 using namespace webserv::config;
 
-Server::Server(toml::ANode *node, Logger *log) : _table(node), _log(log) {
+Server::Server(toml::ANode *node) : _table(node) {
 	bool found;
 
 	// host parsing
@@ -23,7 +23,6 @@ Server::Server(toml::ANode *node, Logger *log) : _table(node), _log(log) {
 		_host = *static_cast<std::string *>(host);
 	} else {
 		delete _table;
-		delete _log;
 		throw std::runtime_error(
 			"no host specified - please specify one in server.host");
 	}
@@ -33,7 +32,6 @@ Server::Server(toml::ANode *node, Logger *log) : _table(node), _log(log) {
 		_port = *static_cast<unsigned short *>(port);
 	} else {
 		delete _table;
-		delete _log;
 		throw std::runtime_error(
 			"no port specified - please specify one in server.port");
 	}
@@ -73,7 +71,7 @@ Server::Server(toml::ANode *node, Logger *log) : _table(node), _log(log) {
 		for (it = location_table->begin(); it != location_table->end(); it++) {
 			if (_routes->find(it->first) != _routes->end())
 				continue;
-			(*_routes)[it->first] = new Route(it->second, _log);
+			(*_routes)[it->first] = new Route(it->second);
 		}
 	}
 	delete _table;
@@ -88,7 +86,6 @@ Server::~Server(void) {
 	delete _err_pages;
 	if (_server_names != not_nullptr)
 		delete _server_names;
-	delete _log; // to see if nessecary
 }
 
 std::map<int, std::string> *

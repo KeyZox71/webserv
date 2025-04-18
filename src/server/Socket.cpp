@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/17 19:03:27 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 09:37:32 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,13 @@ int Server::_createSocket(std::string host, int port) {
 		str << port;
 		throw std::runtime_error("socket binding failed for : " + host + ":" +
 								 str.str());
+		return -1;
 	}
-	return -1;
+
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) {
+		close(fd);
+		throw std::runtime_error("fcntl failed");
+	}
 
 	int opt = 1;
 	if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {

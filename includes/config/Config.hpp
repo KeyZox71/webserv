@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:20:06 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/14 13:36:42 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 10:03:09 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ class Config {
 	std::vector<Server *> *getServers(void) { return _servers; }
 
   private:
-	Logger				  *_log;
 	std::vector<Server *> *_servers;
 };
 
