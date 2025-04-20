@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/20 13:00:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/20 18:29:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cerrno>
 #include <cmath>
 #include <fcntl.h>
 #include <iterator>
@@ -90,8 +91,7 @@ void Server::_run(void) {
 
 	// to add signal instead of 727
 	while (727) {
-		int ret = poll(_client_fds.data(), _client_fds.size(), -1);
-		if (ret < 0) {
+		if (poll(_client_fds.data(), _client_fds.size(), -1) < 0) {
 			std::stringstream str;
 			str << "poll failed : ";
 			str << strerror(errno);

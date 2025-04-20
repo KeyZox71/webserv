@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/20 13:29:53 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/20 17:31:41 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,4 +76,3 @@ int Server::_createSocket(std::string host, int port) {
 
 	return (fd);
 }
-
