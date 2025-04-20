@@ -6,18 +6,21 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/18 09:19:14 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/20 13:00:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cmath>
+#include <fcntl.h>
 #include <iterator>
 #include <log.hpp>
 #include <netinet/in.h>
 #include <poll.h>
 #include <requests/default.hpp>
 #include <server/default.hpp>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 #include <sys/socket.h>
 #include <webserv.hpp>
 
@@ -76,37 +79,66 @@ void Server::_setup(void) {
 
 void Server::_run(void) {
 	struct pollfd fd;
-	int			  nbr_client = 0;
 
 	for (std::vector<int>::iterator it = _fds_server.begin();
-		 it != _fds_server.end(); it++, nbr_client++) {
+		 it != _fds_server.end(); it++) {
 		fd.fd = *it;
 		fd.events = POLLIN;
 		_client_fds.push_back(fd);
+		_client_data.push_back(NULL);
 	}
 
 	// to add signal instead of 727
 	while (727) {
-		int ret = poll(_client_fds.data(), nbr_client, -1);
+		int ret = poll(_client_fds.data(), _client_fds.size(), -1);
 		if (ret < 0) {
-			_log->error("poll failed :(");
+			std::stringstream str;
+			str << "poll failed : ";
+			str << strerror(errno);
+			_log->error(str.str());
 			continue;
 		}
 
-		for (int i = 0; i < nbr_client; i++) {
+		for (size_t i = 0; i < _client_fds.size(); ++i) {
 			if (_client_fds[i].revents & POLLIN) {
-				struct sockaddr_in client_addr;
-				socklen_t		   addrlen = sizeof(client_addr);
-				int				   client_fd =
-					accept(_client_fds[i].fd, (struct sockaddr *)&client_addr,
-						   &addrlen);
-				if (client_fd < 0) {
-					_log->error("accept failed with : " +
-							   convertIPToString(&client_addr.sin_addr) + ":" +
-							   convertPortToString(&client_addr));
-					continue ;
+				if (_isServerSocket(_client_fds[i].fd)) {
+					struct sockaddr_in client_addr;
+					socklen_t		   addrlen = sizeof(client_addr);
+					int				   client_fd =
+						accept(_client_fds[i].fd,
+							   (struct sockaddr *)&client_addr, &addrlen);
+
+					if (client_fd < 0) {
+						std::stringstream str;
+						str << "Accept failed: ";
+						str << strerror(errno);
+						_log->error(str.str());
+						continue;
+					}
+
+					if (fcntl(client_fd, F_SETFL, O_NONBLOCK) == -1) {
+						std::stringstream str;
+						str << "Failed to set non-blocking mode: ";
+						str << strerror(errno);
+						_log->error(str.str());
+						close(client_fd);
+						continue;
+					}
+
+					pollfd pfd;
+					pfd.fd = client_fd;
+					pfd.events = POLLIN;
+					_client_fds.push_back(pfd);
+					_client_data.push_back(new sockaddr_in(client_addr));
+				} else {
+					if (!_handle_client(_client_fds[i], _client_data[i])) {
+						close(_client_fds[i].fd);
+						_client_fds.erase(_client_fds.begin() + i);
+						delete _client_data[i];
+						_client_data.erase(_client_data.begin() + i);
+						i--;
+					}
 				}
-				_handle_client(client_fd, client_addr, _conf, _client_fds[i]);
 			}
 		}
 	}

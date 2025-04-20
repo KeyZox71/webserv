@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/18 09:57:01 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/18 10:21:36 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Config::Config(std::string &filename) {
 	std::map<std::string, toml::ANode *> *node = table->getTable();
 	for (std::map<std::string, toml::ANode *>::iterator it = node->begin();
 		 it != node->end(); it++) {
-		Server *srv = new Server(it->second, _log);
+		Server *srv = new Server(it->second);
 		_servers->push_back(srv);
 	}
 	delete table;
