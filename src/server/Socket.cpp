@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/18 09:37:32 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/20 10:58:26 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,5 @@ int Server::_createSocket(std::string host, int port) {
 }
 
 void	Server::_handle_client(int fd, sockaddr_in client_addr, struct pollfd poll_fd) {
-	server::Client *client = new server::Client(fd, client_addr, );
+	server::Client *client = new server::Client(fd, client_addr, NULL);
 }

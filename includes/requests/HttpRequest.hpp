@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/02/14 15:43:32 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/20 11:19:31 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ namespace http {
 
 class IRequest: public http::IMessage {
 public:
+	virtual ~IRequest(void);
+
 	virtual void			parse(std::string const &data) = 0;
 	virtual http::Response	execute(void) = 0;
 
@@ -50,6 +52,7 @@ protected:
 class Get: public http::IRequest {
 public:
 	Get(void);
+	~Get(void);
 	Get(std::string &data);
 
 	void	parse(std::string const &data);
@@ -61,6 +64,7 @@ public:
 class Post: public http::IRequest {
 public:
 	Post(void);
+	~Post(void);
 	Post(std::string &data);
 
 	void	parse(std::string const &data);
@@ -72,6 +76,7 @@ public:
 class Delete: public http::IRequest {
 public:
 	Delete(void);
+	~Delete(void);
 	Delete(std::string &data);
 
 	void	parse(std::string const &data);

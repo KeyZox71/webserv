@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/10 11:50:48 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/20 11:15:51 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ void	http::IRequest::setProtocol(std::string const protocol)
 // ------------------------------------------------------------------
 
 http::Get::Get(void)
+{
+}
+
+http::Get::~Get(void)
 {
 }
 
@@ -218,6 +222,10 @@ http::Delete::Delete(void)
 {
 }
 
+http::Delete::~Delete(void)
+{
+}
+
 http::Delete::Delete(std::string &data)
 {
 	this->parse(data);
@@ -294,6 +302,10 @@ http::Response	http::Delete::execute(void)
 // ------------------------------------------------------------------
 
 http::Post::Post(void)
+{
+}
+
+http::Post::~Post(void)
 {
 }
 

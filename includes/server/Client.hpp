@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/17 18:48:25 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/20 11:25:37 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace server {
 class Client {
   public:
 	Client(int, sockaddr_in, config::Server *);
-	~Client(void);
+	virtual ~Client(void);
 
 	void	answer(void);
 
@@ -36,7 +36,6 @@ class Client {
 	http::IRequest	  *_request;
 	http::Response	  *_response;
 	config::Server	  *_conf;
-	Logger            *_log;
 };
 
 } // -namespace server

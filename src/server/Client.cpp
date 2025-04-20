@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/18 10:03:57 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/20 11:07:47 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,31 +15,8 @@
 
 using namespace server;
 
-/*class Client {
-  public:
-	Client(int, sockaddr_in, config::Config *);
-	~Client(void);
-
-	void	answer(void);
-
-  private:
-	void getRequest(void);
-
-	int				   _fd;
-	struct sockaddr_in _client_addr;
-	http::IRequest	  *_request;
-	http::Response	  *_response;
-	config::Server	  *_conf;
-	std::string		  _request_method;
-};*/
-
-Client::Client(int fd, sockaddr_in socket, config::Server *conf, Logger *log)
+Client::Client(int fd, sockaddr_in socket, config::Server *conf): _fd(fd), _client_addr(socket), _conf(conf)
 {
-	this->_fd = fd;
-	this->_client_addr = socket;
-	this->_conf = conf;
-	this->_log = log;
-
 	std::string received_data;
 	char buffer[BUFFER_SIZE];
 	ssize_t bytes_received;
@@ -57,7 +34,7 @@ Client::Client(int fd, sockaddr_in socket, config::Server *conf, Logger *log)
 	while (buffer[bytes_received]);
 
 
-	this->getRequest(request_str);
+	this->_getRequest(received_data);
 }
 
 void	Client::_getRequest(std::string request_str)
@@ -91,8 +68,8 @@ void	Client::answer(void)
 {
 	std::string response;
 	
-	if (this->_request == "GET" || this->_request == "DELETE" || this->_request == "POST")
-		response = this->_request.execute().str();
+	if (this->_request->getMethod() == "GET" || this->_request->getMethod() == "DELETE" || this->_request->getMethod() == "POST")
+		response = this->_request->execute().str();
 	else
 		response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/html\r\n\r\n<html><body><h1>501 Not Implemented</h1></body></html>";
 	send(this->_fd, response.c_str(), response.length(), 0);
@@ -101,6 +78,6 @@ void	Client::answer(void)
 
 Client::~Client(void)
 {
-	delete this->_request;
+	delete (http::Get *)(this->_request);
 	delete this->_response;
 }
