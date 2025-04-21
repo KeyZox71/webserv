@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/20 17:31:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/21 10:53:45 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <server/default.hpp>
 #include <sys/socket.h>
 
-using namespace webserv;
+using namespace webserv::server;
 
 bool convertStringToIP(const char *ip_str, struct in_addr *addr) {
 	// Split the IP string into four octets
@@ -75,4 +75,20 @@ int Server::_createSocket(std::string host, int port) {
 	}
 
 	return (fd);
+}
+
+bool	Server::_handle_client(struct pollfd &pollfd, sockaddr_in *sock_data) {
+	Client *client;
+
+	try {
+		client = new Client(pollfd.fd, sock_data, _conf);
+		client->answer();
+	} catch (std::exception &e) {
+		_log->error(e.what());
+		return false;
+	}
+
+	delete client;
+
+	return true;
 }
