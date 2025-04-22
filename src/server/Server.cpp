@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/20 18:41:04 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 10:51:15 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,13 @@ std::string getMethod(std::string &data) {
 
 int Server::_fillHostsPorts(std::vector<std::string> &hosts,
 							std::vector<int>		 &ports) {
-	std::vector<config::Server *> *config = _conf->getServers();
+	std::vector<config::Server *> config = _conf->getServers();
 
-	for (std::vector<config::Server *>::iterator it = config->begin();
-		 it != config->end(); it++) {
+	for (auto it = range(config)) {
 		hosts.push_back((*it)->getHost());
 		ports.push_back((*it)->getPort());
 	}
-	return config->size();
+	return config.size();
 }
 
 void Server::_setup(void) {
@@ -67,11 +66,10 @@ void Server::_setup(void) {
 	if (size < 1)
 		throw std::runtime_error("no server present in the config file");
 
-	std::vector<std::string>::iterator itH = hosts.begin();
-	for (std::vector<int>::iterator itP = ports.begin(); itP != ports.end();
-		 itP++, itH++) {
+	auto itH = hosts.begin();
+	for (auto it = range(ports), itH++) {
 		try {
-			int fd = _createSocket(*itH, *itP);
+			int fd = _createSocket(*itH, *it);
 			_fds_server.push_back(fd);
 		} catch (std::exception &e) {
 			throw e;
@@ -100,27 +98,17 @@ void Server::_run(void) {
 			continue;
 		}
 
-		for (std::vector<struct pollfd>::iterator it = _client_fds.begin();
-			 it != _client_fds.end(); it++) {
+		for (auto it = range(_fds_server)) {
 			struct sockaddr_in client_addr;
 			socklen_t		   addrlen = sizeof(client_addr);
 			int				   client_fd =
-				accept((*it).fd, (struct sockaddr *)&client_addr, &addrlen);
+				accept((*it), (struct sockaddr *)&client_addr, &addrlen);
 
 			if (client_fd < 0) {
 				std::stringstream str;
 				str << "Accept failed: ";
 				str << strerror(errno);
 				_log->error(str.str());
-				continue;
-			}
-
-			if (fcntl(client_fd, F_SETFL, O_NONBLOCK) == -1) {
-				std::stringstream str;
-				str << "Failed to set non-blocking mode: ";
-				str << strerror(errno);
-				_log->error(str.str());
-				close(client_fd);
 				continue;
 			}
 
