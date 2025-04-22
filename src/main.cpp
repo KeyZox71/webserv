@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/22 15:39:43 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:43:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,6 @@ int main(int ac, char **av) {
 	webserv::Server *serv = new webserv::Server(conf);
 
 	delete serv;
+	delete _log;
 	delete conf;
 }
