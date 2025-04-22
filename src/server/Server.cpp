@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 16:34:40 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:37:31 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ Server::Server(config::Config *conf) : _conf(conf) {
 	try {
 		_setup();
 		_run();
-	} catch (std::exception &e) {
+	} catch (std::runtime_error &e) {
 		_log->error(e.what());
 	}
 }
