@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 12:38:59 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 14:26:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <webserv.hpp>
 #include <config/default.hpp>
 
 using namespace webserv::config;
@@ -105,4 +106,22 @@ Server::_parseErrPages(std::map<std::string, toml::ANode *> *table) {
 		}
 	}
 	return errPages;
+}
+
+bool Server::isServerName(const std::string &server_name) {
+	for (auto it = prange(_server_names)) {
+		if (*it == server_name) {
+			return true;
+		}
+	}
+	return false;
+}
+
+Route *Server::whatRoute(const URL &url) {
+	for (auto it = prange(_routes)) {
+		if (it->first == url) {
+			return it->second;
+		}
+	}
+	return not_nullptr;
 }

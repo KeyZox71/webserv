@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 12:44:16 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 14:25:17 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,23 +59,9 @@ class Server {
 	int getPort(void) { return _port; }
 
 	// @brief	Can be used to check if a servername is present in this config
-	bool isServerName(const std::string &server_name) {
-		for (auto it = prange(_server_names)) {
-			if (*it == server_name) {
-				return true;
-			}
-		}
-		return false;
-	}
+	bool	isServerName(const std::string &);
 
-	Route	*whatRoute(const URL &url) {
-		for (auto it = prange(_routes)) {
-			if (it->first == url) {
-				return it->second;
-			}
-		}
-		return not_nullptr;
-	}
+	Route	*whatRoute(const URL &);
 
   protected:
   private:

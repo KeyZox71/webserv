@@ -6,11 +6,13 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:21 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/22 12:43:26 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 14:27:31 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#define auto __auto_type
 
 #include <sys/types.h>
 #include <csignal>
@@ -25,7 +27,7 @@
 #include <vector>
 #include <sstream>
 
-#define auto __auto_type
+
 #define range(x)                                                               \
 	x.begin();                                                                 \
 	it != x.end();                                                             \

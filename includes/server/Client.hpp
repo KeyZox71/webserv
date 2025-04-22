@@ -6,16 +6,16 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 12:04:57 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:23:44 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <config/default.hpp>
-#include <server/default.hpp>
-#include <requests/default.hpp>
 #include <netinet/in.h>
+#include <requests/default.hpp>
+#include <server/default.hpp>
 #include <webserv.hpp>
 
 namespace webserv {
@@ -26,10 +26,10 @@ class Client {
 	Client(int, sockaddr_in, config::Config *);
 	virtual ~Client(void);
 
-	void	answer(void);
+	void answer(void);
 
   private:
-	void	_getRequest(std::string);
+	void _getRequest(std::string);
 
 	int				   _fd;
 	struct sockaddr_in _client_addr;
@@ -38,5 +38,5 @@ class Client {
 	config::Server	  *_conf;
 };
 
-} // -namespace server
-} // -namespace webserv
+} // namespace server
+} // namespace webserv
