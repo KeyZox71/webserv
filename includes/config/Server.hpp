@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/18 10:08:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 10:59:27 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "config/default.hpp"
 #include "cppeleven.hpp"
 #include "node/ANode.hpp"
+#include "webserv.hpp"
 
 namespace webserv {
 namespace config {
@@ -54,6 +55,16 @@ class Server {
 	std::string getHost(void) { return _host; }
 	// @brief Can be used to get the port specified in the config file
 	int getPort(void) { return _port; }
+
+	// @brief	Can be used to check if a servername is present in this config
+	bool isServerName(const std::string &server_name) {
+		for (auto it = prange(_server_names)) {
+			if (*it == server_name) {
+				return true;
+			}
+		}
+		return false;
+	}
 
   protected:
   private:
