@@ -6,17 +6,21 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 14:26:00 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:25:06 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <webserv.hpp>
+#include "cppeleven.hpp"
 #include <config/default.hpp>
+#include <webserv.hpp>
 
 using namespace webserv::config;
 
 Server::Server(toml::ANode *node) : _table(node) {
 	bool found;
+
+	if (_table == not_nullptr)
+		return;
 
 	// host parsing
 	void *host = accessValue("host", toml::STRING, _table, _log);

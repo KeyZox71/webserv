@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 14:31:34 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:32:19 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "node/default.hpp"
 #include "webserv.hpp"
 #include "cppeleven.hpp"
 #include "node/ANode.hpp"
@@ -33,8 +34,10 @@ Config::Config(std::string &filename) {
 
 	std::map<std::string, toml::ANode *> *node = table->getTable();
 	for (auto it = prange(node)) {
-		Server *srv = new Server(it->second);
-		_servers.push_back(srv);
+		if (it->second->type() == toml::TABLE) {
+			Server *srv = new Server(it->second);
+			_servers.push_back(srv);
+		}
 	}
 	delete table;
 	delete file;

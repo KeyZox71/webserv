@@ -6,14 +6,14 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 14:25:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:25:58 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <webserv.hpp>
-#include <config/default.hpp>
+#include <config/Route.hpp>
 #include <cppeleven.hpp>
 #include <node/ANode.hpp>
 #include <webserv.hpp>

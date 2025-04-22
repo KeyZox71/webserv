@@ -6,13 +6,13 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:20:06 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 11:52:33 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:25:39 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <config/default.hpp>
+#include <config/Server.hpp>
 
 namespace webserv {
 namespace config {
