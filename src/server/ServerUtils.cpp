@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 16:14:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:32:45 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ int Server::_createSocket(std::string host, int port) {
 
 	struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
-	convertStringToIP(host.c_str(), &addr.sin_addr);
+	if (!convertStringToIP(host.c_str(), &addr.sin_addr)) {
+		throw std::runtime_error("ip is not of the valid format : " + host);
+	}
 	std::stringstream str;
 	str << port;
 	_log->debug("port : " + str.str());

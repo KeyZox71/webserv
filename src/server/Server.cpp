@@ -6,12 +6,13 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 15:40:59 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:34:40 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cerrno>
 #include <cmath>
+#include <exception>
 #include <fcntl.h>
 #include <iterator>
 #include <log.hpp>
@@ -145,8 +146,12 @@ void Server::_run(void) {
 Server::Server(config::Config *conf) : _conf(conf) {
 	log("➕", "Server::Server", "config constructor called");
 	_log = conf->getLogger();
-	_setup();
-	_run();
+	try {
+		_setup();
+		_run();
+	} catch (std::exception &e) {
+		_log->error(e.what());
+	}
 }
 
 Server::~Server(void) {
