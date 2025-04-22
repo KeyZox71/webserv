@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/18 10:09:25 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 12:38:59 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,21 +65,20 @@ Server::Server(toml::ANode *node) : _table(node) {
 	// location parsing
 	it = _table->accessIt("location", toml::TABLE, found);
 	if (found == true && it != _table->getTable()->end()) {
-		_routes = new std::map<std::string, Route *>;
+		_routes = new std::map<URL, Route *>;
 		std::map<std::string, toml::ANode *> *location_table =
 			it->second->getTable();
 		for (it = location_table->begin(); it != location_table->end(); it++) {
-			if (_routes->find(it->first) != _routes->end())
+			if (_routes->find(URL(it->first)) != _routes->end())
 				continue;
-			(*_routes)[it->first] = new Route(it->second);
+			(*_routes)[URL(it->first)] = new Route(it->second);
 		}
 	}
 	delete _table;
 }
 
 Server::~Server(void) {
-	std::map<std::string, Route *>::iterator it = _routes->begin();
-	for (; it != _routes->end(); it++) {
+	for (auto it = prange(_routes)) {
 		delete it->second;
 	}
 	delete _routes;

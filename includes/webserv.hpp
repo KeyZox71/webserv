@@ -6,19 +6,13 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:21 by mmoussou          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/04/22 11:54:13 by mmoussou         ###   ########.fr       */
-=======
-/*   Updated: 2025/04/22 12:32:23 by adjoly           ###   ########.fr       */
->>>>>>> 8129f45 (「🏗️」 wip: added url class for easier manipulation)
+/*   Updated: 2025/04/22 12:43:26 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <sys/types.h>
-#ifndef __WEBSERV_WEBSERV_HPP__
-#define __WEBSERV_WEBSERV_HPP__
 
+#include <sys/types.h>
 #include <csignal>
 #include <cstdlib>
 #include <cstring>
@@ -47,4 +41,3 @@ namespace webserv {
 
 } // namespace webserv
 
-#endif // __WEBSERV_WEBSERV_HPP__

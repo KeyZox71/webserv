@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:17:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 12:26:21 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 12:42:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ class URL {
 	bool operator==(const URL &other) const {
 		return comparePathSegments(other);
 	}
+
+	bool operator<(const URL &other) const { return _full_url < other._full_url; }
 
 	std::vector<std::string> getSegments(void) { return _path_segments; }
 	std::string				 getFullUrl(void) { return _full_url; }

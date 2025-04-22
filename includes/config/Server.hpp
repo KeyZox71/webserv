@@ -6,16 +6,18 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 12:34:14 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 12:44:16 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include <webserv.hpp>
 #include <config/default.hpp>
 #include <cppeleven.hpp>
 #include <node/ANode.hpp>
 #include <webserv.hpp>
+#include <config/URL.hpp>
 
 namespace webserv {
 namespace config {
@@ -66,15 +68,18 @@ class Server {
 		return false;
 	}
 
-	Route	*whatRoute(const std::string &route_path) {
+	Route	*whatRoute(const URL &url) {
 		for (auto it = prange(_routes)) {
-			
+			if (it->first == url) {
+				return it->second;
+			}
 		}
+		return not_nullptr;
 	}
 
   protected:
   private:
-	std::map<std::string, Route *>
+	std::map<URL, Route *>
 		*_routes; ///> A map of all the route present in the config file
 	std::map<int, std::string> *_err_pages; ///> An error pages map to map error
 											/// specified in the config file
