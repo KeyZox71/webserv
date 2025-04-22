@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 11:49:19 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:34:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,19 @@ class Route {
   public:
 	Route(toml::ANode *);
 	~Route(void);
+
+	bool	getDirList(void) { return _dirlist; }
+	bool	getCookies(void) { return _cookies; }
+	bool	getRedirect(void) { return _redirect; }
+
+	int32_t	getMaxBody(void) { return _max_body; }
+
+	std::string getRootDir(void) { return _root; }
+	std::string getUpRoot(void) { return _up_root; }
+	std::string getIndex(void) { return _index; }
+	std::map<std::string, std::string> *getCgi(void) { return _cgi; }
+
+	bool	*getMethods(void) { return _methods; }
 
   protected:
   private:

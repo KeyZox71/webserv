@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 12:02:36 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:34:14 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,12 @@ class Server {
 		return false;
 	}
 
+	Route	*whatRoute(const std::string &route_path) {
+		for (auto it = prange(_routes)) {
+			
+		}
+	}
+
   protected:
   private:
 	std::map<std::string, Route *>
@@ -84,6 +90,8 @@ class Server {
 
 	std::map<int, std::string> *
 	_parseErrPages(std::map<std::string, toml::ANode *> *table);
+
+	
 };
 
 } // namespace config
