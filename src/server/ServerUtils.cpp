@@ -6,13 +6,14 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 11:46:07 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 16:14:36 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <server/Client.hpp>
 #include <netinet/in.h>
 #include <server/default.hpp>
+#include <sstream>
 #include <sys/socket.h>
 
 using namespace webserv::server;
@@ -58,6 +59,9 @@ int Server::_createSocket(std::string host, int port) {
 	struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
 	convertStringToIP(host.c_str(), &addr.sin_addr);
+	std::stringstream str;
+	str << port;
+	_log->debug("port : " + str.str());
 	addr.sin_port = htons(port);
 
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 14:46:05 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:14:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,19 @@ class Logger {
 		if (!_ttyOnly) {
 			_file << ss << std::endl;
 		}
+	}
+
+	void debug(const std::string &msg) {
+#ifdef VERBOSE
+		std::string ss = printPogitMsg("🏗️", "webserv", "debug", msg);
+		std::cerr << ss << std::endl;
+		if (!_ttyOnly) {
+			_file << ss << std::endl;
+		}
+#else
+		(void)msg;
+#endif
+
 	}
 
   protected:
