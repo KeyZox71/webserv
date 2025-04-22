@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 11:50:42 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:46:05 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,6 @@ class Logger {
 	std::ofstream _file;
 };
 
-Logger *_log = NULL;
+extern Logger *_log;
 
 }; // namespace webserv
