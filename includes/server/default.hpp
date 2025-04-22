@@ -6,14 +6,14 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:05 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/17 11:05:59 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 12:04:53 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Server.hpp"
-#include "Client.hpp"
+#include <server/Server.hpp>
+#include <server/Client.hpp>
 
 namespace webserv {
 

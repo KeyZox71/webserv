@@ -6,13 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/20 11:19:31 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 11:52:16 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef __WEBSERV_REQUESTS_HTTP_REQUEST_HPP__
-# define __WEBSERV_REQUESTS_HTTP_REQUEST_HPP__
 
 #include <ctime>
 #include <fstream>
@@ -21,6 +19,8 @@
 
 #include <requests/HttpIMessage.hpp>
 #include <requests/HttpResponse.hpp>
+
+#include <config/default.hpp>
 
 namespace webserv {
 namespace http {
@@ -37,15 +37,18 @@ public:
 	std::string	getMethod(void) const;
 	std::string	getTarget(void) const;
 	std::string	getProtocol(void) const;
+	config::Server	*getConfig(void) const;
 
 	void	setMethod(std::string const method);
 	void	setTarget(std::string const target);
 	void	setProtocol(std::string const protocol);
+	void	setServer(std::string const protocol);
 
 protected:
 	std::string	_method;
 	std::string	_target;
 	std::string	_protocol;
+	config::Server	*_conf;
 
 };
 
@@ -87,5 +90,3 @@ public:
 
 } // -namespace http
 } // -namespace webserv
-
-#endif // __WEBSERV_REQUESTS_HTTP_REQUEST_HPP__

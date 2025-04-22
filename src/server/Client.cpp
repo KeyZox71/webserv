@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/20 11:07:47 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:01:16 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 using namespace server;
 
-Client::Client(int fd, sockaddr_in socket, config::Server *conf): _fd(fd), _client_addr(socket), _conf(conf)
+Client::Client(int fd, sockaddr_in socket, config::Config *conf): _fd(fd), _client_addr(socket)
 {
 	std::string received_data;
 	char buffer[BUFFER_SIZE];
@@ -35,6 +35,12 @@ Client::Client(int fd, sockaddr_in socket, config::Server *conf): _fd(fd), _clie
 
 
 	this->_getRequest(received_data);
+
+	this->_conf = conf->getServer(this->_request->getHeaders()["Host"]);
+
+
+	//if (received_data.length > (get max_body_size from Route corresponding)  )
+	//	throw error
 }
 
 void	Client::_getRequest(std::string request_str)
@@ -67,6 +73,7 @@ void	Client::_getRequest(std::string request_str)
 void	Client::answer(void)
 {
 	std::string response;
+	(void) _client_addr;
 	
 	if (this->_request->getMethod() == "GET" || this->_request->getMethod() == "DELETE" || this->_request->getMethod() == "POST")
 		response = this->_request->execute().str();

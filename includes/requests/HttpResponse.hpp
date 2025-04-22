@@ -6,13 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/20 12:35:51 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 11:52:22 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
-# define __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
 
 #include <sstream>
 
@@ -46,5 +44,3 @@ private:
 
 } // -namespace http
 } // -namespace webserv
-
-#endif // __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__

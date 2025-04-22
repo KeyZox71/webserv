@@ -6,13 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 17:51:46 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/17 13:10:22 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 11:52:00 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef __WEBSERV_REQUESTS_ERRORS_HPP__
-# define __WEBSERV_REQUESTS_ERRORS_HPP__
 
 #include <map>
 #include <string>
@@ -37,5 +35,3 @@ private:
 
 } // -namespace http
 } // -namespace webserv
-
-#endif // __WEBSERV_REQUESTS_ERRORS_HPP__

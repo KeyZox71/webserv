@@ -6,15 +6,15 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/20 11:25:37 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:04:57 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "config/default.hpp"
-#include "default.hpp"
-#include "requests/default.hpp"
+#include <config/default.hpp>
+#include <server/default.hpp>
+#include <requests/default.hpp>
 #include <netinet/in.h>
 #include <webserv.hpp>
 
@@ -23,7 +23,7 @@ namespace server {
 
 class Client {
   public:
-	Client(int, sockaddr_in, config::Server *);
+	Client(int, sockaddr_in, config::Config *);
 	virtual ~Client(void);
 
 	void	answer(void);

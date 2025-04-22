@@ -6,16 +6,16 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 10:59:27 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 12:02:36 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "config/default.hpp"
-#include "cppeleven.hpp"
-#include "node/ANode.hpp"
-#include "webserv.hpp"
+#include <config/default.hpp>
+#include <cppeleven.hpp>
+#include <node/ANode.hpp>
+#include <webserv.hpp>
 
 namespace webserv {
 namespace config {
