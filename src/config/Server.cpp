@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 15:25:06 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:36:30 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ Server::Server(toml::ANode *node) : _table(node) {
 			(*_routes)[URL(it->first)] = new Route(it->second);
 		}
 	}
-	delete _table;
+	//delete _table;
 }
 
 Server::~Server(void) {

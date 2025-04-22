@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 10:51:15 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:40:59 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 #include <webserv.hpp>
 
 using namespace webserv;
+
+extern int _sig;
 
 std::string convertIPToString(const struct in_addr *addr) {
 	unsigned int	  ip = ntohl(addr->s_addr);
@@ -77,6 +79,13 @@ void Server::_setup(void) {
 	}
 }
 
+short sigHandling(void) {
+	if (_sig == SIGINT) {
+		return 727;
+	}
+	return 0;
+}
+
 void Server::_run(void) {
 	struct pollfd fd;
 
@@ -89,7 +98,7 @@ void Server::_run(void) {
 	}
 
 	// to add signal instead of 727
-	while (727) {
+	while (727 - sigHandling()) {
 		if (poll(_client_fds.data(), _client_fds.size(), -1) < 0) {
 			std::stringstream str;
 			str << "poll failed : ";

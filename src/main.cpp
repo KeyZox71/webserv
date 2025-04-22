@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/22 14:52:44 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:39:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <exception>
 #include <help.hpp>
 #include <requests/default.hpp>
+#include <sstream>
 #include <tomlpp.hpp>
 #include <unistd.h>
 #include <log.hpp>
@@ -31,6 +32,10 @@ int	_sig = 0;
 
 void	ft_sig(int sig) {
 	_sig = sig;
+	std::stringstream str;
+	str << "sig hitted = ";
+	str << sig;
+	_log->info(str.str());
 }
 
 int main(int ac, char **av) {

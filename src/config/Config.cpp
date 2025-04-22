@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 15:32:19 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:35:52 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ Config::Config(std::string &filename) {
 	std::map<std::string, toml::ANode *> *node = table->getTable();
 	for (auto it = prange(node)) {
 		if (it->second->type() == toml::TABLE) {
+			_log->info("taking server from table : " + it->first);
 			Server *srv = new Server(it->second);
 			_servers.push_back(srv);
 		}
