@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/20 11:23:53 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/20 12:35:51 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ namespace http {
 class Response: public http::IMessage {
 public:
 	Response(void);
-	~Response(void);
+	virtual ~Response(void);
 
 	std::string	getProtocol(void) const;
 	uint		getStatusCode(void) const;
