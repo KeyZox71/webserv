@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/10 11:50:48 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:03:46 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@
 #include <dirent.h>
 
 using namespace webserv;
+
+http::IRequest::~IRequest(void) {
+
+}
 
 std::string	http::IRequest::str(void) const
 {
@@ -72,6 +76,10 @@ void	http::IRequest::setProtocol(std::string const protocol)
 // ------------------------------------------------------------------
 
 http::Get::Get(void)
+{
+}
+
+http::Get::~Get(void)
 {
 }
 
@@ -218,6 +226,10 @@ http::Delete::Delete(void)
 {
 }
 
+http::Delete::~Delete(void)
+{
+}
+
 http::Delete::Delete(std::string &data)
 {
 	this->parse(data);
@@ -294,6 +306,10 @@ http::Response	http::Delete::execute(void)
 // ------------------------------------------------------------------
 
 http::Post::Post(void)
+{
+}
+
+http::Post::~Post(void)
 {
 }
 

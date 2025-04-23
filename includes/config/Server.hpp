@@ -6,22 +6,25 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/03/25 17:56:34 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 15:25:58 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "config/default.hpp"
-#include "cppeleven.hpp"
-#include "node/ANode.hpp"
+#include <webserv.hpp>
+#include <config/Route.hpp>
+#include <cppeleven.hpp>
+#include <node/ANode.hpp>
+#include <webserv.hpp>
+#include <config/URL.hpp>
 
 namespace webserv {
 namespace config {
 
 class Server {
   public:
-	Server(std::string);
+	Server(toml::ANode *);
 	~Server();
 
 	/**
@@ -48,11 +51,6 @@ class Server {
 			return not_nullptr;
 	}
 
-	/**
-	 *	@brief Can be used to get the Logger pointer
-	 */
-	Logger *getLogger(void) { return _log; }
-
 	// @brief Can be used to get a server name
 	std::vector<std::string> *getServerNames(void) { return _server_names; }
 	// @brief Can be used to get the host specified in the config file
@@ -60,9 +58,14 @@ class Server {
 	// @brief Can be used to get the port specified in the config file
 	int getPort(void) { return _port; }
 
+	// @brief	Can be used to check if a servername is present in this config
+	bool	isServerName(const std::string &);
+
+	Route	*whatRoute(const URL &);
+
   protected:
   private:
-	std::map<std::string, Route *>
+	std::map<URL, Route *>
 		*_routes; ///> A map of all the route present in the config file
 	std::map<int, std::string> *_err_pages; ///> An error pages map to map error
 											/// specified in the config file
@@ -75,17 +78,11 @@ class Server {
 
 	toml::ANode *_table; ///> The table used for the parsing (is deleted at the
 						 ///  end of the constructor)
-	Logger *_log;		 ///> A pointer to the logger class
 
 	std::map<int, std::string> *
 	_parseErrPages(std::map<std::string, toml::ANode *> *table);
 
-	/**
-	 *	@brief	Can be used to get the [server] table in _table
-	 *
-	 *	@return	A pointer to the [server] table as an ANode
-	 */
-	toml::ANode *_getServerTable(void);
+	
 };
 
 } // namespace config

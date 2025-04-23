@@ -6,13 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/03/24 15:16:39 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/23 14:36:47 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#ifndef __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
-# define __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__
 
 #include <sstream>
 
@@ -26,6 +24,7 @@ namespace http {
 class Response: public http::IMessage {
 public:
 	Response(void);
+	~Response(void);
 
 	std::string	getProtocol(void) const;
 	uint		getStatusCode(void) const;
@@ -45,5 +44,3 @@ private:
 
 } // -namespace http
 } // -namespace webserv
-
-#endif // __WEBSERV_REQUESTS_HTTP_RESPONSE_HPP__

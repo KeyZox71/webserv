@@ -9,11 +9,12 @@
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
-#include "log.hpp"
+#include <log.hpp>
 #include "node/default.hpp"
 #include <config/default.hpp>
 #include <map>
 #include <string>
+
 
 using namespace webserv::config;
 
@@ -57,12 +58,11 @@ void Route::_parseMethods(std::vector<toml::ANode *> *table) {
 	}
 }
 
-Route::Route(toml::ANode *table, Logger *logger)
-	: _max_body(10485760), _log(logger) {
+Route::Route(toml::ANode *table)
+	: _max_body(10485760) {
 	void *val;
 	bool  found;
 
-	_log = logger;
 	_table = table;
 	if (_table->type() != toml::TABLE) {
 		_log->warn("location need to be a table and not a :" +

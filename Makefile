@@ -6,8 +6,7 @@
 #    By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/25 16:09:27 by adjoly            #+#    #+#              #
-#    Updated: 2025/04/10 11:52:13 by mmoussou         ###   ########.fr        #
-#    Updated: 2025/03/25 18:13:53 by adjoly           ###   ########.fr        #
+#    Updated: 2025/04/22 14:32:50 by adjoly           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +14,7 @@ SHELL = bash
 
 NAME = webserv
 
-CC = c++
+CC = clang++
 
 OBJSDIR = obj/
 

@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/08 01:11:40 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/23 14:30:28 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 using namespace webserv;
 
 http::Response::Response(void)
+{
+}
+
+http::Response::~Response(void)
 {
 }
 

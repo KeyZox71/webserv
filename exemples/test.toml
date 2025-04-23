@@ -2,7 +2,7 @@ log_file = "test.log"
 
 [server]
 server_names = { "localhost", "2B5.local" }
-host = "localhost"
+host = "0.0.0.0"
 port = 8080
 
 [server.error_pages]

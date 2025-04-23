@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/10 14:21:46 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/22 16:14:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,41 @@
 #include <string>
 
 namespace webserv {
+
+/**
+ *	@brief	Used to log debug message
+ *
+ *	@note	Only work if VERBOSE mode is active
+ */
+static inline void log(std::string emoji, std::string who, std::string str) {
+#ifdef VERBOSE
+	if (who.empty())
+		std::cout << "「" << emoji << "」debug: " << str << std::endl;
+	else
+		std::cout << "「" << emoji << "」debug(" << who << "): " << str
+				  << std::endl;
+#else
+	(void)emoji, (void)who, (void)str;
+#endif
+}
+
 class Logger {
   public:
+	Logger(void) : _ttyOnly(true) {
+		log("➕", "Logger", "default constructor called");
+	}
 	Logger(const std::string &fileName) : _fileName(fileName) {
-		if (fileName.empty())
-			_ttyOnly = true;
-		else {
-			_file.open(fileName.c_str(), std::ios::app);
-			_ttyOnly = false;
-		}
+		log("➕", "Logger", "filename constructor called");
+		_file.open(fileName.c_str(), std::ios::app);
 		if (!_file.is_open() && !_ttyOnly) {
 			_ttyOnly = true;
 			warn("could not open log file, going tty only");
-		}
+		} else
+			_ttyOnly = false;
 	}
 
 	Logger(const Logger &other) : _ttyOnly(other._ttyOnly) {
+		log("➕", "Logger", "copy constructor called");
 		if (!other._ttyOnly) {
 			_file.open(other._fileName.c_str(), std::ios::app);
 			if (!_file.is_open()) {
@@ -46,6 +65,7 @@ class Logger {
 
 	// Copy assignment operator
 	Logger &operator=(const Logger &other) {
+		log("➕", "Logger", "copy assignment constructor called");
 		if (this != &other) {
 			if (_file.is_open()) {
 				_file.close();
@@ -62,6 +82,7 @@ class Logger {
 		return *this;
 	}
 	~Logger(void) {
+		log("➖", "Logger", "destructor called");
 		if (_file.is_open())
 			_file.close();
 	}
@@ -88,12 +109,23 @@ class Logger {
 		}
 	}
 
+	void debug(const std::string &msg) {
+#ifdef VERBOSE
+		std::string ss = printPogitMsg("🏗️", "webserv", "debug", msg);
+		std::cerr << ss << std::endl;
+		if (!_ttyOnly) {
+			_file << ss << std::endl;
+		}
+#else
+		(void)msg;
+#endif
+
+	}
+
   protected:
   private:
-	std::string printPogitMsg(const std::string &emoji,
-									const std::string &type,
-									const std::string &what,
-									const std::string &msg) {
+	std::string printPogitMsg(const std::string &emoji, const std::string &type,
+							  const std::string &what, const std::string &msg) {
 		std::stringstream os;
 #ifdef TTY
 		(void)emoji;
@@ -103,9 +135,9 @@ class Logger {
 			os << type << "(" << what << "):" << msg;
 #else
 		if (what.empty())
-			os << "「" << emoji << "」" << type << ":" << msg;
+			os << "「" << emoji << "」" << type << ": " << msg;
 		else
-			os << "「" << emoji << "」" << type << "(" << what << "):" << msg;
+			os << "「" << emoji << "」" << type << "(" << what << "): " << msg;
 #endif
 		return os.str();
 	}
@@ -114,5 +146,7 @@ class Logger {
 	bool		  _ttyOnly;
 	std::ofstream _file;
 };
+
+extern Logger *_log;
 
 }; // namespace webserv
