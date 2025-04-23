@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 22:13:38 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/22 15:00:18 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:38:55 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ class IMessage {
 public:
 	virtual std::map<std::string, std::string>	getHeaders(void) const;
 	virtual std::string								getBody(void) const;
+
+	virtual	~IMessage() {}
 
 	virtual void	setHeaders(std::map<std::string, std::string> const headers);
 	virtual void	setBody(std::string const body);

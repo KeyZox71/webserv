@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/23 12:42:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/23 14:40:06 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ Client::Client(int fd, sockaddr_in socket, config::Config *conf)
 		bytes_received = recv(fd, buffer, BUFFER_SIZE - 1, 0);
 		if (bytes_received == -1) {
 			_log->error("failed to receive request");
-			continue;
+			throw std::runtime_error("failed to receive request");
 		}
 		received_data += std::string(buffer, bytes_received);
 	} while (buffer[bytes_received]);
@@ -59,21 +59,18 @@ void Client::_getRequest(std::string request_str) {
 }
 
 void Client::answer(void) {
+	(void) _client_addr;
 	std::string response;
-	(void)_client_addr;
 
 	if (this->_request->getMethod() == "GET" ||
 		this->_request->getMethod() == "DELETE" ||
 		this->_request->getMethod() == "POST")
 		response = this->_request->execute().str();
 	else
-		response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: "
-				   "text/html\r\n\r\n<html><body><h1>501 Not "
-				   "Implemented</h1></body></html>";
+		response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/html\r\n\r\n<html><body><h1>501 Not Implemented</h1></body></html>";
 	send(this->_fd, response.c_str(), response.length(), 0);
 }
 
 Client::~Client(void) {
 	delete (http::Get *)(this->_request);
-	delete this->_response;
 }
