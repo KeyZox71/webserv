@@ -6,12 +6,13 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 16:37:31 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/23 12:38:15 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cerrno>
 #include <cmath>
+#include <cstring>
 #include <exception>
 #include <fcntl.h>
 #include <iterator>
@@ -71,12 +72,8 @@ void Server::_setup(void) {
 
 	auto itH = hosts.begin();
 	for (auto it = range(ports), itH++) {
-		try {
-			int fd = _createSocket(*itH, *it);
-			_fds_server.push_back(fd);
-		} catch (std::exception &e) {
-			throw e;
-		}
+		int fd = _createSocket(*itH, *it);
+		_fds_server.push_back(fd);
 	}
 }
 
@@ -126,11 +123,18 @@ void Server::_run(void) {
 			pfd.fd = client_fd;
 			pfd.events = POLLIN | POLLOUT;
 			_client_fds.push_back(pfd);
-			_client_data.push_back(new sockaddr_in(client_addr));
+			struct sockaddr_in* new_client_sock = new sockaddr_in();
+			std::memmove(new_client_sock, &client_addr, sizeof(struct sockaddr_in));
+			std::cout << "tamere ==== " << new_client_sock << std::endl;
+			_client_data.push_back(new_client_sock);
 		}
 
-		for (size_t i = 0; i < _client_fds.size(); ++i) {
+		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
+			std::cout << i << std::endl;
 			if (_client_fds[i].revents & POLLIN) {
+				std::cout << _client_fds.size() << " " << _client_data.size() << std::endl;
+				std::cout << "tamere ==== " << _client_data[i] << std::endl;
+				std::cout << i << std::endl;
 				if (!_handle_client(_client_fds[i], _client_data[i])) {
 					close(_client_fds[i].fd);
 					_client_fds.erase(_client_fds.begin() + i);
@@ -149,7 +153,7 @@ Server::Server(config::Config *conf) : _conf(conf) {
 	try {
 		_setup();
 		_run();
-	} catch (std::runtime_error &e) {
+	} catch (std::exception &e) {
 		_log->error(e.what());
 	}
 }

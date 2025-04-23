@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 16:32:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/23 12:33:47 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <netinet/in.h>
 #include <server/default.hpp>
 #include <sstream>
+#include <stdexcept>
+#include <string>
 #include <sys/socket.h>
 
 using namespace webserv::server;
@@ -84,17 +86,14 @@ int Server::_createSocket(std::string host, int port) {
 }
 
 bool	Server::_handle_client(struct pollfd &pollfd, sockaddr_in *sock_data) {
-	Client *client;
-
 	try {
-		client = new Client(pollfd.fd, *sock_data, _conf);
-		client->answer();
-	} catch (std::exception &e) {
+		std::cout << "tamere ==== " << sock_data << std::endl;
+		Client client(pollfd.fd, *sock_data, _conf);
+		client.answer();
+	} catch (std::runtime_error &e) {
 		_log->error(e.what());
 		return false;
 	}
-
-	delete client;
 
 	return true;
 }
