@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/23 15:31:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/23 16:22:22 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void Server::_run(void) {
 		fd.events = POLLIN;
 		_client_fds.push_back(fd);
 		_client_data.push_back(NULL);
+		_log->debug("new socket in poll");
 	}
 
 	// to add signal instead of 727
@@ -112,6 +113,8 @@ void Server::_run(void) {
 				accept((*it), (struct sockaddr *)&client_addr, &addrlen);
 
 			if (client_fd < 0) {
+				if (errno == EAGAIN || errno == EWOULDBLOCK)
+					continue;
 				std::stringstream str;
 				str << "Accept failed: ";
 				str << strerror(errno);
@@ -122,9 +125,11 @@ void Server::_run(void) {
 			pollfd pfd;
 			pfd.fd = client_fd;
 			pfd.events = POLLIN | POLLOUT;
+			pfd.revents = 0;
 			_client_fds.push_back(pfd);
-			struct sockaddr_in* new_client_sock = new sockaddr_in();
-			std::memmove(new_client_sock, &client_addr, sizeof(struct sockaddr_in));
+			struct sockaddr_in *new_client_sock = new sockaddr_in();
+			std::memmove(new_client_sock, &client_addr,
+						 sizeof(struct sockaddr_in));
 			_client_data.push_back(new_client_sock);
 		}
 
