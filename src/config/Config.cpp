@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 15:35:52 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/23 17:42:07 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,19 @@
 #include "cppeleven.hpp"
 #include "node/ANode.hpp"
 #include <config/default.hpp>
+#include <stdexcept>
 
 using namespace webserv::config;
 
 Config::Config(std::string &filename) {
 	toml::Toml *file = new toml::Toml(filename);
 
-	file->parse();
+	try {
+		file->parse();
+	} catch (std::runtime_error &e) {
+		delete file;
+		throw e;
+	}
 	toml::ANode *table = file->getParsedFile();
 
 	bool  found = false;
@@ -36,8 +42,13 @@ Config::Config(std::string &filename) {
 	for (auto it = prange(node)) {
 		if (it->second->type() == toml::TABLE) {
 			_log->info("taking server from table : " + it->first);
-			Server *srv = new Server(it->second);
-			_servers.push_back(srv);
+			try {
+				Server *srv = new Server(it->second);
+				_servers.push_back(srv);
+			} catch (std::runtime_error &e) {
+				_log->error(e.what());
+				break;
+			}
 		}
 	}
 	delete table;
