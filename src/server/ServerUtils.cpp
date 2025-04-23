@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/23 12:33:47 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/23 15:33:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ int Server::_createSocket(std::string host, int port) {
 
 bool	Server::_handle_client(struct pollfd &pollfd, sockaddr_in *sock_data) {
 	try {
-		std::cout << "tamere ==== " << sock_data << std::endl;
 		Client client(pollfd.fd, *sock_data, _conf);
 		client.answer();
 	} catch (std::runtime_error &e) {
