@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cgi.hpp                                            :+:      :+:    :+:   */
+/*   Cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 14:17:34 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 11:51:33 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:27:45 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <sstream>
+#include "requests/HttpIMessage.hpp"
+#include <map>
+#include <string>
 
-class cgi {
+namespace webserv {
+
+
+class Cgi {
 	public:
-		cgi();
-		~cgi(void);
+		Cgi(http::IMessage &);
+		~Cgi(void);
+
+		void	initEnvp(void);
+		
 	protected:
 	private:
+		std::map<std::string, std::string> _envp;
+
+
 		std::string	_request;
+};
 };
