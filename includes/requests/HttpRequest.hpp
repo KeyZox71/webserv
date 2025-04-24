@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/22 15:07:02 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/24 15:09:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 #include <requests/HttpIMessage.hpp>
 #include <requests/HttpResponse.hpp>
+#include <requests/Mime.hpp>
 
 #include <config/default.hpp>
 

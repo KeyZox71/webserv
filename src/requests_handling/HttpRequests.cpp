@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/22 15:03:46 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/24 15:31:56 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <requests/Errors.hpp>
 #include <sys/stat.h>
 #include <dirent.h>
+
+#include <log.hpp>
 
 using namespace webserv;
 
@@ -174,7 +176,30 @@ http::Response	http::Get::execute(void)
 
 			std::sort(files.begin(), files.end());
 
-			std::string body = "<html><body><ul>\n";
+			std::string body = "<html>";
+
+			body += "<head><style>\n\
+:root {\n\
+  background-color: -moz-dialog;\n\
+  color: -moz-dialogtext;\n\
+  font: message-box;\n\
+  padding-inline: 2em;\n\
+  color-scheme: light dark;\n\
+}\n\
+\n\
+body {\n\
+  border: 1px solid ThreeDShadow;\n\
+  border-radius: 10px;\n\
+  padding: 3em;\n\
+  min-width: 30em;\n\
+  max-width: 65em;\n\
+  margin: 4em auto;\n\
+  background-color: Field;\n\
+  color: FieldText;\n\
+}\n\
+</style></head>";
+
+			body += "<body><ul>\n";
 			for (size_t i = 0; i < files.size(); i++)
 				body += "<li><a href=\"" + files[i] + "\">" + files[i] + "</a></li>\n";
 			body += "</ul></body></html>";
@@ -199,13 +224,9 @@ http::Response	http::Get::execute(void)
 
 			response.setProtocol(this->_protocol);
 			response.setStatusCode(200);
-			response.addHeader("Content-Type", "text/html"); // TODO: change it to check the file extension and set it to the corresponding MIME or text/plain if unkown. we will only implement the important MIME types in the Mozilla documentation because https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types/Common_types
+			response.addHeader("Content-Type", http::Mime::getType(this->_target));
 
-			//std::ifstream file_end(this->_target.c_str(), std::ios::binary | std::ios::ate);
-			//std::stringstream	length;
-			//length << (file_end.tellg() - file.tellg());
-			//std::cout << length.str() << std::endl;
-			//response.addHeader("Content-Length", length.str());
+			_log->debug(response.str().c_str());
 		}
 	}
 	catch (...)
