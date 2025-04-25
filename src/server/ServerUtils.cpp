@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/23 16:00:14 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:23:13 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,11 @@ int Server::_createSocket(std::string host, int port) {
 	return (fd);
 }
 
-bool	Server::_handle_client(struct pollfd &pollfd, sockaddr_in *sock_data) {
+bool	Server::_handle_client(Client *client) {
 	try {
-		Client client(pollfd.fd, *sock_data, _conf);
-		client.answer();
+		client->parse();
+		client->answer();
+		
 	} catch (std::runtime_error &e) {
 		_log->error(e.what());
 		return false;

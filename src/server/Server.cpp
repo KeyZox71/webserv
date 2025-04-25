@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/23 16:22:22 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:09:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #include <sys/socket.h>
 #include <webserv.hpp>
 
-using namespace webserv;
+using namespace webserv::server;
 
 extern int _sig;
 
@@ -127,22 +127,22 @@ void Server::_run(void) {
 			pfd.events = POLLIN | POLLOUT;
 			pfd.revents = 0;
 			_client_fds.push_back(pfd);
-			struct sockaddr_in *new_client_sock = new sockaddr_in();
-			std::memmove(new_client_sock, &client_addr,
-						 sizeof(struct sockaddr_in));
-			_client_data.push_back(new_client_sock);
+			auto itpfd = _client_fds.end() - 1;
+			Client *new_client = new Client(itpfd, client_addr, _conf);
+			_client_data.push_back(new_client);
 		}
 
 		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
-			if (_client_fds[i].revents & POLLIN) {
-				if (_handle_client(_client_fds[i], _client_data[i])) {
+			if (_client_fds[i].revents & POLLERR) {
+				if (_handle_client(_client_fds[i])) {
 					close(_client_fds[i].fd);
 					_client_fds.erase(_client_fds.begin() + i);
 					delete _client_data[i];
 					_client_data.erase(_client_data.begin() + i);
 					i--;
 				}
-			}
+			} else if (_client_fds[i].revents & POLLIN) {}
+			else if()
 		}
 	}
 }

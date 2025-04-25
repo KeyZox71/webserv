@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/24 14:38:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:22:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Cgi::Cgi(http::IRequest *req, config::Server *conf) : _conf(conf), _request(req)
 }
 
 void	Cgi::_initEnvp(void) {
-	_envp[] = "";
+	//_envp[] = "";
 }
 
 std::string Cgi::getEnv(std::string &key) {

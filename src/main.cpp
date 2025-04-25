@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/22 15:43:21 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:23:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int main(int ac, char **av) {
 		return EXIT_FAILURE;
 	}
 
-	webserv::Server *serv = new webserv::Server(conf);
+	webserv::server::Server *serv = new webserv::server::Server(conf);
 
 	delete serv;
 	delete _log;
