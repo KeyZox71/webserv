@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/23 14:40:06 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/25 12:44:12 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,17 @@
 
 using namespace server;
 
-Client::Client(int fd, sockaddr_in socket, config::Config *conf)
-	: _fd(fd), _client_addr(socket) {
+Client::Client(void) {}
+
+Client::Client(struct pollfd fd, sockaddr_in socket, config::Config *conf)
+	: _fd(fd), _client_addr(socket)
+{
 	std::string received_data;
 	char		buffer[BUFFER_SIZE];
 	ssize_t		bytes_received;
 	do {
 		std::memset(buffer, 0, BUFFER_SIZE);
-		bytes_received = recv(fd, buffer, BUFFER_SIZE - 1, 0);
+		bytes_received = recv(this->_fd.fd, buffer, BUFFER_SIZE - 1, 0);
 		if (bytes_received == -1) {
 			_log->error("failed to receive request");
 			throw std::runtime_error("failed to receive request");
@@ -34,6 +37,33 @@ Client::Client(int fd, sockaddr_in socket, config::Config *conf)
 
 	this->_conf = conf->getServer(this->_request->getHeaders()["Host"]);
 
+
+	// if (received_data.length > (get max_body_size from Route corresponding) )
+	//	throw error
+}
+
+void	Client::parse(struct pollfd fd, sockaddr_in socket, config::Config *conf)
+{
+	this->_fd = fd;
+	this->_client_addr = socket;
+	std::string received_data;
+	char		buffer[BUFFER_SIZE];
+	ssize_t		bytes_received;
+	do {
+		std::memset(buffer, 0, BUFFER_SIZE);
+		bytes_received = recv(this->_fd.fd, buffer, BUFFER_SIZE - 1, 0);
+		if (bytes_received == -1) {
+			_log->error("failed to receive request");
+			throw std::runtime_error("failed to receive request");
+		}
+		received_data += std::string(buffer, bytes_received);
+	} while (buffer[bytes_received]);
+
+	this->_getRequest(received_data);
+
+	this->_conf = conf->getServer(this->_request->getHeaders()["Host"]);
+
+
 	// if (received_data.length > (get max_body_size from Route corresponding) )
 	//	throw error
 }
@@ -42,20 +72,28 @@ void Client::_getRequest(std::string request_str) {
 	std::string method = request_str.substr(
 		0, request_str.substr(0, 4).find_last_not_of(" ") + 1);
 
-	if (method == "GET") {
-		_log->info("get request received");
+	if (method == "GET")
+	{
 		this->_request = new http::Get(request_str);
-	} else if (method == "DELETE") {
-		_log->info("delete request received");
+		_log->info("get request received");
+	}
+	else if (method == "DELETE")
+	{
 		this->_request = new http::Delete(request_str);
-	} else if (method == "POST") {
-		_log->info("post request received");
+		_log->info("delete request received");
+	}
+	else if (method == "POST")
+	{
 		this->_request = new http::Post(request_str);
-	} else {
-		_log->info("unsupported request received");
+		_log->info("post request received");
+	}
+	else
+	{
 		this->_request = new http::Get();
 		this->_request->setMethod("501");
+		_log->info("unsupported request received");
 	}
+	// set target to correct target with the conf
 }
 
 void Client::answer(void) {
@@ -68,7 +106,7 @@ void Client::answer(void) {
 		response = this->_request->execute().str();
 	else
 		response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/html\r\n\r\n<html><body><h1>501 Not Implemented</h1></body></html>";
-	send(this->_fd, response.c_str(), response.length(), 0);
+	send(this->_fd.fd, response.c_str(), response.length(), 0);
 }
 
 Client::~Client(void) {
