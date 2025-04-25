@@ -6,12 +6,12 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 14:53:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 15:17:55 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <server/Client.hpp>
 #include <netinet/in.h>
+#include <server/Client.hpp>
 #include <server/default.hpp>
 #include <sstream>
 #include <stdexcept>
@@ -74,22 +74,17 @@ int Server::_createSocket(std::string host, int port) {
 		close(fd);
 		std::ostringstream str;
 		str << port;
-		throw std::runtime_error("listen failed for : " + host + ":" + str.str());
+		throw std::runtime_error("listen failed for : " + host + ":" +
+								 str.str());
 	}
 
 	return (fd);
 }
 
-bool	Server::_handle_client(Client *client) {
-	try {
-		client->parse();
-		client->answer();
-	} catch (std::runtime_error &e) {
-		_log->error(e.what());
-		return false;
+void Server::_destroy_clients() {
+	for (auto it = range(_client_data)) {
+		if ((*it)->isToClose()) {
+			delete (*it);
+		}
 	}
-
-	return true;
 }
-
-

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 14:52:50 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 15:16:52 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,6 @@ class Server {
 	void _run(void);
 
 	/**
-	 *	@brief	Used to handle client request
-	 *
-	 *	@param	the position in the _client_data
-	 */
-	bool _handle_client(Client *);
-
-	/**
 	 *	@brief	Can be used to fill the vector passed as parameters with all the
 	 *			port and host in the config
 	 *	@param	The vector of host
@@ -79,6 +72,8 @@ class Server {
 	}
 
 	Client *_getClient(int);
+
+	void	_destroy_clients(void);
 
 	config::Config
 		   *_conf; // Pointer to the configuration class (with all config in)

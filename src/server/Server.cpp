@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 14:54:42 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 15:21:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ using namespace webserv::server;
 
 extern int _sig;
 
-Client	*Server::_getClient(int fd) {
+Client *Server::_getClient(int fd) {
 	for (auto it = range(_client_data)) {
 		if (*(*it) == fd) {
 			return *it;
@@ -108,6 +108,8 @@ void Server::_run(void) {
 	// to add signal instead of 727
 	while (727 - sigHandling()) {
 		if (poll(_client_fds.data(), _client_fds.size(), -1) < 0) {
+			if (errno == EINTR)
+				continue;
 			std::stringstream str;
 			str << "poll failed : ";
 			str << strerror(errno);
@@ -136,27 +138,36 @@ void Server::_run(void) {
 			pfd.events = POLLIN | POLLOUT;
 			pfd.revents = 0;
 			_client_fds.push_back(pfd);
-			struct pollfd *ppfd = _client_fds.data() + _client_fds.size() -1;
-			Client *new_client = new Client(ppfd, client_addr, _conf);
+			struct pollfd *ppfd = _client_fds.data() + _client_fds.size() - 1;
+			Client		  *new_client = new Client(ppfd, client_addr, _conf);
 			_client_data.push_back(new_client);
 		}
 
 		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
-			Client *client = _getClient(_client_fds[i].fd);
-			if (client == not_nullptr) {
-				_log->error("client does not exist");
-				continue;
-			}
-			if (_client_fds[i].revents & POLLIN) {
-				if (_handle_client(client)) {
-					close(_client_fds[i].fd);
-					_client_fds.erase(_client_fds.begin() + i);
-					delete _client_data[i];
-					_client_data.erase(_client_data.begin() + i);
-					i--;
+			if (_client_fds[i].revents & POLLERR) {
+				close(_client_fds[i].fd);
+				_client_fds.erase(_client_fds.begin() + i);
+				delete _client_data[i - _fds_server.size()];
+				_client_data.erase(_client_data.begin() + i);
+				i--;
+			} else if (_client_fds[i].revents & POLLIN) {
+				Client *client = _getClient(_client_fds[i].fd);
+				if (client == not_nullptr) {
+					_log->error("client does not exist");
+					continue;
 				}
+				client->parse();
+			} else if (_client_fds[i].revents & POLLOUT) {
+				Client *client = _getClient(_client_fds[i].fd);
+				if (client == not_nullptr) {
+					_log->error("client does not exist");
+					continue;
+				}
+				client->answer();
 			}
 		}
+
+		_destroy_clients();
 	}
 }
 

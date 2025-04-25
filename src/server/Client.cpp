@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 14:35:37 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 15:19:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,6 @@ void Client::answer(void) {
 
 Client::~Client(void) {
 	log("➖", "Client", "destructor called");
-	delete _pfd;
+	//delete _pfd;
 	delete (http::Get *)(this->_request);
 }

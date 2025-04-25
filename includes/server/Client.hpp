@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 14:33:54 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 15:15:48 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,14 @@ class Client {
 		return true;
 	}
 
+	bool	isToClose() {
+		return toClose;
+	}
+
   private:
 	void _getRequest(std::string);
 
+	bool			   toClose;
 	struct pollfd	  *_pfd;
 	struct sockaddr_in _client_addr;
 	http::IRequest	  *_request;
