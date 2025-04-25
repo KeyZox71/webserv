@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 12:33:38 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/25 12:44:12 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ using namespace server;
 
 Client::Client(void) {}
 
-Client::Client(int fd, sockaddr_in socket, config::Config *conf)
+Client::Client(struct pollfd fd, sockaddr_in socket, config::Config *conf)
 	: _fd(fd), _client_addr(socket)
 {
 	std::string received_data;
@@ -25,7 +25,7 @@ Client::Client(int fd, sockaddr_in socket, config::Config *conf)
 	ssize_t		bytes_received;
 	do {
 		std::memset(buffer, 0, BUFFER_SIZE);
-		bytes_received = recv(fd, buffer, BUFFER_SIZE - 1, 0);
+		bytes_received = recv(this->_fd.fd, buffer, BUFFER_SIZE - 1, 0);
 		if (bytes_received == -1) {
 			_log->error("failed to receive request");
 			throw std::runtime_error("failed to receive request");
@@ -42,7 +42,7 @@ Client::Client(int fd, sockaddr_in socket, config::Config *conf)
 	//	throw error
 }
 
-void	Client::parse(int fd, sockaddr_in socket, config::Config *conf)
+void	Client::parse(struct pollfd fd, sockaddr_in socket, config::Config *conf)
 {
 	this->_fd = fd;
 	this->_client_addr = socket;
@@ -51,7 +51,7 @@ void	Client::parse(int fd, sockaddr_in socket, config::Config *conf)
 	ssize_t		bytes_received;
 	do {
 		std::memset(buffer, 0, BUFFER_SIZE);
-		bytes_received = recv(fd, buffer, BUFFER_SIZE - 1, 0);
+		bytes_received = recv(this->_fd.fd, buffer, BUFFER_SIZE - 1, 0);
 		if (bytes_received == -1) {
 			_log->error("failed to receive request");
 			throw std::runtime_error("failed to receive request");
@@ -74,24 +74,24 @@ void Client::_getRequest(std::string request_str) {
 
 	if (method == "GET")
 	{
-		_log->info("get request received");
 		this->_request = new http::Get(request_str);
+		_log->info("get request received");
 	}
 	else if (method == "DELETE")
 	{
-		_log->info("delete request received");
 		this->_request = new http::Delete(request_str);
+		_log->info("delete request received");
 	}
 	else if (method == "POST")
 	{
-		_log->info("post request received");
 		this->_request = new http::Post(request_str);
+		_log->info("post request received");
 	}
 	else
 	{
-		_log->info("unsupported request received");
 		this->_request = new http::Get();
 		this->_request->setMethod("501");
+		_log->info("unsupported request received");
 	}
 	// set target to correct target with the conf
 }
@@ -106,7 +106,7 @@ void Client::answer(void) {
 		response = this->_request->execute().str();
 	else
 		response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: text/html\r\n\r\n<html><body><h1>501 Not Implemented</h1></body></html>";
-	send(this->_fd, response.c_str(), response.length(), 0);
+	send(this->_fd.fd, response.c_str(), response.length(), 0);
 }
 
 Client::~Client(void) {
