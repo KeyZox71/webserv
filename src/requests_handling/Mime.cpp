@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:50:37 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 17:27:04 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 17:30:09 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["ico"] = "image/vnd.microsoft.icon";
 	types["ics"] = "text/calendar";
 	types["jar"] = "application/java-archive";
-	types["jpeg,"] = "image/jpeg";
+	types["jpeg"] = "image/jpeg";
+	types["jpg"] = "image/jpeg";
 	types["js"] = "text/javascript";
 	types["json"] = "application/json";
 	types["jsonld"] = "application/ld+json";
@@ -53,6 +54,8 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["mjs"] = "text/javascript";
 	types["mp3"] = "audio/mpeg";
 	types["mp4"] = "video/mp4";
+	types["mkv"] = "video/x-matroska";
+	types["flac"] = "audio/flac";
 	types["mpeg"] = "video/mpeg";
 	types["mpkg"] = "application/vnd.apple.installer+xml";
 	types["odp"] = "application/vnd.oasis.opendocument.presentation";
