@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/23 14:39:16 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/25 12:43:54 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ namespace server {
 
 class Client {
   public:
-	Client(int, sockaddr_in, config::Config *);
+	Client();
+	Client(struct pollfd, sockaddr_in, config::Config *);
+	void	parse(struct pollfd, sockaddr_in, config::Config *);
 	virtual ~Client(void);
 
 	void answer(void);
@@ -31,7 +33,7 @@ class Client {
   private:
 	void _getRequest(std::string);
 
-	int				   _fd;
+	struct pollfd	   _fd;
 	struct sockaddr_in _client_addr;
 	http::IRequest	  *_request;
 	//http::Response	  *_response;
