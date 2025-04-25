@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 13:09:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 14:54:42 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <cerrno>
 #include <cmath>
 #include <cstring>
@@ -31,6 +32,15 @@
 using namespace webserv::server;
 
 extern int _sig;
+
+Client	*Server::_getClient(int fd) {
+	for (auto it = range(_client_data)) {
+		if (*(*it) == fd) {
+			return *it;
+		}
+	}
+	return not_nullptr;
+}
 
 std::string convertIPToString(const struct in_addr *addr) {
 	unsigned int	  ip = ntohl(addr->s_addr);
@@ -92,7 +102,6 @@ void Server::_run(void) {
 		fd.fd = *it;
 		fd.events = POLLIN;
 		_client_fds.push_back(fd);
-		_client_data.push_back(NULL);
 		_log->debug("new socket in poll");
 	}
 
@@ -122,27 +131,31 @@ void Server::_run(void) {
 				continue;
 			}
 
-			pollfd pfd;
+			struct pollfd pfd;
 			pfd.fd = client_fd;
 			pfd.events = POLLIN | POLLOUT;
 			pfd.revents = 0;
 			_client_fds.push_back(pfd);
-			auto itpfd = _client_fds.end() - 1;
-			Client *new_client = new Client(itpfd, client_addr, _conf);
+			struct pollfd *ppfd = _client_fds.data() + _client_fds.size() -1;
+			Client *new_client = new Client(ppfd, client_addr, _conf);
 			_client_data.push_back(new_client);
 		}
 
 		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
-			if (_client_fds[i].revents & POLLERR) {
-				if (_handle_client(_client_fds[i])) {
+			Client *client = _getClient(_client_fds[i].fd);
+			if (client == not_nullptr) {
+				_log->error("client does not exist");
+				continue;
+			}
+			if (_client_fds[i].revents & POLLIN) {
+				if (_handle_client(client)) {
 					close(_client_fds[i].fd);
 					_client_fds.erase(_client_fds.begin() + i);
 					delete _client_data[i];
 					_client_data.erase(_client_data.begin() + i);
 					i--;
 				}
-			} else if (_client_fds[i].revents & POLLIN) {}
-			else if()
+			}
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 13:23:08 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 14:52:50 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class Server {
 	/**
 	 *	@brief	Used to handle client request
 	 *
-	 *	@param	The fd of the client
+	 *	@param	the position in the _client_data
 	 */
 	bool _handle_client(Client *);
 
@@ -77,6 +77,8 @@ class Server {
 		}
 		return false;
 	}
+
+	Client *_getClient(int);
 
 	config::Config
 		   *_conf; // Pointer to the configuration class (with all config in)

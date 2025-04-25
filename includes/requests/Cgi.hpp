@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 14:17:34 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/24 14:24:09 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 13:40:10 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Cgi {
 	std::string getEnv(std::string &);
 	void		setEnv(std::string &, std::string);
 
-	void	process(void);
+	void process(void);
 
   protected:
   private:

@@ -6,16 +6,15 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 13:21:42 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 14:35:37 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <log.hpp>
 #include <server/Client.hpp>
+#include <sstream>
 
-using namespace server;
-
-Client::Client(void) {}
+using namespace webserv::server;
 
 Client::Client(struct pollfd *pfd, sockaddr_in socket, config::Config *conf)
 	: _pfd(pfd), _client_addr(socket), _Gconf(conf) {
@@ -26,6 +25,8 @@ void Client::parse(void) {
 	std::string received_data;
 	char		buffer[BUFFER_SIZE];
 	ssize_t		bytes_received;
+
+
 	do {
 		std::memset(buffer, 0, BUFFER_SIZE);
 		bytes_received = recv(_pfd->fd, buffer, BUFFER_SIZE - 1, 0);
@@ -82,5 +83,6 @@ void Client::answer(void) {
 
 Client::~Client(void) {
 	log("➖", "Client", "destructor called");
+	delete _pfd;
 	delete (http::Get *)(this->_request);
 }

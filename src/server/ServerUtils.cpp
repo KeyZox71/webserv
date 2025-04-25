@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 13:23:13 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 14:53:17 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ bool	Server::_handle_client(Client *client) {
 	try {
 		client->parse();
 		client->answer();
-		
 	} catch (std::runtime_error &e) {
 		_log->error(e.what());
 		return false;
@@ -92,3 +91,5 @@ bool	Server::_handle_client(Client *client) {
 
 	return true;
 }
+
+
