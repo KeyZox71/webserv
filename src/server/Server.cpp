@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 17:21:54 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 17:23:49 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,10 +146,10 @@ void Server::_run(void) {
 
 		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
 			if (_client_fds[i].revents & POLLERR) {
-				// close(_client_fds[i].fd);
-				//_client_fds.erase(_client_fds.begin() + i);
-				// delete _client_data[i - _fds_server.size()];
-				//_client_data.erase(_client_data.begin() + i);
+				 close(_client_fds[i].fd);
+				_client_fds.erase(_client_fds.begin() + i);
+				 delete _client_data[i - _fds_server.size()];
+				_client_data.erase(_client_data.begin() + i);
 			} else if (_client_fds[i].revents & POLLIN) {
 				Client *client = _getClient(_client_fds[i].fd);
 				if (client == not_nullptr) {
