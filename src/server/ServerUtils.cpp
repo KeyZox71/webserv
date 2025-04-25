@@ -6,10 +6,12 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 15:17:55 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/25 17:19:55 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
+#include <algorithm>
 #include <netinet/in.h>
 #include <server/Client.hpp>
 #include <server/default.hpp>
@@ -17,6 +19,7 @@
 #include <stdexcept>
 #include <string>
 #include <sys/socket.h>
+#include <vector>
 
 using namespace webserv::server;
 
@@ -81,10 +84,11 @@ int Server::_createSocket(std::string host, int port) {
 	return (fd);
 }
 
-void Server::_destroy_clients() {
-	for (auto it = range(_client_data)) {
-		if ((*it)->isToClose()) {
-			delete (*it);
+std::vector<struct pollfd>::iterator getPfd(int fd, std::vector<struct pollfd> &s) {
+	for (auto it = range(s)) {
+		if ((*it).fd == fd) {
+			return it;
 		}
 	}
+	return s.end();
 }

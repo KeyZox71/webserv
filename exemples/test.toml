@@ -27,7 +27,7 @@ redirect = "https://kanel.ovh"
 
 [serverr]
 server_names = { "ptnnnn.local"}
-host = "127.0.0.2"
+host = "127.0.0.1"
 port = 9090
 
 [serverr.error_pages]
