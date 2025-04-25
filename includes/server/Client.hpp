@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/23 14:39:16 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/25 12:32:29 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ namespace server {
 
 class Client {
   public:
+	Client();
 	Client(int, sockaddr_in, config::Config *);
+	void	parse(int, sockaddr_in, config::Config *);
 	virtual ~Client(void);
 
 	void answer(void);
