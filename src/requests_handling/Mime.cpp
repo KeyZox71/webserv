@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:50:37 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/24 15:24:08 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/25 17:27:04 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["3gp"] = "video/3gpp";
 	types["3g2"] = "video/3gpp2";
 	types["7z"] = "application/x-7z-compressed";
+	types["lock"] = "application/json";
 	types["nix"] = "text/plain";
 
 	return types;
