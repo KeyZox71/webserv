@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:50:37 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 17:30:09 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/26 12:19:34 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["css"] = "text/css";
 	types["csv"] = "text/csv";
 	types["doc"] = "application/msword";
-	types["docx"] = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+	types["docx"] =
+		"application/"
+		"vnd.openxmlformats-officedocument.wordprocessingml.document";
 	types["eot"] = "application/vnd.ms-fontobject";
 	types["epub"] = "application/epub+zip";
 	types["gz"] = "application/gzip";
@@ -70,7 +72,9 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["pdf"] = "application/pdf";
 	types["php"] = "application/x-httpd-php";
 	types["ppt"] = "application/vnd.ms-powerpoint";
-	types["pptx"] = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+	types["pptx"] =
+		"application/"
+		"vnd.openxmlformats-officedocument.presentationml.presentation";
 	types["rar"] = "application/vnd.rar";
 	types["rtf"] = "application/rtf";
 	types["sh"] = "application/x-sh";
@@ -89,7 +93,8 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["woff2"] = "font/woff2";
 	types["xhtml"] = "application/xhtml+xml";
 	types["xls"] = "application/vnd.ms-excel";
-	types["xlsx"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	types["xlsx"] =
+		"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 	types["xml"] = "application/xml";
 	types["xul"] = "application/vnd.mozilla.xul+xml";
 	types["zip"] = "application/zip";
@@ -98,20 +103,25 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["7z"] = "application/x-7z-compressed";
 	types["lock"] = "application/json";
 	types["nix"] = "text/plain";
+	types["cpp"] = "text/plain";
+	types["hpp"] = "text/plain";
+	types["c"] = "text/plain";
+	types["h"] = "text/plain";
 
 	return types;
 }
 
-std::map<std::string, std::string> http::Mime::mimeTypes = Mime::initMimeTypes();
+std::map<std::string, std::string> http::Mime::mimeTypes =
+	Mime::initMimeTypes();
 
 std::string http::Mime::getType(const std::string &filename) {
-    size_t dot_pos = filename.find_last_of('.');
-    if (dot_pos == std::string::npos)
-        return "text/plain"; //default
+	size_t dot_pos = filename.find_last_of('.');
+	if (dot_pos == std::string::npos)
+		return "text/plain"; // default
 
-    std::string ext = filename.substr(dot_pos + 1);
-    std::map<std::string, std::string>::const_iterator it = mimeTypes.find(ext);
-    if (it != mimeTypes.end())
-        return it->second;
-    return "application/octet-stream"; //unknown extension so default
+	std::string ext = filename.substr(dot_pos + 1);
+	std::map<std::string, std::string>::const_iterator it = mimeTypes.find(ext);
+	if (it != mimeTypes.end())
+		return it->second;
+	return "application/octet-stream"; // unknown extension so default
 }

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 17:23:49 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/26 16:35:53 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <sys/poll.h>
 #include <sys/socket.h>
 #include <webserv.hpp>
 

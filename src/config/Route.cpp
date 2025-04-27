@@ -101,7 +101,7 @@ Route::Route(toml::ANode *table)
 		_root = *static_cast<std::string *>(val);
 	else
 #ifdef PKGS
-		_root = "/var/www/html"
+		_root = "/var/www/html";
 #else
 		_root = "./html";
 #endif

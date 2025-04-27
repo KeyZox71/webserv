@@ -6,13 +6,13 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:43:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/11 11:36:22 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/26 16:14:37 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#define SAMPLE_CONF_PATH "./sample.conf"
+#define SAMPLE_CONF_PATH "./sample.toml"
 #define WEBSRV_VERSION "v0.1"
 
 bool help(int, char **);

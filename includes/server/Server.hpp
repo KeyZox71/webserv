@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 17:20:12 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/26 16:36:05 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <log.hpp>
 #include <netinet/in.h>
 #include <stdexcept>
-#include <sys/poll.h>
+#include <poll.h>
 #include <vector>
 
 namespace webserv {
