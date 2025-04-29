@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:50:37 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/26 12:19:34 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/29 14:36:39 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ std::map<std::string, std::string> http::Mime::initMimeTypes() {
 	types["sh"] = "application/x-sh";
 	types["svg"] = "image/svg+xml";
 	types["tar"] = "application/x-tar";
-	types["tif,"] = "image/tiff";
+	types["tif"] = "image/tiff";
 	types["ts"] = "video/mp2t";
 	types["ttf"] = "font/ttf";
 	types["txt"] = "text/plain";
