@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/26 16:35:53 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/29 14:26:19 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void Server::_run(void) {
 		fd.fd = *it;
 		fd.events = POLLIN;
 		_client_fds.push_back(fd);
-		_log->debug("new socket in poll");
+		//_log->debug("new socket in poll");
 	}
 
 	// to add signal instead of 727
@@ -140,16 +140,22 @@ void Server::_run(void) {
 			_client_fds.push_back(pfd);
 			struct pollfd *ppfd = _client_fds.data() + _client_fds.size() - 1;
 			Client		  *new_client = new Client(ppfd, client_addr, _conf);
+			if (new_client == NULL) {
+				continue;
+			}
 			_client_data.push_back(new_client);
+			std::cout << "client pushed" << std::endl;
 		}
 
 		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
 			if (_client_fds[i].revents & POLLERR) {
-				 close(_client_fds[i].fd);
+				_log->info("pollerr");
+				close(_client_fds[i].fd);
 				_client_fds.erase(_client_fds.begin() + i);
-				 delete _client_data[i - _fds_server.size()];
+				delete _client_data[i - _fds_server.size()];
 				_client_data.erase(_client_data.begin() + i);
 			} else if (_client_fds[i].revents & POLLIN) {
+				_log->info("pollin");
 				Client *client = _getClient(_client_fds[i].fd);
 				if (client == not_nullptr) {
 					_log->error("client does not exist");
@@ -157,29 +163,38 @@ void Server::_run(void) {
 				}
 				client->parse();
 			} else if (_client_fds[i].revents & POLLOUT) {
+				std::stringstream str;
+				str << _client_fds[i].fd;
+				_log->info("pollout = " + str.str());
 				Client *client = _getClient(_client_fds[i].fd);
+
 				if (client == not_nullptr) {
 					_log->error("client does not exist");
+					continue;
+				}
+				if (client->requestParsed() == false) {
 					continue;
 				}
 				client->answer();
 				_client_data.erase(std::find(_client_data.begin(),
 											 _client_data.end(), client));
 				delete client;
-				for (auto it = range (_client_fds)) {
+				for (auto it = range(_client_fds)) {
 					if (_client_fds[i].fd == (*it).fd) {
+						std::cout << "client fds erased" << std::endl;
+						close(it.base()->fd);
 						_client_fds.erase(it);
 						break;
 					}
 				}
-				close(_client_fds[i].fd);
+				i++;
 			}
 		}
 	}
 }
 
 Server::Server(config::Config *conf) : _conf(conf) {
-	log("➕", "Server::Server", "config constructor called");
+	// log("➕", "Server::Server", "config constructor called");
 	_log = conf->getLogger();
 	try {
 		_setup();
@@ -190,7 +205,7 @@ Server::Server(config::Config *conf) : _conf(conf) {
 }
 
 Server::~Server(void) {
-	log("➖", "Server::Server", "destructor called");
+	// log("➖", "Server::Server", "destructor called");
 	for (std::vector<struct pollfd>::iterator it = _client_fds.begin();
 		 it != _client_fds.end(); it++)
 		close(it->fd);

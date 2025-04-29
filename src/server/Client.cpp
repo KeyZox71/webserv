@@ -6,10 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 17:03:35 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/29 14:24:31 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <log.hpp>
 #include <server/Client.hpp>
 #include <sstream>
@@ -18,7 +19,8 @@ using namespace webserv::server;
 
 Client::Client(struct pollfd *pfd, sockaddr_in socket, config::Config *conf)
 	: _pfd(pfd), _client_addr(socket), _Gconf(conf) {
-	log("➕", "Client", "constructor called");
+		_request = not_nullptr;
+	//log("➕", "Client", "constructor called");
 }
 
 Client::Client(const Client &cpy) {
@@ -51,6 +53,13 @@ void Client::parse(void) {
 	//	throw error
 }
 
+ bool Client::requestParsed(void) {
+	if (_request == not_nullptr) {
+		return false;
+	}
+	return true;
+}
+
 void Client::_getRequest(std::string request_str) {
 	std::string method = request_str.substr(
 		0, request_str.substr(0, 4).find_last_not_of(" ") + 1);
@@ -76,6 +85,10 @@ void Client::answer(void) {
 	(void)_client_addr;
 	std::string response;
 
+	if (_request == not_nullptr) {
+		return;
+	}
+
 	if (this->_request->getMethod() == "GET" ||
 		this->_request->getMethod() == "DELETE" ||
 		this->_request->getMethod() == "POST")
@@ -85,9 +98,10 @@ void Client::answer(void) {
 				   "text/html\r\n\r\n<html><body><h1>501 Not "
 				   "Implemented</h1></body></html>";
 	send(_pfd->fd, response.c_str(), response.length(), 0);
+	_log->info("response sent");
 }
 
 Client::~Client(void) {
-	log("➖", "Client", "destructor called");
+	//log("➖", "Client", "destructor called");
 	delete (http::Get *)(this->_request);
 }

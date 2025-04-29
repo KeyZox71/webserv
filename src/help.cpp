@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 11:47:39 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/28 14:29:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void _printHelp(void) {
 }
 
 void _generateConf(void) {
-	webserv::Logger _log("");
+	webserv::Logger _log;
 	if (access("./sample.conf", F_OK) == 0) {
 		_log.warn(std::string(SAMPLE_CONF_PATH) + " already exist, aborting");
 	} else {

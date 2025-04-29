@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 12:36:17 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/28 14:32:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,7 +226,9 @@ body {\n\
 			response.setStatusCode(200);
 			response.addHeader("Content-Type", http::Mime::getType(this->_target));
 
-			_log->debug(response.str().c_str());
+#ifdef VERBOSE
+			//_log->debug(response.str().c_str());
+#endif
 		}
 	}
 	catch (...)

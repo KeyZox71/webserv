@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:58:42 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/25 17:19:55 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/28 14:30:27 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int Server::_createSocket(std::string host, int port) {
 	}
 	std::stringstream str;
 	str << port;
-	_log->debug("port : " + str.str());
+	//_log->debug("port : " + str.str());
 	addr.sin_port = htons(port);
 
 	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {

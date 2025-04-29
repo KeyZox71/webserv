@@ -1,0 +1,40 @@
+log_file = "test.log"
+
+[server]
+server_names = { "localhost", "2B5.local" }
+host = "0.0.0.0"
+port = 8080
+
+[server.error_pages]
+404 = "not_found.html"
+401 = "unauthorized.html"
+402 = "uwu.html"
+
+[server.location./]
+methods = { "GET" }
+root = "./html"
+dirlist = true
+client_max_body_size = "10M"
+
+[server.location./api]
+methods = { "GET", "POST" }
+root = "./api"
+upload_path = "./up"
+cgi.go = "/bin/go"
+
+[server.location./redir]
+redirect = "https://kanel.ovh"
+
+[serverr]
+server_names = { "ptnnnn.local"}
+host = "127.0.0.1"
+port = 9090
+
+[serverr.error_pages]
+404 = "existepasfd***.html"
+
+[serverr.location./]
+methods = { "GET", "DELETE" }
+root = "/var/lib/docker/volumes/test_data/_data"
+dirlist = false
+cgi.py = "/bin/python"

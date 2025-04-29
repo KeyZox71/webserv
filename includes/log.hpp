@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 09:28:27 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 16:14:25 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/28 14:29:54 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ namespace webserv {
  *
  *	@note	Only work if VERBOSE mode is active
  */
-static inline void log(std::string emoji, std::string who, std::string str) {
+inline void log(std::string emoji, std::string who, std::string str) {
 #ifdef VERBOSE
 	if (who.empty())
 		std::cout << "「" << emoji << "」debug: " << str << std::endl;
@@ -40,10 +40,10 @@ static inline void log(std::string emoji, std::string who, std::string str) {
 class Logger {
   public:
 	Logger(void) : _ttyOnly(true) {
-		log("➕", "Logger", "default constructor called");
+		//log("➕", "Logger", "default constructor called");
 	}
 	Logger(const std::string &fileName) : _fileName(fileName) {
-		log("➕", "Logger", "filename constructor called");
+		//log("➕", "Logger", "filename constructor called");
 		_file.open(fileName.c_str(), std::ios::app);
 		if (!_file.is_open() && !_ttyOnly) {
 			_ttyOnly = true;
@@ -53,7 +53,7 @@ class Logger {
 	}
 
 	Logger(const Logger &other) : _ttyOnly(other._ttyOnly) {
-		log("➕", "Logger", "copy constructor called");
+		//log("➕", "Logger", "copy constructor called");
 		if (!other._ttyOnly) {
 			_file.open(other._fileName.c_str(), std::ios::app);
 			if (!_file.is_open()) {
@@ -109,7 +109,7 @@ class Logger {
 		}
 	}
 
-	void debug(const std::string &msg) {
+	void debug(std::string msg) {
 #ifdef VERBOSE
 		std::string ss = printPogitMsg("🏗️", "webserv", "debug", msg);
 		std::cerr << ss << std::endl;
@@ -119,7 +119,6 @@ class Logger {
 #else
 		(void)msg;
 #endif
-
 	}
 
   protected:

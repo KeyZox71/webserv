@@ -6,12 +6,13 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/23 14:30:28 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/29 12:35:37 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <requests/HttpResponse.hpp>
 #include <requests/Errors.hpp>
+#include <webserv.hpp>
 
 /*
 - do a map of all the status_text and get it from here, not storing them
@@ -38,7 +39,7 @@ std::string	http::Response::str(void) const
 	response << this->_protocol << " " << this->_status_code << " " << this->_status_text;
 	response << "\r\n";
 
-	for (std::map<std::string, std::string>::const_iterator it = this->_headers.begin(); it != this->_headers.end(); ++it)
+	for (auto it = range(_headers))
 		response << it->first << ": " << it->second << "\r\n";
 
 	response << "\r\n";
