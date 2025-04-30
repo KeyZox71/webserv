@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 14:54:23 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 15:30:08 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void Get::parse(std::string const &data) {
 		_method = _sanitizeStr(_method);
 		_target = _sanitizeStr(_target);
 		_protocol = _sanitizeStr(_protocol);
-		/* this->_target.insert(this->_target.begin(), '.'); */
 	}
 
 	while (std::getline(stream, line) && line != "\r") {
@@ -50,9 +49,8 @@ void Get::parse(std::string const &data) {
 
 	_url = new URL("http://" + _headers["Host"] + _target);
 
-
-	std::cout << "wtf = " << _headers["Host"] << std::endl;
-	std::cout << *_url << std::endl;
+	/*std::cout << "wtf = " << _headers["Host"] << std::endl;
+	std::cout << *_url << std::endl;*/
 
 	/*
 	std::cout << "-- start-line --" << std::endl;

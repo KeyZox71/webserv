@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 09:51:16 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 15:21:54 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,12 @@ void ARequest::setTarget(std::string const target) { this->_target = target; }
 
 void ARequest::setProtocol(std::string const protocol) {
 	this->_protocol = protocol;
+}
+
+URL		ARequest::getUrl() const
+{
+	if (this->_url)
+		return *(this->_url);
+	else
+		return URL("");
 }

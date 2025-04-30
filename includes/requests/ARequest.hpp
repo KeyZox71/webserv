@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 14:52:22 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 15:19:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class ARequest : public http::IMessage {
 	std::string		getTarget(void) const;
 	std::string		getProtocol(void) const;
 	config::Server *getConfig(void) const;
+	URL				getUrl() const;
 
 	void setMethod(std::string const method);
 	void setTarget(std::string const target);

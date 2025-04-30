@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 13:48:03 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 15:54:43 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,16 +47,27 @@ void Client::parse(void) {
 
 	_getRequest(received_data);
 
-	_conf = _Gconf->getServer(this->_request->getHeaders()["Host"]);
+	this->_conf = this->_Gconf->getServer(this->_request->getHeaders()["Host"]);
+	this->_route = this->_conf->whatRoute(URL(this->_request->getTarget()));
+	std::cout << "_route is " << (_route ? "not null" : "NULL") << std::endl;
+	if(!this->_route || this->_route == not_nullptr)
+	{
+		this->_request->setMethod("404");
+		return ;
+	}
 
-	// if (received_data.length > (get max_body_size from Route corresponding) )
-	//	throw error
+	if ((this->_request->getMethod() == "GET" && !_route->getMethods()[0])
+		|| (this->_request->getMethod() == "POST" && !_route->getMethods()[1])
+		|| (this->_request->getMethod() == "DELETE" && !_route->getMethods()[2]))
+		this->_request->setMethod("405");
+
+	if (received_data.length() > (unsigned long)(_route->getMaxBody()))
+		this->_request->setMethod("413");
 }
 
 bool Client::requestParsed(void) {
-	if (_request == not_nullptr) {
+	if (_request == not_nullptr)
 		return false;
-	}
 	return true;
 }
 
@@ -64,22 +75,23 @@ void Client::_getRequest(std::string request_str) {
 	std::string method = request_str.substr(
 		0, request_str.substr(0, 4).find_last_not_of(" ") + 1);
 
-	(void)_route;
-	/* if (_isAllowed(method)) { */
-	/* 	_request = new http::Get(); */
-	/* 	_request->setMethod("405"); */
-	/* 	_log->info("405 methods not allowed"); // TODO make a better log print */
-	/* } */
-	if (method == "GET") {
+	if (method == "GET")
+	{
 		this->_request = new http::Get(request_str);
 		_log->info("get request received");
-	} else if (method == "DELETE") {
+	}
+	else if (method == "DELETE")
+	{
 		this->_request = new http::Delete(request_str);
 		_log->info("delete request received");
-	} else if (method == "POST") {
+	}
+	else if (method == "POST")
+	{
 		this->_request = new http::Post(request_str);
 		_log->info("post request received");
-	} else {
+	}
+	else
+	{
 		this->_request = new http::Get();
 		this->_request->setMethod("501");
 		_log->info("unsupported request received");
