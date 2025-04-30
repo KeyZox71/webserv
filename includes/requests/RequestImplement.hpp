@@ -1,40 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Cgi.hpp                                            :+:      :+:    :+:   */
+/*   RequestImplement.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 14:17:34 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 09:36:02 by adjoly           ###   ########.fr       */
+/*   Created: 2025/04/30 09:30:15 by adjoly            #+#    #+#             */
+/*   Updated: 2025/04/30 09:34:17 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-
 #include <requests/ARequest.hpp>
-#include <config/default.hpp>
-#include <map>
-#include <string>
 
 namespace webserv {
+namespace http {
 
-class Cgi {
+class Get : public ARequest {
   public:
-	Cgi(http::ARequest *, config::Server *);
-	~Cgi(void);
+	Get(void) {}
+	Get(std::string &data);
 
-	std::string getEnv(std::string &);
-	void		setEnv(std::string &, std::string);
+	void parse(std::string const &data);
 
-	void process(void);
-
-  protected:
-  private:
-	void _initEnvp(void);
-
-	std::map<std::string, std::string> _envp;
-	config::Server					  *_conf;
-	http::IMessage					  *_request;
+	Response execute(void);
 };
+
+class Post : public ARequest {
+  public:
+	Post(void) {}
+	Post(std::string &data);
+
+	void parse(std::string const &data);
+
+	Response execute(void);
+};
+
+class Delete : public http::ARequest {
+  public:
+	Delete(void) {}
+	Delete(std::string &data);
+
+	void parse(std::string const &data);
+
+	Response execute(void);
+};
+
+}; // namespace http
 }; // namespace webserv

@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/29 14:24:31 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/29 17:27:49 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ using namespace webserv::server;
 Client::Client(struct pollfd *pfd, sockaddr_in socket, config::Config *conf)
 	: _pfd(pfd), _client_addr(socket), _Gconf(conf) {
 		_request = not_nullptr;
-	//log("➕", "Client", "constructor called");
+	log("➕", "Client", "constructor called");
 }
 
 Client::Client(const Client &cpy) {
@@ -33,7 +33,6 @@ void Client::parse(void) {
 	std::string received_data;
 	char		buffer[BUFFER_SIZE];
 	ssize_t		bytes_received;
-
 
 	do {
 		std::memset(buffer, 0, BUFFER_SIZE);
@@ -102,6 +101,6 @@ void Client::answer(void) {
 }
 
 Client::~Client(void) {
-	//log("➖", "Client", "destructor called");
+	log("➖", "Client", "destructor called");
 	delete (http::Get *)(this->_request);
 }

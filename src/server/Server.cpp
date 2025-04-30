@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/29 14:27:42 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/29 17:28:17 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void Server::_run(void) {
 		fd.fd = *it;
 		fd.events = POLLIN;
 		_client_fds.push_back(fd);
-		//_log->debug("new socket in poll");
+		_log->debug("new socket in poll");
 	}
 
 	// to add signal instead of 727
@@ -172,10 +172,9 @@ void Server::_run(void) {
 					_log->error("client does not exist");
 					continue;
 				}
-				if (client->requestParsed() == false) {
-					continue;
+				if (client->requestParsed() == true) {
+					client->answer();
 				}
-				client->answer();
 				_client_data.erase(std::find(_client_data.begin(),
 											 _client_data.end(), client));
 				delete client;
@@ -194,7 +193,7 @@ void Server::_run(void) {
 }
 
 Server::Server(config::Config *conf) : _conf(conf) {
-	// log("➕", "Server::Server", "config constructor called");
+	log("➕", "Server::Server", "config constructor called");
 	_log = conf->getLogger();
 	try {
 		_setup();
@@ -205,7 +204,7 @@ Server::Server(config::Config *conf) : _conf(conf) {
 }
 
 Server::~Server(void) {
-	// log("➖", "Server::Server", "destructor called");
+	log("➖", "Server::Server", "destructor called");
 	for (std::vector<struct pollfd>::iterator it = _client_fds.begin();
 		 it != _client_fds.end(); it++)
 		close(it->fd);

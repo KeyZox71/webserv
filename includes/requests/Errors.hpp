@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/16 17:51:46 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/24 14:56:08 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/30 09:35:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <map>
 #include <string>
 
-#include <requests/HttpResponse.hpp>
+#include <requests/Response.hpp>
 
 namespace webserv {
 namespace http {

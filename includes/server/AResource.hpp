@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 14:20:09 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/29 14:58:45 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/29 15:44:50 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 namespace webserv {
 namespace server {
 
-class ClientResource {
+class AClientResource {
 public:
-	virtual			~ClientResource() {}
+	virtual			~AClientResource() {}
 
 	void			addFileDescriptor(struct pollfd fd);
 	struct pollfd	getFileDescriptor();
