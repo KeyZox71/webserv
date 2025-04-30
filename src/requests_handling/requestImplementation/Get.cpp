@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 09:41:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 14:54:23 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@ void Get::parse(std::string const &data) {
 	if (std::getline(stream, line)) {
 		std::istringstream line_stream(line);
 		line_stream >> this->_method >> this->_target >> this->_protocol;
+		_method = _sanitizeStr(_method);
+		_target = _sanitizeStr(_target);
+		_protocol = _sanitizeStr(_protocol);
 		/* this->_target.insert(this->_target.begin(), '.'); */
 	}
 
@@ -36,7 +39,7 @@ void Get::parse(std::string const &data) {
 		if (delimiter_index != std::string::npos) {
 			std::string key = line.substr(0, delimiter_index);
 			std::string value = line.substr(delimiter_index + 2);
-			this->_headers.insert(std::make_pair(key, value));
+			this->_headers.insert(std::make_pair(key, _sanitizeStr(value)));
 		}
 	}
 
@@ -46,6 +49,9 @@ void Get::parse(std::string const &data) {
 	this->_body = body_stream.str();
 
 	_url = new URL("http://" + _headers["Host"] + _target);
+
+
+	std::cout << "wtf = " << _headers["Host"] << std::endl;
 	std::cout << *_url << std::endl;
 
 	/*

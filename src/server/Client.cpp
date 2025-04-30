@@ -6,11 +6,12 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/29 17:27:49 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 13:48:03 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
+#include "requests/default.hpp"
 #include <log.hpp>
 #include <server/Client.hpp>
 #include <sstream>
@@ -19,7 +20,7 @@ using namespace webserv::server;
 
 Client::Client(struct pollfd *pfd, sockaddr_in socket, config::Config *conf)
 	: _pfd(pfd), _client_addr(socket), _Gconf(conf) {
-		_request = not_nullptr;
+	_request = not_nullptr;
 	log("➕", "Client", "constructor called");
 }
 
@@ -44,15 +45,15 @@ void Client::parse(void) {
 		received_data += std::string(buffer, bytes_received);
 	} while (buffer[bytes_received]);
 
-	this->_getRequest(received_data);
+	_getRequest(received_data);
 
-	this->_conf = _Gconf->getServer(this->_request->getHeaders()["Host"]);
+	_conf = _Gconf->getServer(this->_request->getHeaders()["Host"]);
 
 	// if (received_data.length > (get max_body_size from Route corresponding) )
 	//	throw error
 }
 
- bool Client::requestParsed(void) {
+bool Client::requestParsed(void) {
 	if (_request == not_nullptr) {
 		return false;
 	}
@@ -63,6 +64,12 @@ void Client::_getRequest(std::string request_str) {
 	std::string method = request_str.substr(
 		0, request_str.substr(0, 4).find_last_not_of(" ") + 1);
 
+	(void)_route;
+	/* if (_isAllowed(method)) { */
+	/* 	_request = new http::Get(); */
+	/* 	_request->setMethod("405"); */
+	/* 	_log->info("405 methods not allowed"); // TODO make a better log print */
+	/* } */
 	if (method == "GET") {
 		this->_request = new http::Get(request_str);
 		_log->info("get request received");

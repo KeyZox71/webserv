@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:17:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/29 15:48:19 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 14:38:03 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <webserv.hpp>
 
 class URL {
   public:
@@ -31,9 +30,11 @@ class URL {
 		return _full_url < other._full_url;
 	}
 
-	std::vector<std::string> getSegments(void) { return _path_segments; }
-	std::string				 getFullUrl(void) const { return _full_url; }
+	std::vector<std::string> getSegments(void) const { return _path_segments; }
+
+	std::string getFullUrl(void) const { return _full_url; }
 	std::string getQueryString(void) const { return _query_string; }
+	std::string getPort(void) const { return _port; }
 
   private:
 	void parse() {
@@ -97,7 +98,6 @@ class URL {
 };
 
 inline std::ostream &operator<<(std::ostream &os, const URL &URL) {
-
 	os << URL.getFullUrl();
 	return os;
 }

@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 09:34:49 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 14:52:22 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,15 @@ class ARequest : public http::IMessage {
 	std::string		_protocol;
 	config::Server *_conf;
 	URL			   *_url;
+
+	std::string _sanitizeStr(std::string &str) {
+		std::string newStr = str;
+
+		if (str[str.size() - 1] == '\r') {
+			newStr.erase(str.size() - 1);
+		}
+		return newStr;
+	}
 };
 
 } // namespace http
