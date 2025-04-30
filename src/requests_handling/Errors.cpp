@@ -6,28 +6,38 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 14:08:12 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/02 01:48:20 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:35:48 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <requests/Errors.hpp>
 
 using namespace webserv;
+using namespace http;
 
-std::string	http::Errors::getResponseBody(int error_code)
+void	Errors::setEntries(const std::map<int, std::string> error_pages)
+{
+	for (std::map<int, std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); ++it)
+	{
+		if (Errors::set_error_pages.find(it->first) == Errors::set_error_pages.end()) // only insert if key doesn't exist
+		    Errors::set_error_pages[it->first] = it->second;
+	}	
+}
+
+std::string	Errors::getResponseBody(int error_code)
 {
 	std::string	body;
 
-	if (http::Errors::set_error_pages.find(error_code) != http::Errors::set_error_pages.end())
+	if (Errors::set_error_pages.find(error_code) != Errors::set_error_pages.end())
 		return(Errors::set_error_pages[error_code]);
 	else
-		return("<html><body><h1>" + http::Errors::message[error_code] + "</h1></body></html>");
+		return("<html><body><h1>" + Errors::message[error_code] + "</h1></body></html>");
 }
 
-std::map<int, std::string>	http::Errors::message = Errors::populateMessages();
-std::map<int, std::string>	http::Errors::set_error_pages;
+std::map<int, std::string>	Errors::message = Errors::populateMessages();
+std::map<int, std::string>	Errors::set_error_pages;
 
-std::map<int, std::string>	http::Errors::populateMessages()
+std::map<int, std::string>	Errors::populateMessages()
 {
 	std::map<int, std::string> m;
 
