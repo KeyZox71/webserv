@@ -1,18 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HttpResponse.cpp                                   :+:      :+:    :+:   */
+/*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:28:31 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/29 12:35:37 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 09:47:50 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <requests/HttpResponse.hpp>
-#include <requests/Errors.hpp>
 #include <webserv.hpp>
+#include <requests/default.hpp>
 
 /*
 - do a map of all the status_text and get it from here, not storing them
