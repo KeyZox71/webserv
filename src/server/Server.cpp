@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/29 17:28:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 15:41:46 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,10 @@ void Server::_run(void) {
 
 	// to add signal instead of 727
 	while (727 - sigHandling()) {
-		if (poll(_client_fds.data(), _client_fds.size(), -1) < 0) {
-			if (errno == EINTR)
+		if (poll(_client_fds.data(), _client_fds.size(), 5000) < 0) {
+			if (errno == EINTR) {
 				continue;
+			}
 			std::stringstream str;
 			str << "poll failed : ";
 			str << strerror(errno);
@@ -117,45 +118,53 @@ void Server::_run(void) {
 			continue;
 		}
 
-		for (auto it = range(_fds_server)) {
-			struct sockaddr_in client_addr;
-			socklen_t		   addrlen = sizeof(client_addr);
-			int				   client_fd =
-				accept((*it), (struct sockaddr *)&client_addr, &addrlen);
+		size_t i = 0;
+		for (auto it = range(_fds_server), i++) {
+			if (_client_fds[i].revents & POLLIN) {
+				_log->info("polliiiiiiiiiiiiiiiinnnnnnnnnnnnnnnn");
+				struct sockaddr_in client_addr;
+				socklen_t		   addrlen = sizeof(client_addr);
+				int				   client_fd =
+					accept((*it), (struct sockaddr *)&client_addr, &addrlen);
 
-			if (client_fd < 0) {
-				if (errno == EAGAIN || errno == EWOULDBLOCK)
+				if (client_fd < 0) {
+					if (errno == EAGAIN || errno == EWOULDBLOCK) {
+						continue;
+					}
+					std::stringstream str;
+					str << "Accept failed: ";
+					str << strerror(errno);
+					_log->error(str.str());
 					continue;
-				std::stringstream str;
-				str << "Accept failed: ";
-				str << strerror(errno);
-				_log->error(str.str());
-				continue;
-			}
+				}
 
-			struct pollfd pfd;
-			pfd.fd = client_fd;
-			pfd.events = POLLIN | POLLOUT;
-			pfd.revents = 0;
-			_client_fds.push_back(pfd);
-			struct pollfd *ppfd = _client_fds.data() + _client_fds.size() - 1;
-			Client		  *new_client = new Client(ppfd, client_addr, _conf);
-			if (new_client == NULL) {
-				continue;
+				_log->info("connection accepted");
+
+				struct pollfd pfd;
+				pfd.fd = client_fd;
+				pfd.events = POLLIN | POLLOUT;
+				pfd.revents = 0;
+				_client_fds.push_back(pfd);
+				struct pollfd *ppfd =
+					_client_fds.data() + _client_fds.size() - 1;
+				Client *new_client = new Client(ppfd, client_addr, _conf);
+				if (new_client == NULL) {
+					continue;
+				}
+				_client_data.push_back(new_client);
+				_log->debug("client pushed");
 			}
-			_client_data.push_back(new_client);
-			std::cout << "client pushed" << std::endl;
 		}
 
 		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
 			if (_client_fds[i].revents & POLLERR) {
-				_log->info("pollerr");
+				_log->debug("pollerr");
 				close(_client_fds[i].fd);
 				_client_fds.erase(_client_fds.begin() + i);
 				delete _client_data[i - _fds_server.size()];
 				_client_data.erase(_client_data.begin() + i);
 			} else if (_client_fds[i].revents & POLLIN) {
-				_log->info("pollin");
+				_log->debug("pollin");
 				Client *client = _getClient(_client_fds[i].fd);
 				if (client == not_nullptr) {
 					_log->error("client does not exist");
@@ -165,7 +174,7 @@ void Server::_run(void) {
 			} else if (_client_fds[i].revents & POLLOUT) {
 				std::stringstream str;
 				str << _client_fds[i].fd;
-				_log->info("pollout = " + str.str());
+				_log->debug("pollout = " + str.str());
 				Client *client = _getClient(_client_fds[i].fd);
 
 				if (client == not_nullptr) {
@@ -180,7 +189,7 @@ void Server::_run(void) {
 				delete client;
 				for (auto it = range(_client_fds)) {
 					if (_client_fds[i].fd == (*it).fd) {
-						std::cout << "client fds erased" << std::endl;
+						_log->debug("client fds erased");
 						close(it.base()->fd);
 						_client_fds.erase(it);
 						break;
