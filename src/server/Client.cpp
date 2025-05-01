@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/01 12:53:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 13:22:55 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@ void Client::parse(void) {
 	_getRequest(received_data);
 
 	_route = _conf->whatRoute(URL(this->_request->getTarget()));
+	if (_route == not_nullptr) { 
+		_log->info("euuh");
+		return;
+	}
 	/* std::cout << "_route is " << (_route ? "not null" : "NULL") << std::endl;
 	 */
 	if (!this->_route || this->_route == not_nullptr) {
@@ -76,7 +80,12 @@ void Client::_getRequest(std::string request_str) {
 
 	if (method == "GET") {
 		this->_request = new http::Get(request_str);
-		_log->info("get request received");
+		std::stringstream str;
+		str << "get request received on port : ";
+		str << _conf->getPort();
+		str << " for page : ";
+		str << _request->getTarget();
+		_log->info(str.str());
 	} else if (method == "DELETE") {
 		this->_request = new http::Delete(request_str);
 		_log->info("delete request received");
@@ -101,13 +110,19 @@ void Client::answer(void) {
 	if (this->_request->getMethod() == "GET" ||
 		this->_request->getMethod() == "DELETE" ||
 		this->_request->getMethod() == "POST")
-		response = this->_request->execute().str();
+		_response = this->_request->execute();
 	else
 		response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: "
 				   "text/html\r\n\r\n<html><body><h1>501 Not "
 				   "Implemented</h1></body></html>";
+	response = _response.str();
 	send(_pfd->fd, response.c_str(), response.length(), 0);
-	_log->info("response sent");
+	std::stringstream str;
+	str << "response sent, for page : ";
+	str << _request->getTarget();
+	str << " with code : ";
+	str << _response.getStatusCode();
+	_log->info(str.str());
 }
 
 Client::~Client(void) {

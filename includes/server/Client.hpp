@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/01 12:51:51 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 13:22:48 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class Client {
 
 	struct pollfd	  *_pfd;
 	http::ARequest	  *_request;
-	// http::Response	  *_response;
+	http::Response	  _response;
 	config::Server *_conf;
 	config::Route  *_route;
 };
