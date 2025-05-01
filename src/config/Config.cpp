@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/01 16:31:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 17:00:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,5 @@ Config::~Config(void) {
 	for (auto it = range(_servers)) {
 		delete *it;
 	}
+	delete _default;
 }

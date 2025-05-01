@@ -29,10 +29,10 @@ redirect = "https://kanel.ovh"
 host = "127.0.0.1"
 port = 9090
 
-[serverr.error_pages]
+[default.error_pages]
 404 = "existepasfd***.html"
 
-[serverr.location./]
+[default.location./]
 methods = { "GET", "DELETE" }
 root = "/var/lib/docker/volumes/test_data/_data"
 dirlist = false
