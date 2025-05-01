@@ -6,10 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/25 13:23:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 16:32:06 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <config/default.hpp>
 #include <csignal>
 #include <server/default.hpp>
@@ -39,6 +40,7 @@ void	ft_sig(int sig) {
 }
 
 int main(int ac, char **av) {
+	_log = not_nullptr;
 	if (help(ac, av)) {
 		return EXIT_SUCCESS;
 	}
@@ -53,8 +55,11 @@ int main(int ac, char **av) {
 	try {
 		std::string str = av[1];
 		conf = new config::Config(str);
-	} catch (std::exception &e) {
-		std::cout << e.what() << std::endl;
+	} catch (std::exception &) {
+		//std::cout << e.what() << std::endl;
+		//delete conf;
+		if (_log != not_nullptr)
+			delete _log;
 		return 1;
 	}
 	if (signal(SIGINT, &ft_sig) == SIG_ERR) {

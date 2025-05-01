@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 17:10:53 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 15:32:31 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ namespace config {
 class Server {
   public:
 	Server(toml::ANode *);
+	Server(toml::ANode *, void *);
 	~Server();
 
 	/**

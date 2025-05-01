@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/01 11:21:47 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 16:31:45 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "log.hpp"
 #include "node/default.hpp"
 #include "webserv.hpp"
 #include "cppeleven.hpp"
@@ -22,7 +23,7 @@ using namespace webserv::config;
 
 Config::Config(std::string &filename) {
 	toml::Toml *file = new toml::Toml(filename);
-
+	
 	try {
 		file->parse();
 	} catch (std::runtime_error &e) {
@@ -44,11 +45,24 @@ Config::Config(std::string &filename) {
 		if (it->second->type() == toml::TABLE) {
 			_log->info("taking server from table : " + it->first);
 			try {
-				Server *srv = new Server(it->second);
-				_servers.push_back(srv);
+				if (it->first == "default") {
+					_default = new Server(it->second, not_nullptr);
+				} else {
+					Server *srv = new Server(it->second);
+					_servers.push_back(srv);
+				}
 			} catch (std::runtime_error &e) {
 				_log->error(e.what());
-				break;
+				if (!_servers.empty()) {
+					for (auto it = range(_servers))
+						delete (*it);
+				}
+				if (_default != not_nullptr) {
+					delete _default;
+				}
+				delete table;
+				delete file;
+				throw e;
 			}
 		}
 	}

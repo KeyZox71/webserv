@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/01 13:22:55 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 15:27:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ void Client::answer(void) {
 	std::stringstream str;
 	str << "response sent, for page : ";
 	str << _request->getTarget();
-	str << " with code : ";
+	str << " with response code : ";
 	str << _response.getStatusCode();
 	_log->info(str.str());
 }

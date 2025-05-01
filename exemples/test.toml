@@ -25,8 +25,7 @@ cgi.go = "/bin/go"
 [server.location./redir]
 redirect = "https://kanel.ovh"
 
-[serverr]
-server_names = { "ptnnnn.local"}
+[default]
 host = "127.0.0.1"
 port = 9090
 
@@ -37,5 +36,5 @@ port = 9090
 methods = { "GET", "DELETE" }
 root = "/var/lib/docker/volumes/test_data/_data"
 dirlist = false
-cgi.py = "/bin/python
+cgi.py = "/bin/python"
 

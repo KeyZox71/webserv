@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/01 13:22:48 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 15:25:45 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ class Client {
 	void _getRequest(std::string);
 
 	std::string _sanitizeStr(std::string &str) {
-		std::string	newStr = str;
+		std::string newStr = str;
 
 		if (str[str.size() - 1] == '\r') {
 			newStr.erase(str.size() - 1);
@@ -53,9 +53,9 @@ class Client {
 		return newStr;
 	}
 
-	struct pollfd	  *_pfd;
-	http::ARequest	  *_request;
-	http::Response	  _response;
+	struct pollfd  *_pfd;
+	http::ARequest *_request;
+	http::Response	_response;
 	config::Server *_conf;
 	config::Route  *_route;
 };
