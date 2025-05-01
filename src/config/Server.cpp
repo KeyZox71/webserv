@@ -6,13 +6,16 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 15:37:18 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 10:08:15 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "config/URL.hpp"
 #include "cppeleven.hpp"
+#include "log.hpp"
 #include <config/default.hpp>
+#include <cstddef>
+#include <utility>
 #include <webserv.hpp>
 
 using namespace webserv::config;
@@ -75,9 +78,10 @@ Server::Server(toml::ANode *node) : _table(node) {
 		std::map<std::string, toml::ANode *> *location_table =
 			it->second->getTable();
 		for (it = location_table->begin(); it != location_table->end(); it++) {
-			if (_routes->find(URL(it->first)) != _routes->end())
+			if (_routes->find(URL(it->first)) != _routes->end()) {
 				continue;
-			(*_routes)[URL(it->first)] = new Route(it->second);
+			}
+			_routes->insert(std::make_pair(URL(it->first), new Route(it->second)));
 		}
 	}
 	// delete _table;
@@ -129,8 +133,8 @@ Route *Server::whatRoute(const URL &url) {
 		}
 	}
 	std::map<URL, Route *>::iterator it = _routes->find(URL("/"));
-	if (it == _routes->end()) {
-		return not_nullptr;
+	if (it != _routes->end()) {
+		return it->second;
 	}
-	return it->second;
+	return not_nullptr;
 }

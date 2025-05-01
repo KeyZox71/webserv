@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 15:41:46 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/01 12:52:46 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,6 @@ void Server::_run(void) {
 		size_t i = 0;
 		for (auto it = range(_fds_server), i++) {
 			if (_client_fds[i].revents & POLLIN) {
-				_log->info("polliiiiiiiiiiiiiiiinnnnnnnnnnnnnnnn");
 				struct sockaddr_in client_addr;
 				socklen_t		   addrlen = sizeof(client_addr);
 				int				   client_fd =
@@ -137,8 +136,15 @@ void Server::_run(void) {
 					_log->error(str.str());
 					continue;
 				}
-
-				_log->info("connection accepted");
+				config::Server *conf_srv = _conf->getServer(i);
+				if (conf_srv == not_nullptr) {
+					_log->warn(
+						"where the f does he come from"); // does can't actually
+														  // happen but just in
+														  // case
+					close(client_fd);
+					continue;
+				}
 
 				struct pollfd pfd;
 				pfd.fd = client_fd;
@@ -147,7 +153,7 @@ void Server::_run(void) {
 				_client_fds.push_back(pfd);
 				struct pollfd *ppfd =
 					_client_fds.data() + _client_fds.size() - 1;
-				Client *new_client = new Client(ppfd, client_addr, _conf);
+				Client *new_client = new Client(ppfd, conf_srv);
 				if (new_client == NULL) {
 					continue;
 				}
@@ -195,7 +201,7 @@ void Server::_run(void) {
 						break;
 					}
 				}
-				i++;
+				i--;
 			}
 		}
 	}
@@ -214,7 +220,7 @@ Server::Server(config::Config *conf) : _conf(conf) {
 
 Server::~Server(void) {
 	log("➖", "Server::Server", "destructor called");
-	for (std::vector<struct pollfd>::iterator it = _client_fds.begin();
-		 it != _client_fds.end(); it++)
+	for (auto it = range(_client_fds)) {
 		close(it->fd);
+	}
 }

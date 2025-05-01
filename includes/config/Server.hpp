@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 15:25:58 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/04/30 17:10:53 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ class Server {
 	// @brief	Can be used to check if a servername is present in this config
 	bool	isServerName(const std::string &);
 
+	// @brief	Can be used to get the route correcponding
 	Route	*whatRoute(const URL &);
 
   protected:

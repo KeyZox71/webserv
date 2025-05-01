@@ -37,4 +37,5 @@ port = 9090
 methods = { "GET", "DELETE" }
 root = "/var/lib/docker/volumes/test_data/_data"
 dirlist = false
-cgi.py = "/bin/python"
+cgi.py = "/bin/python
+

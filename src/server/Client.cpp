@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 15:54:43 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/01 12:53:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 
 using namespace webserv::server;
 
-Client::Client(struct pollfd *pfd, sockaddr_in socket, config::Config *conf)
-	: _pfd(pfd), _client_addr(socket), _Gconf(conf) {
+Client::Client(struct pollfd *pfd, config::Server *conf)
+	: _pfd(pfd), _conf(conf) {
 	_request = not_nullptr;
 	log("➕", "Client", "constructor called");
 }
@@ -47,18 +47,17 @@ void Client::parse(void) {
 
 	_getRequest(received_data);
 
-	this->_conf = this->_Gconf->getServer(this->_request->getHeaders()["Host"]);
-	this->_route = this->_conf->whatRoute(URL(this->_request->getTarget()));
-	std::cout << "_route is " << (_route ? "not null" : "NULL") << std::endl;
-	if(!this->_route || this->_route == not_nullptr)
-	{
+	_route = _conf->whatRoute(URL(this->_request->getTarget()));
+	/* std::cout << "_route is " << (_route ? "not null" : "NULL") << std::endl;
+	 */
+	if (!this->_route || this->_route == not_nullptr) {
 		this->_request->setMethod("404");
-		return ;
+		return;
 	}
 
-	if ((this->_request->getMethod() == "GET" && !_route->getMethods()[0])
-		|| (this->_request->getMethod() == "POST" && !_route->getMethods()[1])
-		|| (this->_request->getMethod() == "DELETE" && !_route->getMethods()[2]))
+	if ((this->_request->getMethod() == "GET" && !_route->getMethods()[0]) ||
+		(this->_request->getMethod() == "POST" && !_route->getMethods()[1]) ||
+		(this->_request->getMethod() == "DELETE" && !_route->getMethods()[2]))
 		this->_request->setMethod("405");
 
 	if (received_data.length() > (unsigned long)(_route->getMaxBody()))
@@ -75,23 +74,16 @@ void Client::_getRequest(std::string request_str) {
 	std::string method = request_str.substr(
 		0, request_str.substr(0, 4).find_last_not_of(" ") + 1);
 
-	if (method == "GET")
-	{
+	if (method == "GET") {
 		this->_request = new http::Get(request_str);
 		_log->info("get request received");
-	}
-	else if (method == "DELETE")
-	{
+	} else if (method == "DELETE") {
 		this->_request = new http::Delete(request_str);
 		_log->info("delete request received");
-	}
-	else if (method == "POST")
-	{
+	} else if (method == "POST") {
 		this->_request = new http::Post(request_str);
 		_log->info("post request received");
-	}
-	else
-	{
+	} else {
 		this->_request = new http::Get();
 		this->_request->setMethod("501");
 		_log->info("unsupported request received");
@@ -100,7 +92,6 @@ void Client::_getRequest(std::string request_str) {
 }
 
 void Client::answer(void) {
-	(void)_client_addr;
 	std::string response;
 
 	if (_request == not_nullptr) {
