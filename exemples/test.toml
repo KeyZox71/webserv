@@ -12,13 +12,14 @@ port = 8080
 
 [server.location./]
 methods = { "GET" }
-root = "/var/www/html"
+root = "/sgoinfre/goinfre/Perso/mmoussou"
 dirlist = true
 client_max_body_size = "10M"
+index = "banger.html"
 
 [server.location./api]
 methods = { "GET", "POST" }
-root = "/var/www/api"
+root = "/nfs/homes/mmoussou"
 upload_path = "/etc/webserv/up"
 cgi.go = "/bin/go"
 

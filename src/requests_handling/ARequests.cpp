@@ -6,20 +6,21 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:07:01 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 15:21:54 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/02 13:58:35 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <algorithm>
-#include <dirent.h>
-#include <sys/stat.h>
 #include <vector>
+#include <dirent.h>
+#include <algorithm>
+#include <sys/stat.h>
 
-#include <config/URL.hpp>
 #include <log.hpp>
+#include <config/URL.hpp>
 #include <requests/default.hpp>
 
-using namespace webserv::http;
+using namespace webserv;
+using namespace http;
 
 std::string ARequest::str(void) const {
 	std::ostringstream response;
@@ -61,4 +62,14 @@ URL		ARequest::getUrl() const
 		return *(this->_url);
 	else
 		return URL("");
+}
+
+config::Route	*ARequest::getRoute(void) const
+{
+	return (_route);
+}
+
+void	ARequest::setRoute(config::Route *route)
+{
+	this->_route = route;
 }

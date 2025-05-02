@@ -6,13 +6,14 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 15:19:52 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/02 13:58:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "config/URL.hpp"
+#include <config/URL.hpp>
+#include <config/Route.hpp>
 #include <ctime>
 #include <fstream>
 #include <iostream>
@@ -42,19 +43,20 @@ class ARequest : public http::IMessage {
 	std::string		getMethod(void) const;
 	std::string		getTarget(void) const;
 	std::string		getProtocol(void) const;
-	config::Server *getConfig(void) const;
+	webserv::config::Route	*getRoute(void) const;
 	URL				getUrl() const;
 
 	void setMethod(std::string const method);
 	void setTarget(std::string const target);
 	void setProtocol(std::string const protocol);
 	void setServer(std::string const protocol);
+	void setRoute(config::Route *route);
 
   protected:
 	std::string		_method;
 	std::string		_target;
 	std::string		_protocol;
-	config::Server *_conf;
+	webserv::config::Route  *_route;
 	URL			   *_url;
 
 	std::string _sanitizeStr(std::string &str) {

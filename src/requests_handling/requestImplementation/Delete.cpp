@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 15:17:15 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/02 14:53:08 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ void Delete::parse(std::string const &data) {
 
 Response Delete::execute(void) {
 	http::Response response;
+
+	this->_target = this->_route->getRootDir() + this->_target;
 
 	try {
 		if (std::remove(this->_target.c_str()))

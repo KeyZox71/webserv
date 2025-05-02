@@ -6,14 +6,15 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 15:30:08 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/02 14:52:24 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <algorithm>
-#include <dirent.h>
-#include <sys/stat.h>
 #include <vector>
+#include <dirent.h>
+#include <unistd.h>
+#include <algorithm>
+#include <sys/stat.h>
 
 #include <requests/default.hpp>
 
@@ -87,34 +88,57 @@ char isDirectory(const std::string &path) {
 Response Get::execute(void) {
 	http::Response response;
 
+	this->_target = this->_route->getRootDir() + this->_target;
+
 	try {
-		if (isDirectory(this->_target)) {
-			DIR						*dir;
-			struct dirent			*entry;
-			struct stat				 file_stat;
-			std::vector<std::string> files;
+		if (isDirectory(this->_target))
+		{
+			if (!access((this->_target + this->_route->getIndex()).c_str(), R_OK))
+			{
+				this->_target = this->_target + this->_route->getIndex();
 
-			if ((dir = opendir(this->_target.c_str())) == NULL)
-				throw;
-			while ((entry = readdir(dir)) != NULL) {
-				std::string file_name = entry->d_name;
-				if (file_name == ".")
-					continue;
-				std::string file_path = this->_target + "/" + file_name;
-				if (stat(file_path.c_str(), &file_stat) == 0) {
-					if (S_ISDIR(file_stat.st_mode))
-						files.push_back(file_name + "/");
-					else
-						files.push_back(file_name);
-				}
+			std::ifstream  file(this->_target.c_str(), std::ios::binary);
+			std::streampos file_start = file.tellg();
+			response.setBody(std::string((std::istreambuf_iterator<char>(file)),
+										 std::istreambuf_iterator<char>()));
+			std::stringstream length;
+			length << (file.tellg() - file_start);
+			response.addHeader("Content-Length", length.str());
+
+			response.setProtocol(this->_protocol);
+			response.setStatusCode(200);
+			response.addHeader("Content-Type",
+							http::Mime::getType(this->_target));
 			}
-			closedir(dir);
+			else if (this->_route->getDirList())
+			{
+				DIR						*dir;
+				struct dirent			*entry;
+				struct stat				 file_stat;
+										std::vector<std::string> files;
 
-			std::sort(files.begin(), files.end());
+				if ((dir = opendir(this->_target.c_str())) == NULL)
+					throw;
+			while ((entry = readdir(dir)) != NULL) {
+					std::string file_name = entry->d_name;
+					if (file_name == ".")
+						continue;
+					std::string file_path = this->_target + "/" + file_name;
+					if (stat(file_path.c_str(), &file_stat) == 0) {
+						if (S_ISDIR(file_stat.st_mode))
+							files.push_back(file_name + "/");
+						else
+							files.push_back(file_name);
+					}
+				}
 
-			std::string body = "<html>";
+				closedir(dir);
 
-			body += "<head><style>\n\
+				std::sort(files.begin(), files.end());
+
+				std::string body = "<html>";
+
+				body += "<head><style>\n\
 :root {\n\
   background-color: -moz-dialog;\n\
   color: -moz-dialogtext;\n\
@@ -135,21 +159,25 @@ body {\n\
 }\n\
 </style></head>";
 
-			body += "<body><ul>\n";
-			for (size_t i = 0; i < files.size(); i++)
-				body += "<li><a href=\"" + files[i] + "\">" + files[i] +
-						"</a></li>\n";
-			body += "</ul></body></html>";
+				body += "<body><ul>\n";
+				for (size_t i = 0; i < files.size(); i++)
+					body += "<li><a href=\"" + files[i] + "\">" + files[i] +
+							"</a></li>\n";
+				body += "</ul></body></html>";
 
-			response.setProtocol(this->_protocol);
-			response.setStatusCode(200);
-			std::stringstream length;
-			length << body.length();
-			response.addHeader("Content-Length", length.str());
-			response.addHeader("Content-Type", "text/html");
-			response.setBody(body);
-
-		} else {
+				response.setProtocol(this->_protocol);
+				response.setStatusCode(200);
+				std::stringstream length;
+				length << body.length();
+				response.addHeader("Content-Length", length.str());
+				response.addHeader("Content-Type", "text/html");
+				response.setBody(body);
+			}
+			else
+				throw std::runtime_error("dir but no dirlist");
+		}
+		else
+		{
 			std::ifstream  file(this->_target.c_str(), std::ios::binary);
 			std::streampos file_start = file.tellg();
 			response.setBody(std::string((std::istreambuf_iterator<char>(file)),
@@ -161,7 +189,7 @@ body {\n\
 			response.setProtocol(this->_protocol);
 			response.setStatusCode(200);
 			response.addHeader("Content-Type",
-							   http::Mime::getType(this->_target));
+						http::Mime::getType(this->_target));
 
 #ifdef VERBOSE
 			//_log->debug(response.str().c_str());

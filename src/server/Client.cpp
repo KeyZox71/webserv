@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/02 13:33:07 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/02 14:26:32 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,8 @@ void Client::parse(void) {
 	_getRequest(received_data);
 
 	_route = _conf->whatRoute(URL(this->_request->getTarget()));
-	if (_route == not_nullptr) { 
-		_log->info("euuh");
-		return;
-	}
-	/* std::cout << "_route is " << (_route ? "not null" : "NULL") << std::endl;
-	 */
+	this->_request->setRoute(_route);
+
 	if (!this->_route || this->_route == not_nullptr) {
 		this->_request->setMethod("404");
 		return;
@@ -67,6 +63,7 @@ void Client::parse(void) {
 
 	if (received_data.length() > (unsigned long)(_route->getMaxBody()))
 		this->_request->setMethod("413");
+
 }
 
 bool Client::requestParsed(void) {
