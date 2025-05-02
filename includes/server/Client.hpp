@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/01 15:25:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/02 13:21:10 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ class Client {
 		return true;
 	}
 
+	bool	isReadyToClose() const;
+
   private:
 	void _getRequest(std::string);
 
@@ -58,6 +60,9 @@ class Client {
 	http::Response	_response;
 	config::Server *_conf;
 	config::Route  *_route;
+	size_t			_bytes_sent;
+	std::string		_response_str;
+	bool			_response_done;
 };
 
 } // namespace server

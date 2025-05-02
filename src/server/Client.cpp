@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/01 15:27:00 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/02 13:33:07 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Client::Client(struct pollfd *pfd, config::Server *conf)
 	: _pfd(pfd), _conf(conf) {
 	_request = not_nullptr;
 	log("➕", "Client", "constructor called");
+	_response_done = false;
 }
 
 Client::Client(const Client &cpy) {
@@ -101,31 +102,65 @@ void Client::_getRequest(std::string request_str) {
 }
 
 void Client::answer(void) {
-	std::string response;
-
 	if (_request == not_nullptr) {
 		return;
 	}
 
-	if (this->_request->getMethod() == "GET" ||
-		this->_request->getMethod() == "DELETE" ||
-		this->_request->getMethod() == "POST")
-		_response = this->_request->execute();
-	else
-		response = "HTTP/1.1 501 Not Implemented\r\nContent-Type: "
-				   "text/html\r\n\r\n<html><body><h1>501 Not "
-				   "Implemented</h1></body></html>";
-	response = _response.str();
-	send(_pfd->fd, response.c_str(), response.length(), 0);
-	std::stringstream str;
+	if (_response_str.empty())
+	{
+		if (this->_request->getMethod() == "GET" ||
+			this->_request->getMethod() == "DELETE" ||
+			this->_request->getMethod() == "POST")
+		{
+			_response = this->_request->execute();
+			_response_str = _response.str();
+		}
+		else
+		{
+			this->_response.setStatusCode(501);
+			_response_str = "HTTP/1.1 501 Not Implemented\r\nContent-Type: "
+					   "text/html\r\n\r\n<html><body><h1>501 Not "
+					   "Implemented</h1></body></html>";
+		}
+		_bytes_sent = 0;
+	}
+
+	ssize_t sent = send(_pfd->fd, _response_str.c_str() + _bytes_sent, _response_str.length() - _bytes_sent, 0);
+
+	if (sent == -1) {
+		if (errno == EAGAIN || errno == EWOULDBLOCK)
+			return;
+		_log->error("send failed: " + std::string(strerror(errno)));
+		_response_done = true;
+		return;
+	}
+
+	_bytes_sent += sent;
+
+	if (_bytes_sent >= _response_str.length()) {
+		_response_done = true;
+		std::stringstream str;
+		str << "response sent, for page : ";
+		str << _request->getTarget();
+		str << " with response code : ";
+		str << _response.getStatusCode();
+		_log->info(str.str());
+	}
+	
+
+	/*std::stringstream str;
 	str << "response sent, for page : ";
 	str << _request->getTarget();
 	str << " with response code : ";
 	str << _response.getStatusCode();
-	_log->info(str.str());
+	_log->info(str.str());*/
 }
 
 Client::~Client(void) {
 	log("➖", "Client", "destructor called");
 	delete (http::Get *)(this->_request);
+}
+
+bool Client::isReadyToClose() const {
+    return _response_done;  // Check if all response data has been sent
 }
