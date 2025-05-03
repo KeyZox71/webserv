@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:30:15 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 09:34:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/03 12:07:57 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ class Post : public ARequest {
 	Post(std::string &data);
 
 	void parse(std::string const &data);
+
+	std::string extractFilename(const std::string &header);
+	void		handleMultipartData(const std::string &body,
+									const std::string &boundary);
 
 	Response execute(void);
 };

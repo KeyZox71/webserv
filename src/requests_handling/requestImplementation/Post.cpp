@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/02 15:02:56 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/03 09:44:41 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,13 @@ void Post::parse(std::string const &data) {
 	*/
 }
 
-std::string extractFilename(const std::string &header) {
+std::string Post::extractFilename(const std::string &header) {
 	size_t start = header.find("filename=\"") + 10;
 	size_t end = header.find("\"", start);
 	return this->_route->getUpRoot() + header.substr(start, end - start);
 }
 
-void handleMultipartData(const std::string &body, const std::string &boundary) {
+void Post::handleMultipartData(const std::string &body, const std::string &boundary) {
 	size_t		i = 0;
 	std::string delim = "--" + boundary;
 	delim.erase(delim.size() - 1);
