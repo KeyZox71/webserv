@@ -6,11 +6,12 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/02 14:26:32 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/04 13:37:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
+#include "requests/RedirectResp.hpp"
 #include "requests/default.hpp"
 #include <log.hpp>
 #include <server/Client.hpp>
@@ -56,14 +57,17 @@ void Client::parse(void) {
 		return;
 	}
 
-	if ((this->_request->getMethod() == "GET" && !_route->getMethods()[0]) ||
-		(this->_request->getMethod() == "POST" && !_route->getMethods()[1]) ||
-		(this->_request->getMethod() == "DELETE" && !_route->getMethods()[2]))
+	if (_route->getRedirect() == true) {
+	} else if ((this->_request->getMethod() == "GET" &&
+				!_route->getMethods()[0]) ||
+			   (this->_request->getMethod() == "POST" &&
+				!_route->getMethods()[1]) ||
+			   (this->_request->getMethod() == "DELETE" &&
+				!_route->getMethods()[2]))
 		this->_request->setMethod("405");
 
 	if (received_data.length() > (unsigned long)(_route->getMaxBody()))
 		this->_request->setMethod("413");
-
 }
 
 bool Client::requestParsed(void) {
@@ -103,26 +107,28 @@ void Client::answer(void) {
 		return;
 	}
 
-	if (_response_str.empty())
-	{
+	if (_route->getRedirect() == true) {
+		http::Redirect redir(_route->getRootDir());
+		_response = redir;
+		_response_str = _response.str();
+		_bytes_sent = 0;
+	} else if (_response_str.empty()) {
 		if (this->_request->getMethod() == "GET" ||
 			this->_request->getMethod() == "DELETE" ||
-			this->_request->getMethod() == "POST")
-		{
+			this->_request->getMethod() == "POST") {
 			_response = this->_request->execute();
 			_response_str = _response.str();
-		}
-		else
-		{
+		} else {
 			this->_response.setStatusCode(501);
 			_response_str = "HTTP/1.1 501 Not Implemented\r\nContent-Type: "
-					   "text/html\r\n\r\n<html><body><h1>501 Not "
-					   "Implemented</h1></body></html>";
+							"text/html\r\n\r\n<html><body><h1>501 Not "
+							"Implemented</h1></body></html>";
 		}
 		_bytes_sent = 0;
 	}
 
-	ssize_t sent = send(_pfd->fd, _response_str.c_str() + _bytes_sent, _response_str.length() - _bytes_sent, 0);
+	ssize_t sent = send(_pfd->fd, _response_str.c_str() + _bytes_sent,
+						_response_str.length() - _bytes_sent, 0);
 
 	if (sent == -1) {
 		if (errno == EAGAIN || errno == EWOULDBLOCK)
@@ -143,7 +149,6 @@ void Client::answer(void) {
 		str << _response.getStatusCode();
 		_log->info(str.str());
 	}
-	
 
 	/*std::stringstream str;
 	str << "response sent, for page : ";
@@ -159,5 +164,5 @@ Client::~Client(void) {
 }
 
 bool Client::isReadyToClose() const {
-    return _response_done;  // Check if all response data has been sent
+	return _response_done; // Check if all response data has been sent
 }
