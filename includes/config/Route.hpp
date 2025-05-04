@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 15:45:59 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/04 13:57:36 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Route {
 	~Route(void);
 
 	bool	getDirList(void) { return _dirlist; }
-	bool	getCookies(void) { return _cookies; }
+	/* bool	getCookies(void) { return _cookies; } */
 	bool	getRedirect(void) { return _redirect; }
 
 	int32_t	getMaxBody(void) { return _max_body; }
@@ -45,7 +45,7 @@ class Route {
   protected:
   private:
 	bool _dirlist;
-	bool _cookies;
+	/* bool _cookies; */
 	bool _redirect;
 
 	int32_t _max_body;

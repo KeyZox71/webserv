@@ -81,11 +81,11 @@ Route::Route(toml::ANode *table)
 		_dirlist = *static_cast<bool *>(val);
 	else
 		_dirlist = true;
-	val = accessValue("cookies", toml::BOOL, _table, _log);
-	if (val != not_nullptr)
-		_cookies = *static_cast<bool *>(val);
-	else
-		_cookies = false;
+	/* val = accessValue("cookies", toml::BOOL, _table, _log); */
+	/* if (val != not_nullptr) */
+	/* 	_cookies = *static_cast<bool *>(val); */
+	/* else */
+	/* 	_cookies = false; */
 	val = accessValue("upload_path", toml::STRING, _table, _log);
 	if (val != not_nullptr)
 		_up_root = *static_cast<std::string *>(val);
