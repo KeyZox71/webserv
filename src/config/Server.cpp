@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/01 16:30:28 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/04 12:48:10 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 
 using namespace webserv::config;
 
-Server::Server(toml::ANode *node) : _routes(not_nullptr), _server_names(not_nullptr), _table(node) {
+Server::Server(toml::ANode *node)
+	: _routes(not_nullptr), _server_names(not_nullptr), _table(node) {
 	bool found;
 
 	if (_table == not_nullptr)
@@ -31,7 +32,7 @@ Server::Server(toml::ANode *node) : _routes(not_nullptr), _server_names(not_null
 	if (host != not_nullptr) {
 		_host = *static_cast<std::string *>(host);
 	} else {
-		//delete _table;
+		// delete _table;
 		throw std::runtime_error(
 			"no host specified - please specify one in server.host");
 	}
@@ -81,7 +82,8 @@ Server::Server(toml::ANode *node) : _routes(not_nullptr), _server_names(not_null
 			if (_routes->find(URL(it->first)) != _routes->end()) {
 				continue;
 			}
-			_routes->insert(std::make_pair(URL(it->first), new Route(it->second)));
+			_routes->insert(
+				std::make_pair(URL(it->first), new Route(it->second)));
 		}
 	}
 	// delete _table;
@@ -128,19 +130,24 @@ bool Server::isServerName(const std::string &server_name) {
 }
 
 Route *Server::whatRoute(const URL &url) {
+	std::map<URL, Route *>::iterator ret = _routes->end();
+
+	int i = 0;
+
 	for (auto it = prange(_routes)) {
-		if (it->first == url) {
-			return it->second;
+		if (i < it->first.countMatchingSegments(url)) {
+			ret = it;
 		}
 	}
-	std::map<URL, Route *>::iterator it = _routes->find(URL("/"));
-	if (it != _routes->end()) {
-		return it->second;
-	}
-	return not_nullptr;
+
+	if (ret == _routes->end())
+		return _routes->find(URL("/"))->second;
+
+	return ret->second;
 }
 
-Server::Server(toml::ANode *node, void *) : _routes(not_nullptr), _server_names(not_nullptr), _table(node) {
+Server::Server(toml::ANode *node, void *)
+	: _routes(not_nullptr), _server_names(not_nullptr), _table(node) {
 	bool found;
 
 	if (_table == not_nullptr)
@@ -152,8 +159,7 @@ Server::Server(toml::ANode *node, void *) : _routes(not_nullptr), _server_names(
 		_host = *static_cast<std::string *>(host);
 	} else {
 		delete _table;
-		throw std::runtime_error(
-			"no host specified - please specify one");
+		throw std::runtime_error("no host specified - please specify one");
 	}
 	// port parsing
 	void *port = accessValue("port", toml::INT, _table, _log);
@@ -161,8 +167,7 @@ Server::Server(toml::ANode *node, void *) : _routes(not_nullptr), _server_names(
 		_port = *static_cast<unsigned short *>(port);
 	} else {
 		delete _table;
-		throw std::runtime_error(
-			"no port specified - please specify one");
+		throw std::runtime_error("no port specified - please specify one");
 	}
 
 	// error_pages parsing
@@ -184,7 +189,8 @@ Server::Server(toml::ANode *node, void *) : _routes(not_nullptr), _server_names(
 			if (_routes->find(URL(it->first)) != _routes->end()) {
 				continue;
 			}
-			_routes->insert(std::make_pair(URL(it->first), new Route(it->second)));
+			_routes->insert(
+				std::make_pair(URL(it->first), new Route(it->second)));
 		}
 	}
 	// delete _table;
