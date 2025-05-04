@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:21:20 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 09:33:47 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/04 13:12:53 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef unsigned int uint;
 namespace webserv {
 namespace http {
 
-class Response : public http::IMessage {
+class Response : public IMessage {
   public:
 	Response(void);
 	~Response(void);
