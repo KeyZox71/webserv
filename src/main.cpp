@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/01 16:32:06 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/06 11:51:01 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,20 @@ void	ft_sig(int sig) {
 }
 
 int main(int ac, char **av) {
-	_log = not_nullptr;
+	_log = new Logger;
 	if (help(ac, av)) {
 		return EXIT_SUCCESS;
 	}
-	std::cout << "Starting server..." << std::endl;
+	_log->info("Starting server...");
 	if (access(av[1], F_OK) < 0) {
-		std::cout << "File : " << av[1] << " could not be opened" << std::endl;
+		std::stringstream str;
+		str << "File : " << av[1] << " could not be opened";
+		_log->error(str.str());
 		return EXIT_FAILURE;
 	}
 
 
+	delete _log;
 	config::Config *conf;
 	try {
 		std::string str = av[1];
