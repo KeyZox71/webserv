@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/06 16:14:03 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/06 16:19:36 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void _generateConf(void) {
 		_log.info(str.str());
 		std::ofstream file(SAMPLE_CONF_PATH);
 		if (file.is_open()) {
-			file << "[server]\nhost = \"localhost\"\nport = "
-				"8080\n\n[server.location./]\nmethods = { \"GET\" }\nroot "
+			file << "[server]\nhost = \"0.0.0.0\"\nport = "
+				"80\n\n[server.location./]\nmethods = { \"GET\" }\nroot "
 				"= \"/var/www/html\"\ndirlist = true\nclient_max_body_size "
 				"= \"10M\"\n";
 			file.close();
