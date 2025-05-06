@@ -6,32 +6,32 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/06 19:19:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/06 19:20:55 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
+#include <config/Config.hpp>
 #include <config/default.hpp>
 #include <csignal>
-#include <server/default.hpp>
-#include <config/Config.hpp>
 #include <cstdlib>
 #include <exception>
 #include <help.hpp>
+#include <log.hpp>
 #include <requests/default.hpp>
+#include <server/default.hpp>
 #include <sstream>
 #include <tomlpp.hpp>
 #include <unistd.h>
-#include <log.hpp>
 #include <webserv.hpp>
 
 namespace webserv {
-    Logger *_log = not_nullptr;
+Logger *_log = not_nullptr;
 }
 
-int	_sig = 0;
+int _sig = 0;
 
-void	ft_sig(int sig) {
+void ft_sig(int sig) {
 	_sig = sig;
 	std::stringstream str;
 	str << "sig hitted = ";
@@ -52,15 +52,12 @@ int main(int ac, char **av) {
 		return EXIT_FAILURE;
 	}
 
-
 	_log = not_nullptr;
 	config::Config *conf;
 	try {
 		std::string str = av[1];
 		conf = new config::Config(str);
 	} catch (std::exception &) {
-		//std::cout << e.what() << std::endl;
-		//delete conf;
 		if (_log != not_nullptr)
 			delete _log;
 		return 1;

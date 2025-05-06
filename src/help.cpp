@@ -6,13 +6,13 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/06 19:19:43 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/06 19:20:57 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <log.hpp>
 #include <fstream>
 #include <help.hpp>
+#include <log.hpp>
 #include <sstream>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -40,9 +40,9 @@ void _generateConf(void) {
 		std::ofstream file(SAMPLE_CONF_PATH);
 		if (file.is_open()) {
 			file << "[server]\nhost = \"0.0.0.0\"\nport = "
-				"80\n\n[server.location./]\nmethods = { \"GET\" }\nroot "
-				"= \"/var/www/html\"\ndirlist = true\nclient_max_body_size "
-				"= \"10M\"\n";
+					"80\n\n[server.location./]\nmethods = { \"GET\" }\nroot "
+					"= \"/var/www/html\"\ndirlist = true\nclient_max_body_size "
+					"= \"10M\"\n";
 			file.close();
 			_log.info("config file successfully generated");
 		} else {
@@ -52,7 +52,7 @@ void _generateConf(void) {
 }
 
 void _printVersion(void) {
-	Logger log;
+	Logger			  log;
 	std::stringstream str;
 	str << "you are running webserv " << WEBSRV_VERSION;
 	log.info(str.str());
@@ -67,15 +67,12 @@ bool help(int ac, char **av) {
 	if (option == "--help" || option == "-v") {
 		_printHelp();
 		return true;
-	}
-	else if (option == "--generate" || option == "-g") {
+	} else if (option == "--generate" || option == "-g") {
 		_generateConf();
 		return true;
-	}
-	else if (option == "--version" || option == "-v") {
+	} else if (option == "--version" || option == "-v") {
 		_printVersion();
 		return true;
-	}
-	else
+	} else
 		return false;
 }
