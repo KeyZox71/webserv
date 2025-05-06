@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/06 16:19:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/06 19:19:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <webserv.hpp>
+
+using namespace webserv;
 
 void _printHelp(void) {
 	std::cout << "-------------- WEBSERV --------------" << std::endl;
@@ -50,7 +52,10 @@ void _generateConf(void) {
 }
 
 void _printVersion(void) {
-	std::cout << "You are running : Webserv " << WEBSRV_VERSION << std::endl;
+	Logger log;
+	std::stringstream str;
+	str << "you are running webserv " << WEBSRV_VERSION;
+	log.info(str.str());
 }
 
 bool help(int ac, char **av) {
