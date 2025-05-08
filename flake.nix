@@ -34,19 +34,20 @@
             name = "webserv";
             src = pkgs.fetchgit {
               url = "https://github.com/keyzox71/webserv.git";
-              rev = "8ef2803"; # Specify the revision
-              sha256 = "kjHPL1LInRv+8RE2Cyqt2R9M8qxpvkmvNjLhQLm3AWs="; # Specify the SHA-256 hash
-              fetchSubmodules = true;
+              rev = "8f6875d"; # Specify the revision
+              sha256 = "XEy48IhXGLHw5+DI2oaV03P7rWzH+gSbOLYrbO2YTrE="; # Specify the SHA-256 hash
+              fetchSubmodules = true; # need it for tomlpp
             };
             buildInputs = with pkgs; [
               clang
             ];
             buildPhase = ''
-              				PKGS=true make
+              				PKGS=true make -j
             '';
             installPhase = ''
-              				mkdir -p $out/bin
-                            	cp webserv $out/bin
+              							mkdir -p /etc/webserv
+                            				mkdir -p $out/bin
+                                          	cp webserv $out/bin
             '';
           };
         }

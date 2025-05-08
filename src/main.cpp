@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/06 19:20:55 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/08 12:00:41 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,14 @@ int main(int ac, char **av) {
 		return EXIT_SUCCESS;
 	}
 	log.info("Starting server...");
-	if (access(av[1], F_OK) < 0) {
+	if (ac < 2) {
+		if (access(SAMPLE_CONF_PATH, F_OK) < 0) {
+			std::stringstream str;
+			str << "File : " << SAMPLE_CONF_PATH << " could not be opened";
+			log.error(str.str());
+			return EXIT_FAILURE;
+		}
+	} else if (access(av[1], F_OK) < 0) {
 		std::stringstream str;
 		str << "File : " << av[1] << " could not be opened";
 		log.error(str.str());
@@ -55,7 +62,12 @@ int main(int ac, char **av) {
 	_log = not_nullptr;
 	config::Config *conf;
 	try {
-		std::string str = av[1];
+		std::string str;
+		if (ac < 2) {
+			str = SAMPLE_CONF_PATH;
+		} else  {
+			str = av[1];
+		}
 		conf = new config::Config(str);
 	} catch (std::exception &) {
 		if (_log != not_nullptr)

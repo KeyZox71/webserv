@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/08 11:21:10 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/08 11:58:13 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,18 @@ void _printHelp(void) {
 	std::cout << "-------------------------------------" << std::endl;
 }
 
-void _generateConf(void) {
+void _generateConf(const std::string path) {
 	webserv::Logger _log;
-	if (access(SAMPLE_CONF_PATH, F_OK) == 0) {
+	if (access(path.c_str(), F_OK) == 0) {
 		_log.warn(std::string(SAMPLE_CONF_PATH) + " already exist, aborting");
 	} else {
 		std::stringstream str;
 		str << "generating config into " << SAMPLE_CONF_PATH << "...";
 		_log.info(str.str());
-		std::ofstream file(SAMPLE_CONF_PATH);
+		std::ofstream file(path.c_str());
 		if (file.is_open()) {
 			file << "[server]\nhost = \"0.0.0.0\"\nport = "
-					"80\n\n[server.location./]\ndirlist = false\n";
+					"80\n\n[server.location./]\n";
 			file.close();
 			_log.info("config file successfully generated");
 		} else {
@@ -58,15 +58,15 @@ void _printVersion(void) {
 
 bool help(int ac, char **av) {
 	if (ac < 2) {
-		_printHelp();
-		return true;
+		_generateConf(SAMPLE_CONF_PATH);
+		return false;
 	}
 	std::string option = av[1];
 	if (option == "--help" || option == "-v") {
 		_printHelp();
 		return true;
 	} else if (option == "--generate" || option == "-g") {
-		_generateConf();
+		_generateConf(SAMPLE_CONF_PATH);
 		return true;
 	} else if (option == "--version" || option == "-v") {
 		_printVersion();

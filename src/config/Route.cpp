@@ -80,7 +80,7 @@ Route::Route(toml::ANode *table)
 	if (val != not_nullptr)
 		_dirlist = *static_cast<bool *>(val);
 	else
-		_dirlist = true;
+		_dirlist = false;
 	/* val = accessValue("cookies", toml::BOOL, _table, _log); */
 	/* if (val != not_nullptr) */
 	/* 	_cookies = *static_cast<bool *>(val); */
