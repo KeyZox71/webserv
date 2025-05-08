@@ -8,7 +8,7 @@
   };
 
   outputs =
-    inputs@{ nixpkgs, ... }:
+    inputs@{ self, nixpkgs, ... }:
     let
       supportedSystems = [
         "x86_64-linux"
@@ -26,6 +26,31 @@
         );
     in
     {
+      packages = forEachSupportedSystem (
+        { pkgs }:
+        rec {
+          default = webserv;
+          webserv = pkgs.stdenv.mkDerivation {
+            name = "webserv";
+            src = pkgs.fetchgit {
+              url = "https://github.com/keyzox71/webserv.git";
+              rev = "8ef2803"; # Specify the revision
+              sha256 = "kjHPL1LInRv+8RE2Cyqt2R9M8qxpvkmvNjLhQLm3AWs="; # Specify the SHA-256 hash
+              fetchSubmodules = true;
+            };
+            buildInputs = with pkgs; [
+              clang
+            ];
+            buildPhase = ''
+              				PKGS=true make
+            '';
+            installPhase = ''
+              				mkdir -p $out/bin
+                            	cp webserv $out/bin
+            '';
+          };
+        }
+      );
       devShells = forEachSupportedSystem (
         { pkgs }:
         {
