@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/04 12:48:10 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/09 11:47:48 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,10 @@ Route *Server::whatRoute(const URL &url) {
 	std::map<URL, Route *>::iterator ret = _routes->end();
 
 	int i = 0;
+	
+	if (_routes == not_nullptr)
+		return not_nullptr;
+
 
 	for (auto it = prange(_routes)) {
 		if (i < it->first.countMatchingSegments(url)) {

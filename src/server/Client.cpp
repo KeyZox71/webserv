@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/04 13:37:21 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/09 11:48:59 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,14 @@ void Client::parse(void) {
 	_route = _conf->whatRoute(URL(this->_request->getTarget()));
 	this->_request->setRoute(_route);
 
+	if (_conf->getServerNames() != not_nullptr) {
+		std::string host = _request->getHeader("Host");
+		bool ret = _conf->isServerName(host.substr(0, host.find(':')));
+		if (ret == false) {
+			throw std::runtime_error("serverName nor correcponding");
+		}
+	}
+	
 	if (!this->_route || this->_route == not_nullptr) {
 		this->_request->setMethod("404");
 		return;
@@ -107,7 +115,7 @@ void Client::answer(void) {
 		return;
 	}
 
-	if (_route->getRedirect() == true) {
+	if (_route != not_nullptr && _route->getRedirect() == true) {
 		http::Redirect redir(_route->getRootDir());
 		_response = redir;
 		_response_str = _response.str();

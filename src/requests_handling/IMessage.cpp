@@ -6,16 +6,26 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 23:34:45 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 09:48:31 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/09 11:20:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "requests/IMessage.hpp"
 #include <requests/default.hpp>
 
 using namespace webserv::http;
 
 std::map<std::string, std::string> IMessage::getHeaders(void) const {
 	return (this->_headers);
+}
+
+std::string IMessage::getHeader(const std::string key) const {
+	std::string str;
+	auto it = _headers.find(key);
+	if (it == _headers.end())
+		return "";
+	str = it->second;
+	return str;
 }
 
 std::string IMessage::getBody(void) const { return (this->_body); }

@@ -6,18 +6,18 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/04 13:57:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/09 11:06:38 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <cppeleven.hpp>
-#include <log.hpp>
-#include <node/default.hpp>
 #include <cctype>
+#include <cppeleven.hpp>
 #include <cstdlib>
+#include <log.hpp>
 #include <map>
+#include <node/default.hpp>
 #include <string>
 #include <tomlpp.hpp>
 
@@ -29,18 +29,18 @@ class Route {
 	Route(toml::ANode *);
 	~Route(void);
 
-	bool	getDirList(void) { return _dirlist; }
+	bool getDirList(void) { return _dirlist; }
 	/* bool	getCookies(void) { return _cookies; } */
-	bool	getRedirect(void) { return _redirect; }
+	bool getRedirect(void) { return _redirect; }
 
-	int32_t	getMaxBody(void) { return _max_body; }
+	int32_t getMaxBody(void) { return _max_body; }
 
-	std::string getRootDir(void) { return _root; }
-	std::string getUpRoot(void) { return _up_root; }
-	std::string getIndex(void) { return _index; }
+	std::string							getRootDir(void) { return _root; }
+	std::string							getUpRoot(void) { return _up_root; }
+	std::string							getIndex(void) { return _index; }
 	std::map<std::string, std::string> *getCgi(void) { return _cgi; }
 
-	bool	*getMethods(void) { return _methods; }
+	bool *getMethods(void) { return _methods; }
 
   protected:
   private:
@@ -56,7 +56,7 @@ class Route {
 	std::map<std::string, std::string> *_cgi;
 
 	bool _methods[3]; ///> A methods boolean array which correspond to - 0: GET,
-					  ///1: POST, 2: DELETE
+					  /// 1: POST, 2: DELETE
 	toml::ANode *_table;
 
 	/**
@@ -66,8 +66,7 @@ class Route {
 	 *
 	 *	@return	A pointer to a map of cgi
 	 */
-	std::map<std::string, std::string> *
-	_parseCGI(toml::ANode *);
+	std::map<std::string, std::string> *_parseCGI(toml::ANode *);
 
 	/**
 	 *	@brief	Can be used to parse a table of error pages
