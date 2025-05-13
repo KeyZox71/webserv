@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/08 12:00:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/13 10:07:53 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <tomlpp.hpp>
 #include <unistd.h>
 #include <webserv.hpp>
+#include <server/ResourceManager.hpp>
 
 namespace webserv {
 Logger *_log = not_nullptr;

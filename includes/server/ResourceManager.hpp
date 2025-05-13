@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 17:13:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/13 09:55:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/13 10:14:27 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,18 @@
 namespace webserv {
 namespace server {
 
+class CompareId {
+  public:
+	CompareId(int id) : _id(id) {}
+
+	bool operator()(const webserv::server::AClientResource *resource) const {
+		return resource->getId() == _id;
+	}
+
+  private:
+	int _id;
+};
+
 class ResourceManager {
   public:
 	/**
@@ -37,7 +49,7 @@ class ResourceManager {
 	 *	@throw	std::out_of_range If the resource does not exist
 	 */
 	static AClientResource *get(int id) {
-		auto it = std::find(_res.begin(), _res.end(), id);
+		auto it = std::find_if(_res.begin(), _res.end(), CompareId(id));
 
 		if (it != _res.end())
 			return (*it);
@@ -59,10 +71,12 @@ class ResourceManager {
 	 *	@param	The id of the resource to remove
 	 */
 	static void remove(int id) {
-		auto it = std::find(_res.begin(), _res.end(), id);
-		
-		if (it != _res.end())
+		auto it = std::find_if(_res.begin(), _res.end(), CompareId(id));
+
+		if (it != _res.end()) {
 			delete (*it);
+			_res.erase(it);
+		}
 		// TODO throw or not - to see
 	}
 

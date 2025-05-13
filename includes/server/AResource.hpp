@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 14:20:09 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/13 09:56:02 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/13 10:11:34 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ public:
 	struct pollfd	getFileDescriptor();
 
 	virtual	clientResType type(void);
+	int	getId(void) const { return _res_id; }
 
 protected:
 	struct pollfd	_fd;
