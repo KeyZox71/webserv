@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 14:20:09 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/13 10:11:34 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/13 18:27:46 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,33 +18,29 @@
 namespace webserv {
 namespace server {
 
-enum	clientResType {
-	CGI,
-	UP_FILE
-};
+enum clientResType { CGI, UP_FILE };
 
 class AClientResource {
-public:
-	virtual			~AClientResource() {}
+  public:
+	virtual ~AClientResource() {}
 
-	bool	operator==(int i) const {
+	bool operator==(int i) const {
 		if (i == _res_id)
 			return true;
 		return false;
 	}
 
-	void			addFileDescriptor(struct pollfd fd);
-	struct pollfd	getFileDescriptor();
+	void		  setFileDescriptor(struct pollfd *fd) { _fd = fd; }
+	struct pollfd getFileDescriptor(void) const { return *_fd; }
 
-	virtual	clientResType type(void);
-	int	getId(void) const { return _res_id; }
+	virtual clientResType type(void) const ;
+	int					  getId(void) const { return _res_id; }
 
-protected:
-	struct pollfd	_fd;
+  protected:
+	struct pollfd *_fd;
 
-	int	_res_id;
-
+	int _res_id;
 };
 
-} // -namepsace server
-} // -namespace webserv
+} // namespace server
+} // namespace webserv
