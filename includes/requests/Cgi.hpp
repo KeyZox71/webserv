@@ -3,29 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   Cgi.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 14:17:34 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/30 09:36:02 by adjoly           ###   ########.fr       */
+/*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
+/*   Updated: 2025/05/15 13:45:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <requests/ARequest.hpp>
+#include "server/AResource.hpp"
+#include <config/Route.hpp>
 #include <config/default.hpp>
+#include <requests/ARequest.hpp>
+
 #include <map>
 #include <string>
 
 namespace webserv {
 
-class Cgi {
+class Cgi : public server::AClientResource {
   public:
-	Cgi(http::ARequest *, config::Server *);
+	Cgi(http::ARequest *, config::Route *);
 	~Cgi(void);
 
 	std::string getEnv(std::string &);
-	void		setEnv(std::string &, std::string);
+	void		setEnv(const std::string, std::string);
 
 	void process(void);
 
@@ -33,8 +36,11 @@ class Cgi {
   private:
 	void _initEnvp(void);
 
+	char **_genEnv(void);
+
 	std::map<std::string, std::string> _envp;
-	config::Server					  *_conf;
-	http::IMessage					  *_request;
+	config::Route					  *_conf;
+	http::ARequest					  *_request;
 };
+
 }; // namespace webserv
