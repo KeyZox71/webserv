@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/09 11:06:38 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/16 12:08:03 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <node/default.hpp>
 #include <string>
 #include <tomlpp.hpp>
+#include <webserv.hpp>
 
 namespace webserv {
 namespace config {
@@ -39,6 +40,23 @@ class Route {
 	std::string							getUpRoot(void) { return _up_root; }
 	std::string							getIndex(void) { return _index; }
 	std::map<std::string, std::string> *getCgi(void) { return _cgi; }
+	std::string							getCgiPath(const std::string file) {
+		if (_cgi == not_nullptr)
+			return "";
+		size_t pos = file.find_last_of(".");
+
+		if (pos == file.length())
+			return "";
+		std::string ext = file.substr(pos + 1);
+
+		for (auto it = prange(_cgi)) {
+			if (ext == it->first) {
+				return it->second;
+			}
+		}
+		return "";
+	}
+
 
 	bool *getMethods(void) { return _methods; }
 

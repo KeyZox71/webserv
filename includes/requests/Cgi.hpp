@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/15 13:45:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/16 12:26:18 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,19 @@ class Cgi : public server::AClientResource {
   private:
 	void _initEnvp(void);
 
+	/**
+	 *	@brief	Can be used to convert the _envp to a char** usable in execve
+	 *
+	 *	@return	A newly allocated char** with the env from _envp
+	 */
 	char **_genEnv(void);
 
-	std::map<std::string, std::string> _envp;
-	config::Route					  *_conf;
-	http::ARequest					  *_request;
+	std::string _script_path; // The full path of the script to be executed
+	std::string	_cgi_path;
+
+	std::map<std::string, std::string> _envp; // The envp filled with _initEnvp
+	config::Route  *_conf; // The configuration for the route used
+	http::ARequest *_request; // The requests that will be used for the cgi
 };
 
 }; // namespace webserv
