@@ -6,17 +6,22 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/16 12:30:10 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/19 11:41:28 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cerrno>
 #include <cstddef>
+#include <cstdlib>
 #include <cstring>
 #include <help.hpp>
 #include <requests/Cgi.hpp>
 
 #include <fcntl.h>
+#include <sstream>
 #include <string>
+#include <sys/wait.h>
+#include <unistd.h>
 
 using namespace webserv;
 
@@ -90,13 +95,38 @@ char **Cgi::_genEnv(void) {
 	return newEnv;
 }
 
-void Cgi::process() {
-	int pipefd[2];
-	int forkPid;
+void Cgi::process(void) {
+	int	  pipefd[2];
+	pid_t forkPid;
 
-	if (pipe(pipefd) <= -1) {
-		// TODO: error handling
+	if (pipe(pipefd) == -1) {
+		throw;
+		// TODO: error handling pipe fail
 	}
 
 	forkPid = fork();
+	if (forkPid < 0) {
+		throw;
+		// TODO: fork fail
+	} else if (forkPid == 0) {
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+		close(pipefd[0]);
+
+		char  *argv[] = {const_cast<char *>(_cgi_path.c_str()),
+						 const_cast<char *>(_script_path.c_str()), NULL};
+		char **env = _genEnv();
+
+		if (execve(_cgi_path.c_str(), argv, env) == -1) {
+			std::stringstream str;
+			str << "how did you do that ???? : ";
+			str << errno;
+			_log->error(str.str());
+			for (int i = 0; env[i] != NULL; i++)
+				delete env[i];
+			delete env;
+			exit(EXIT_FAILURE);
+		}
+	}
+	waitpid(forkPid, NULL, 0);
 }

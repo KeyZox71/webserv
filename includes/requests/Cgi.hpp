@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/16 12:26:18 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/19 11:07:07 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,9 @@ class Cgi : public server::AClientResource {
 	std::map<std::string, std::string> _envp; // The envp filled with _initEnvp
 	config::Route  *_conf; // The configuration for the route used
 	http::ARequest *_request; // The requests that will be used for the cgi
+
+	int	stdin_pipe[2]; // The pipefd for the stdin of the cgi
+	int stdout_pipe[2]; // The pipefd for the stdout of the cgi
 };
 
 }; // namespace webserv
