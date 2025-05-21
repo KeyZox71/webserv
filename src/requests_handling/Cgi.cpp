@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/19 11:41:28 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/21 09:50:23 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <fcntl.h>
 #include <sstream>
 #include <string>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -27,49 +28,51 @@ using namespace webserv;
 
 // WARN: construtor will probably be changed and practicly do nothing
 Cgi::Cgi(http::ARequest *req, config::Route *conf)
-	: _conf(conf), _request(req) {
+	: _prepared(false), _executed(false), _conf(conf), _request(req) {
 	_initEnvp();
 	_cgi_path = _conf->getCgiPath(req->getTarget());
 	if (_cgi_path == "") {
-		// TODO: need to make something
+		throw;
+		// TODO: need to make something probably will be checked before by
+		// client
 	}
 }
 
 void Cgi::_initEnvp(void) {
 	std::stringstream str;
 	str << WEBSRV_NAME << "/" << WEBSRV_VERSION;
-	setEnv("SERVER_SOFTWARE", str.str());
+	_setEnv("SERVER_SOFTWARE", str.str());
 	str.clear();
-	setEnv("SERVER_NAME", _request->getHeader("Host"));
-	setEnv("SERVER_PROTOCOL", _request->getProtocol());
+	_setEnv("SERVER_NAME", _request->getHeader("Host"));
+	_setEnv("SERVER_PROTOCOL", _request->getProtocol());
 	// setEnv("SERVER_PORT", _request->get); // TODO: need to get the port by a
 	// way i dont know yet
 
-	setEnv("GATEWAY_INTERFACE", "CGI/1.1");
+	_setEnv("GATEWAY_INTERFACE", "CGI/1.1");
 
 	// setEnv("PATH_TRANSLATED", ); // TODO: wtf should i put here i dont fcking
 	// know
 	// setEnv("PATH_INFO", ); // TODO: wut make no sense
 
 	str << _request->getBody().length();
-	setEnv("CONTENT_LENGH", str.str());
+	_setEnv("CONTENT_LENGH", str.str());
 	str.clear();
-	setEnv("CONTENT_TYPE", _request->getHeader("Content-Type"));
+	_setEnv("CONTENT_TYPE", _request->getHeader("Content-Type"));
 	// setEnv("REMOTE_ADDR", _request->get) // TODO: don't have it yet need to
 	// be passed to the requset :sob:
-	setEnv("HTTP_ACCEPT", _request->getHeader("Accept"));
-	setEnv("HTTP_ACCEPT_LANGUAGE", _request->getHeader("Accept-Language"));
-	setEnv("HTTP_COOKIE", _request->getHeader("Cookie"));
-	setEnv("HTTP_HOST", _request->getHeader("Host"));
-	setEnv("HTTP_REFERER", _request->getHeader("Referer"));
-	setEnv("HTTP_USER_AGENT", _request->getHeader("User-Agent"));
+	_setEnv("HTTP_ACCEPT", _request->getHeader("Accept"));
+	_setEnv("HTTP_ACCEPT_LANGUAGE", _request->getHeader("Accept-Language"));
+	_setEnv("HTTP_COOKIE", _request->getHeader("Cookie"));
+	_setEnv("HTTP_HOST", _request->getHeader("Host"));
+	_setEnv("HTTP_REFERER", _request->getHeader("Referer"));
+	_setEnv("HTTP_USER_AGENT", _request->getHeader("User-Agent"));
 
-	setEnv("SCRIPT_NAME", _request->getTarget());
+	_setEnv("SCRIPT_NAME", _request->getTarget());
 
-	setEnv("QUERY_STRING", _request->getUrl().getQueryString());
+	_setEnv("QUERY_STRING", _request->getUrl().getQueryString());
 }
 
-std::string Cgi::getEnv(std::string &key) {
+std::string Cgi::_getEnv(std::string &key) const {
 	auto it = _envp.find(key);
 	if (it != _envp.end()) {
 		return it->second;
@@ -77,7 +80,7 @@ std::string Cgi::getEnv(std::string &key) {
 	return "";
 }
 
-void Cgi::setEnv(const std::string key, std::string value) {
+void Cgi::_setEnv(const std::string key, std::string value) {
 	_envp[key] = value;
 }
 
@@ -95,23 +98,31 @@ char **Cgi::_genEnv(void) {
 	return newEnv;
 }
 
-void Cgi::process(void) {
-	int	  pipefd[2];
-	pid_t forkPid;
-
-	if (pipe(pipefd) == -1) {
+void Cgi::prepare(void) {
+	if (pipe(_stdin_pipe) == -1 && pipe(_stdout_pipe) == -1) {
 		throw;
-		// TODO: error handling pipe fail
+		// TODO: need to make a better throw
 	}
+	_fd->fd = _stdin_pipe[1];
+	_fd->events = POLLOUT;
+	_prepared = true;
+}
+
+void Cgi::process(void) {
+	pid_t forkPid;
 
 	forkPid = fork();
 	if (forkPid < 0) {
 		throw;
 		// TODO: fork fail
 	} else if (forkPid == 0) {
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[1]);
-		close(pipefd[0]);
+		dup2(_stdin_pipe[0], STDIN_FILENO);
+		close(_stdin_pipe[0]);
+		close(_stdin_pipe[1]);
+
+		dup2(_stdout_pipe[1], STDOUT_FILENO);
+		close(_stdout_pipe[0]);
+		close(_stdout_pipe[1]);
 
 		char  *argv[] = {const_cast<char *>(_cgi_path.c_str()),
 						 const_cast<char *>(_script_path.c_str()), NULL};
@@ -128,5 +139,24 @@ void Cgi::process(void) {
 			exit(EXIT_FAILURE);
 		}
 	}
+	close(_stdin_pipe[0]);
+	close(_stdout_pipe[1]);
 	waitpid(forkPid, NULL, 0);
+	_executed = true;
+}
+
+std::string Cgi::str(void) {
+	std::string str;
+	int			max = _conf->getMaxBody();
+	char		buffer[1024];
+
+	while (max) {
+		ssize_t count = read(_stdout_pipe[0], buffer, sizeof(buffer));
+		if (count > 0)
+			str.append(buffer);
+		else
+			break;
+	}
+	str.append("\0");
+	return str;
 }
