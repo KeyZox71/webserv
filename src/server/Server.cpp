@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/02 13:30:50 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:11:00 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,14 +187,15 @@ void Server::_run(void) {
 					_log->error("client does not exist");
 					continue;
 				}
-				if (client->requestParsed() == true && !client->isReadyToClose()) {
+				if (client->requestParsed() == true &&
+					!client->isReadyToClose()) {
 					client->answer();
 					continue;
 				}
 
 				if (client->isReadyToClose()) {
 					_client_data.erase(std::find(_client_data.begin(),
-											 _client_data.end(), client));
+												 _client_data.end(), client));
 					delete client;
 					for (auto it = range(_client_fds)) {
 						if (_client_fds[i].fd == (*it).fd) {

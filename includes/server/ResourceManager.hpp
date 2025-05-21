@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 17:13:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/13 10:14:27 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/16 10:18:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ class ResourceManager {
 			delete (*it);
 			_res.erase(it);
 		}
-		// TODO throw or not - to see
+		// NOTE: throw or not - to see
 	}
 
   protected:
