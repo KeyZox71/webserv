@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/19 15:11:00 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/22 17:36:13 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,23 @@ void Server::_run(void) {
 					_log->error("client does not exist");
 					continue;
 				}
-				client->parse();
+				try {
+					client->parse();
+				} catch (std::exception &e) {
+					_log->error(e.what());
+					_client_data.erase(std::find(_client_data.begin(),
+												 _client_data.end(), client));
+					delete client;
+					for (auto it = range(_client_fds)) {
+						if (_client_fds[i].fd == (*it).fd) {
+							_log->debug("client fds erased");
+							close(it.base()->fd);
+							_client_fds.erase(it);
+							break;
+						}
+					}
+					i--;
+				}
 			} else if (_client_fds[i].revents & POLLOUT) {
 				std::stringstream str;
 				str << _client_fds[i].fd;

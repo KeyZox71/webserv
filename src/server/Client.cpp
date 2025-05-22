@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/09 11:48:59 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/22 17:36:36 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void Client::parse(void) {
 		std::string host = _request->getHeader("Host");
 		bool ret = _conf->isServerName(host.substr(0, host.find(':')));
 		if (ret == false) {
-			throw std::runtime_error("serverName nor correcponding");
+			throw std::runtime_error("serverName not correcponding");
 		}
 	}
 	
