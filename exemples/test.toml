@@ -15,7 +15,7 @@ methods = { "GET" }
 root = "/home/adjoly"
 dirlist = true
 client_max_body_size = "10M"
-index = "banger.html"
+index = "index.html"
 
 [server.location./api]
 methods = { "GET", "POST" }

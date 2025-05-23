@@ -6,17 +6,18 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/21 09:50:23 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/23 18:26:45 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <help.hpp>
+#include <requests/default.hpp>
+#include <server/default.hpp>
 
 #include <cerrno>
 #include <cstddef>
 #include <cstdlib>
 #include <cstring>
-#include <help.hpp>
-#include <requests/Cgi.hpp>
-
 #include <fcntl.h>
 #include <sstream>
 #include <string>
@@ -24,18 +25,35 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-using namespace webserv;
+using namespace webserv::server;
 
 // WARN: construtor will probably be changed and practicly do nothing
-Cgi::Cgi(http::ARequest *req, config::Route *conf)
+Cgi::Cgi(http::Get *req, config::Route *conf, int id)
 	: _prepared(false), _executed(false), _conf(conf), _request(req) {
 	_initEnvp();
+	_res_id = id;
 	_cgi_path = _conf->getCgiPath(req->getTarget());
 	if (_cgi_path == "") {
 		throw;
 		// TODO: need to make something probably will be checked before by
 		// client
 	}
+}
+
+Cgi::Cgi(http::Post *req, config::Route *conf, int id)
+	: _prepared(false), _executed(false), _conf(conf), _request(req) {
+	_initEnvp();
+	_res_id = id;
+	_cgi_path = _conf->getCgiPath(req->getTarget());
+	if (_cgi_path == "") {
+		throw;
+		// TODO: need to make something probably will be checked before by
+		// client
+	}
+}
+
+Cgi::~Cgi(void) {
+
 }
 
 void Cgi::_initEnvp(void) {
