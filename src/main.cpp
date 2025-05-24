@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/13 10:07:53 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/24 11:20:28 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,17 @@
 #include <help.hpp>
 #include <log.hpp>
 #include <requests/default.hpp>
+#include <server/ResourceManager.hpp>
 #include <server/default.hpp>
 #include <sstream>
 #include <tomlpp.hpp>
 #include <unistd.h>
 #include <webserv.hpp>
-#include <server/ResourceManager.hpp>
 
 namespace webserv {
-Logger *_log = not_nullptr;
-}
+Logger								  *_log = not_nullptr;
+std::vector<server::AClientResource *> server::ResourceManager::_res;
+} // namespace webserv
 
 int _sig = 0;
 
@@ -66,7 +67,7 @@ int main(int ac, char **av) {
 		std::string str;
 		if (ac < 2) {
 			str = SAMPLE_CONF_PATH;
-		} else  {
+		} else {
 			str = av[1];
 		}
 		conf = new config::Config(str);

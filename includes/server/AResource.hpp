@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 14:20:09 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/23 18:27:06 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/24 10:09:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class AClientResource {
 	virtual ~AClientResource() {}
 
 	bool operator==(int i) const {
-		if (i == _res_id)
+		if (i == _fd->fd)
 			return true;
 		return false;
 	}
@@ -34,12 +34,10 @@ class AClientResource {
 	struct pollfd getFileDescriptor(void) const { return *_fd; }
 
 	virtual clientResType type(void) const = 0;
-	int					  getId(void) const { return _res_id; }
+	int					  getId(void) const { return _fd->fd; }
 
   protected:
 	struct pollfd *_fd;
-
-	int _res_id;
 };
 
 } // namespace server

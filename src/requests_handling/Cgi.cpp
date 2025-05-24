@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/23 18:26:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/24 11:17:22 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <cstring>
 #include <fcntl.h>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -28,32 +29,42 @@
 using namespace webserv::server;
 
 // WARN: construtor will probably be changed and practicly do nothing
-Cgi::Cgi(http::Get *req, config::Route *conf, int id)
-	: _prepared(false), _executed(false), _conf(conf), _request(req) {
+Cgi::Cgi(http::Get *req, config::Route *conf)
+	: _executed(false), _is_post(false), _conf(conf), _request(req) {
+	log("➕", "Cgi", "GET constructor called");
 	_initEnvp();
-	_res_id = id;
 	_cgi_path = _conf->getCgiPath(req->getTarget());
-	if (_cgi_path == "") {
-		throw;
-		// TODO: need to make something probably will be checked before by
-		// client
-	}
+	if (_cgi_path == "")
+		throw std::runtime_error("Executable path does not exist");
+	if (!access(_cgi_path.c_str(), X_OK))
+		throw std::runtime_error("Executable is not executable " + _cgi_path);
+	_prep();
 }
 
-Cgi::Cgi(http::Post *req, config::Route *conf, int id)
-	: _prepared(false), _executed(false), _conf(conf), _request(req) {
+Cgi::Cgi(http::Post *req, config::Route *conf)
+	: _executed(false), _is_post(true), _conf(conf), _request(req) {
+	log("➕", "Cgi", "POST constructor called");
 	_initEnvp();
-	_res_id = id;
 	_cgi_path = _conf->getCgiPath(req->getTarget());
-	if (_cgi_path == "") {
-		throw;
-		// TODO: need to make something probably will be checked before by
-		// client
-	}
+	if (_cgi_path == "")
+		throw std::runtime_error("");
+	if (!access(_cgi_path.c_str(), X_OK))
+		throw std::runtime_error("Executable is not executable " + _cgi_path);
+	_prep();
+	CgiIn *in = new CgiIn(_request->getBody(), _stdin_pipe[STDOUT_FILENO]);
+	ResourceManager::append(in);
+	_fd->fd = _stdout_pipe[STDIN_FILENO];
+	_fd->events = POLLIN;
 }
 
-Cgi::~Cgi(void) {
+Cgi::~Cgi(void) { log("➖", "Cgi", "destructor called"); }
 
+void Cgi::_prep(void) {
+	if (_is_post)
+		if (pipe(_stdin_pipe) == -1)
+			throw std::runtime_error("stdin pipe failed for cgi D:");
+	if (pipe(_stdout_pipe) == -1)
+		throw std::runtime_error("stdout pipe failed for cgi D:");
 }
 
 void Cgi::_initEnvp(void) {
@@ -114,16 +125,6 @@ char **Cgi::_genEnv(void) {
 	}
 
 	return newEnv;
-}
-
-void Cgi::prepare(void) {
-	if (pipe(_stdin_pipe) == -1 && pipe(_stdout_pipe) == -1) {
-		throw;
-		// TODO: need to make a better throw
-	}
-	_fd->fd = _stdin_pipe[1];
-	_fd->events = POLLOUT;
-	_prepared = true;
 }
 
 void Cgi::process(void) {

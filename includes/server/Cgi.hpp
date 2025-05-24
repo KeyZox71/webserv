@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/23 18:24:29 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/24 11:18:49 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,26 +25,14 @@
 namespace webserv {
 namespace server {
 
+#define PIPE_READ 0
+#define PIPE_WRITE 1
+
 class Cgi : public server::AClientResource {
   public:
-	Cgi(webserv::http::Get *, webserv::config::Route *, int);
-	Cgi(webserv::http::Post *, webserv::config::Route *, int);
+	Cgi(webserv::http::Get *, webserv::config::Route *);
+	Cgi(webserv::http::Post *, webserv::config::Route *);
 	~Cgi(void);
-
-	int getFdOut(void) const { return _stdout_pipe[0]; }
-
-	/**
-	 *	@brief	Can be used to prepare the Cgi execution
-	 *
-	 *	@note	To be used after the main fd is in POLLOUT state
-	 */
-	void prepare(void);
-
-	/**
-	 *	@brief	Can be used to know if the prepare function has already been
-	 *			called
-	 */
-	bool isPrepared(void) { return _prepared; }
 
 	/**
 	 *	@brief	Can be used to process the Cgi script
@@ -68,12 +56,12 @@ class Cgi : public server::AClientResource {
 
   protected:
   private:
-	bool _prepared;
 	bool _executed;
+	bool _is_post;
 
 	void _initEnvp(void);
 
-	void _prepPost(void);
+	void _prep(void);
 
 	/**
 	 *	@brief	Can be used to convert the _envp to a char** usable in execve
@@ -89,14 +77,14 @@ class Cgi : public server::AClientResource {
 	std::string _cgi_path;
 
 	std::map<std::string, std::string> _envp; // The envp filled with _initEnvp
-	webserv::config::Route  *_conf;	  // The configuration for the route used
-	webserv::http::ARequest *_request; // The requests that will be used for the cgi
+	webserv::config::Route *_conf; // The configuration for the route used
+	webserv::http::ARequest
+		*_request; // The requests that will be used for the cgi
 
-	int _stdin_pipe[2];	 // The pipefd for the stdin of the cgi
+	int _stdin_pipe[2];	 // The pipefd for the stdin of the cgi in the case of a
+						 // post
 	int _stdout_pipe[2]; // The pipefd for the stdout of the cgi
-
-	int _in_res; // The id of the stdin resource
 };
 
-}; // namespace http
+}; // namespace server
 }; // namespace webserv
