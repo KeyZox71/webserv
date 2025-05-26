@@ -9,32 +9,29 @@
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
-#include <log.hpp>
+#include "node/ANode.hpp"
 #include "node/default.hpp"
 #include <config/default.hpp>
+#include <log.hpp>
 #include <map>
+#include <sstream>
 #include <string>
-
 
 using namespace webserv::config;
 
-std::map<std::string, std::string> *Route::_parseCGI(toml::ANode *table) {
-	std::map<std::string, std::string> *cgi =
-		new std::map<std::string, std::string>;
-	void *val;
+std::vector<std::string> *Route::_parseCGI(toml::ANode *table) {
+	std::vector<std::string> *cgi = new std::vector<std::string>;
 
-	for (std::map<std::string, toml::ANode *>::iterator it =
-			 table->getTable()->begin();
-		 it != table->getTable()->end(); it++) {
-		val = accessValue(it->first, toml::STRING, table, _log);
-		if (val != not_nullptr) {
-			if (cgi->find(it->first) != cgi->end())
-				continue;
-			else
-				(*cgi)[it->first] = *static_cast<std::string *>(val);
+	for (auto it = prange(table->getArray())) {
+		if ((*it)->type() == toml::STRING)
+			cgi->push_back(*static_cast<std::string *>((*it)->getValue()));
+		else {
+			std::stringstream str;
+			str << "Was expecting a : " << toml::nodeTypeToStr(toml::STRING);
+			str << " but got a : " << toml::nodeTypeToStr((*it)->type());
+			_log->warn(str.str());
 		}
 	}
-
 	return cgi;
 }
 
@@ -58,8 +55,7 @@ void Route::_parseMethods(std::vector<toml::ANode *> *table) {
 	}
 }
 
-Route::Route(toml::ANode *table)
-	: _max_body(10485760) {
+Route::Route(toml::ANode *table) : _max_body(10485760) {
 	void *val;
 	bool  found;
 
@@ -105,12 +101,11 @@ Route::Route(toml::ANode *table)
 #else
 		_root = "./html";
 #endif
-			val =
-				accessValue("client_max_body_size", toml::STRING, _table, _log);
+	val = accessValue("client_max_body_size", toml::STRING, _table, _log);
 	if (val != not_nullptr)
 		_max_body = _parseSize(*static_cast<std::string *>(val));
 	std::map<std::string, toml::ANode *>::iterator it =
-		_table->accessIt("cgi", toml::TABLE, found);
+		_table->accessIt("cgi", toml::ARRAY, found);
 	if (found == true && it != _table->getTable()->end())
 		_cgi = _parseCGI(it->second);
 	else

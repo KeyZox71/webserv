@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/24 11:18:49 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/26 17:19:01 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ class Cgi : public server::AClientResource {
 	void		_setEnv(const std::string, std::string);
 
 	std::string _script_path; // The full path of the script to be executed
-	std::string _cgi_path;
 
 	std::map<std::string, std::string> _envp; // The envp filled with _initEnvp
 	webserv::config::Route *_conf; // The configuration for the route used

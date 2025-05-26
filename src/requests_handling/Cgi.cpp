@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/24 11:17:22 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/26 17:22:12 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ Cgi::Cgi(http::Get *req, config::Route *conf)
 	: _executed(false), _is_post(false), _conf(conf), _request(req) {
 	log("➕", "Cgi", "GET constructor called");
 	_initEnvp();
-	_cgi_path = _conf->getCgiPath(req->getTarget());
-	if (_cgi_path == "")
-		throw std::runtime_error("Executable path does not exist");
-	if (!access(_cgi_path.c_str(), X_OK))
-		throw std::runtime_error("Executable is not executable " + _cgi_path);
 	_prep();
 }
 
@@ -45,16 +40,9 @@ Cgi::Cgi(http::Post *req, config::Route *conf)
 	: _executed(false), _is_post(true), _conf(conf), _request(req) {
 	log("➕", "Cgi", "POST constructor called");
 	_initEnvp();
-	_cgi_path = _conf->getCgiPath(req->getTarget());
-	if (_cgi_path == "")
-		throw std::runtime_error("");
-	if (!access(_cgi_path.c_str(), X_OK))
-		throw std::runtime_error("Executable is not executable " + _cgi_path);
 	_prep();
 	CgiIn *in = new CgiIn(_request->getBody(), _stdin_pipe[STDOUT_FILENO]);
 	ResourceManager::append(in);
-	_fd->fd = _stdout_pipe[STDIN_FILENO];
-	_fd->events = POLLIN;
 }
 
 Cgi::~Cgi(void) { log("➖", "Cgi", "destructor called"); }
@@ -65,6 +53,8 @@ void Cgi::_prep(void) {
 			throw std::runtime_error("stdin pipe failed for cgi D:");
 	if (pipe(_stdout_pipe) == -1)
 		throw std::runtime_error("stdout pipe failed for cgi D:");
+	_fd->fd = _stdout_pipe[STDIN_FILENO];
+	_fd->events = POLLIN;
 }
 
 void Cgi::_initEnvp(void) {
@@ -119,7 +109,7 @@ char **Cgi::_genEnv(void) {
 
 	for (auto it = range(_envp), i++) {
 		std::string str = it->first + "=" + it->second;
-		char	   *tmp = new char[str.size() + 1];
+		char *		tmp = new char[str.size() + 1];
 		std::strcpy(tmp, str.c_str());
 		newEnv[i] = tmp;
 	}
@@ -131,10 +121,9 @@ void Cgi::process(void) {
 	pid_t forkPid;
 
 	forkPid = fork();
-	if (forkPid < 0) {
-		throw;
-		// TODO: fork fail
-	} else if (forkPid == 0) {
+	if (forkPid < 0)
+		throw std::runtime_error("fork failed D:");
+	else if (forkPid == 0) {
 		dup2(_stdin_pipe[0], STDIN_FILENO);
 		close(_stdin_pipe[0]);
 		close(_stdin_pipe[1]);
@@ -143,11 +132,10 @@ void Cgi::process(void) {
 		close(_stdout_pipe[0]);
 		close(_stdout_pipe[1]);
 
-		char  *argv[] = {const_cast<char *>(_cgi_path.c_str()),
-						 const_cast<char *>(_script_path.c_str()), NULL};
+		char * argv[] = {const_cast<char *>(_script_path.c_str()), NULL};
 		char **env = _genEnv();
 
-		if (execve(_cgi_path.c_str(), argv, env) == -1) {
+		if (execve(_script_path.c_str(), argv, env) == -1) {
 			std::stringstream str;
 			str << "how did you do that ???? : ";
 			str << errno;
