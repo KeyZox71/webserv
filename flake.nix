@@ -54,13 +54,18 @@
       devShells = forEachSupportedSystem (
         { pkgs }:
         {
-          default = pkgs.mkShell.override { } {
-            buildInputs = with pkgs; [
-            ];
+          default = pkgs.mkShell {
             hardeningDisable = [ "all" ];
-            packages = with pkgs; [
+            nativeBuildInputs = with pkgs; [
+              llvmPackages_12.clang-tools
               gcc11
               clang_12
+            ];
+            buildInputs = with pkgs; [
+            ];
+            packages = with pkgs; [
+              nixd
+              nixfmt-rfc-style
               norminette
               valgrind
               git
