@@ -27,8 +27,8 @@ std::vector<std::string> *Route::_parseCGI(toml::ANode *table) {
 			cgi->push_back(*static_cast<std::string *>((*it)->getValue()));
 		else {
 			std::stringstream str;
-			str << "Was expecting a : " << toml::nodeTypeToStr(toml::STRING);
-			str << " but got a : " << toml::nodeTypeToStr((*it)->type());
+			str << "Was expecting a: " << toml::nodeTypeToStr(toml::STRING);
+			str << ", but got a: " << toml::nodeTypeToStr((*it)->type());
 			_log->warn(str.str());
 		}
 	}

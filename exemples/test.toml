@@ -21,7 +21,7 @@ index = "index.html"
 methods = { "GET", "POST" }
 root = "/nfs/homes/mmoussou"
 upload_path = "/etc/webserv/up"
-cgi.go = "/bin/go"
+cgi = { ".py", ".go" }
 
 [server.location./redir]
 redirect = "https://kanel.ovh"
