@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/26 17:02:12 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 09:37:23 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,14 @@ class Route {
 	std::string				  getIndex(void) { return _index; }
 	std::vector<std::string> *getCgi(void) { return _cgi; }
 	bool *					  getMethods(void) { return _methods; }
+	bool					  isCgi(std::string target) {
+		std::string target_ext = target.substr(target.find('.'));
+		for (auto it = prange(_cgi)) {
+			if (target_ext == *it)
+				return true;
+		}
+		return false;
+	}
 
   protected:
   private:

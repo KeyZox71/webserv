@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/22 17:36:13 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:03:35 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <netinet/in.h>
 #include <poll.h>
 #include <requests/default.hpp>
+#include <server/PfdManager.hpp>
 #include <server/default.hpp>
 #include <sstream>
 #include <stdexcept>
@@ -29,7 +30,11 @@
 #include <sys/socket.h>
 #include <webserv.hpp>
 
+
 using namespace webserv::server;
+
+std::vector<struct pollfd> PfdManager::_pfd_vec;
+std::vector<pfd_type> PfdManager::_pfd_type;
 
 extern int _sig;
 
@@ -62,7 +67,7 @@ std::string getMethod(std::string &data) {
 }
 
 int Server::_fillHostsPorts(std::vector<std::string> &hosts,
-							std::vector<int>		 &ports) {
+							std::vector<int> &		  ports) {
 	std::vector<config::Server *> config = _conf->getServers();
 
 	for (auto it = range(config)) {
@@ -101,13 +106,13 @@ void Server::_run(void) {
 		 it != _fds_server.end(); it++) {
 		fd.fd = *it;
 		fd.events = POLLIN;
-		_client_fds.push_back(fd);
+		PfdManager::append(fd, SRV);
 		_log->debug("new socket in poll");
 	}
 
 	// to add signal instead of 727
 	while (727 - sigHandling()) {
-		if (poll(_client_fds.data(), _client_fds.size(), 5000) < 0) {
+		if (poll(PfdManager::data(), PfdManager::size(), 5000) < 0) {
 			if (errno == EINTR) {
 				continue;
 			}
@@ -120,7 +125,7 @@ void Server::_run(void) {
 
 		size_t i = 0;
 		for (auto it = range(_fds_server), i++) {
-			if (_client_fds[i].revents & POLLIN) {
+			if (PfdManager::at(i).revents & POLLIN) {
 				struct sockaddr_in client_addr;
 				socklen_t		   addrlen = sizeof(client_addr);
 				int				   client_fd =
@@ -150,10 +155,8 @@ void Server::_run(void) {
 				pfd.fd = client_fd;
 				pfd.events = POLLIN | POLLOUT;
 				pfd.revents = 0;
-				_client_fds.push_back(pfd);
-				struct pollfd *ppfd =
-					_client_fds.data() + _client_fds.size() - 1;
-				Client *new_client = new Client(ppfd, conf_srv);
+				PfdManager::append(pfd, CLIENT);
+				Client *new_client = new Client(pfd.fd, conf_srv);
 				if (new_client == NULL) {
 					continue;
 				}
@@ -162,16 +165,16 @@ void Server::_run(void) {
 			}
 		}
 
-		for (size_t i = _fds_server.size(); i < _client_fds.size(); ++i) {
-			if (_client_fds[i].revents & POLLERR) {
+		for (size_t i = _fds_server.size(); i < PfdManager::size(); ++i) {
+			if (PfdManager::at(i).revents & POLLERR) {
 				_log->debug("pollerr");
-				close(_client_fds[i].fd);
-				_client_fds.erase(_client_fds.begin() + i);
+				close(PfdManager::at(i).fd);
+				PfdManager::remove(PfdManager::at(i).fd);
 				delete _client_data[i - _fds_server.size()];
 				_client_data.erase(_client_data.begin() + i);
-			} else if (_client_fds[i].revents & POLLIN) {
+			} else if (PfdManager::at(i).revents & POLLIN) {
 				_log->debug("pollin");
-				Client *client = _getClient(_client_fds[i].fd);
+				Client *client = _getClient(PfdManager::at(i).fd);
 				if (client == not_nullptr) {
 					_log->error("client does not exist");
 					continue;
@@ -183,21 +186,24 @@ void Server::_run(void) {
 					_client_data.erase(std::find(_client_data.begin(),
 												 _client_data.end(), client));
 					delete client;
-					for (auto it = range(_client_fds)) {
-						if (_client_fds[i].fd == (*it).fd) {
-							_log->debug("client fds erased");
-							close(it.base()->fd);
-							_client_fds.erase(it);
-							break;
-						}
-					}
+					// for (auto it = range(_client_fds)) {
+					// 	if (_client_fds[i].fd == (*it).fd) {
+					// 		_log->debug("client fds erased");
+					// 		close(it.base()->fd);
+					// 		_client_fds.erase(it);
+					// 		break;
+					// 	}
+					// }
+					close(PfdManager::at(i).fd);
+					PfdManager::remove(PfdManager::at(i).fd);
+					_log->debug("client removed");
 					i--;
 				}
-			} else if (_client_fds[i].revents & POLLOUT) {
+			} else if (PfdManager::at(i).revents & POLLOUT) {
 				std::stringstream str;
-				str << _client_fds[i].fd;
+				str << PfdManager::at(i).fd;
 				_log->debug("pollout = " + str.str());
-				Client *client = _getClient(_client_fds[i].fd);
+				Client *client = _getClient(PfdManager::at(i).fd);
 
 				if (client == not_nullptr) {
 					_log->error("client does not exist");
@@ -213,14 +219,18 @@ void Server::_run(void) {
 					_client_data.erase(std::find(_client_data.begin(),
 												 _client_data.end(), client));
 					delete client;
-					for (auto it = range(_client_fds)) {
-						if (_client_fds[i].fd == (*it).fd) {
-							_log->debug("client fds erased");
-							close(it.base()->fd);
-							_client_fds.erase(it);
-							break;
-						}
-					}
+					// for (auto it = range(_client_fds)) {
+					// 	if (_client_fds[i].fd == (*it).fd) {
+					// 		_log->debug("client fds erased");
+					// 		close(it.base()->fd);
+					// 		_client_fds.erase(it);
+					// 		break;
+					// 	}
+					// }
+					close(PfdManager::at(i).fd);
+					PfdManager::remove(PfdManager::at(i).fd);
+					_log->debug("client removed");
+
 					i--;
 				}
 			}
@@ -241,7 +251,5 @@ Server::Server(config::Config *conf) : _conf(conf) {
 
 Server::~Server(void) {
 	log("➖", "Server::Server", "destructor called");
-	for (auto it = range(_client_fds)) {
-		close(it->fd);
-	}
+	PfdManager::clear();
 }

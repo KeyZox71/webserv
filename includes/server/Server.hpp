@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/26 16:36:05 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 17:43:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ class Server {
 		   *_conf; // Pointer to the configuration class (with all config in)
 	Logger *_log;  // Pointer to the log class
 	std::vector<int>		   _fds_server; // The fds of the sockets
-	std::vector<struct pollfd> _client_fds; // A vector of all the poll fd
+	// std::vector<struct pollfd> _client_fds; // A vector of all the poll fd
 	std::vector<Client *> _client_data; // vector of all the client sockaddr_in
 };
 

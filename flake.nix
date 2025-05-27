@@ -39,7 +39,7 @@
               fetchSubmodules = true; # need it for tomlpp
             };
             buildInputs = with pkgs; [
-              clang
+              clang_12
             ];
             buildPhase = ''
               				PKGS=true make -j

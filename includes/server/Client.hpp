@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/02 13:21:10 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:47:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace server {
 
 class Client {
   public:
-	Client(struct pollfd *, config::Server *);
+	Client(int, config::Server *);
 	Client(const Client &cpy);
 	virtual ~Client(void);
 
@@ -33,15 +33,15 @@ class Client {
 
 	bool requestParsed(void);
 
-	struct pollfd *getPollfd(void) const { return _pfd; }
+	int getPollfd(void) const { return _fd; }
 
 	bool operator==(int fd) {
-		if (fd != _pfd->fd)
+		if (fd != _fd)
 			return false;
 		return true;
 	}
 
-	bool	isReadyToClose() const;
+	bool isReadyToClose() const;
 
   private:
 	void _getRequest(std::string);
@@ -55,11 +55,11 @@ class Client {
 		return newStr;
 	}
 
-	struct pollfd  *_pfd;
+	int				_fd;
 	http::ARequest *_request;
 	http::Response	_response;
 	config::Server *_conf;
-	config::Route  *_route;
+	config::Route * _route;
 	size_t			_bytes_sent;
 	std::string		_response_str;
 	bool			_response_done;

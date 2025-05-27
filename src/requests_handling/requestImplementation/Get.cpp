@@ -6,21 +6,26 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/04 12:25:43 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 16:49:05 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <algorithm>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <vector>
 
+#include <server/default.hpp>
 #include <requests/default.hpp>
 
 using namespace webserv::http;
 
-Get::Get(std::string &data) { this->parse(data); }
+Get::Get(std::string &data) { 
+	// _cgi = not_nullptr;
+	this->parse(data); 
+}
 
 void Get::parse(std::string const &data) {
 	std::istringstream stream(data);
@@ -50,8 +55,10 @@ void Get::parse(std::string const &data) {
 
 	_url = new URL("http://" + _headers["Host"] + _target);
 
-	/*std::cout << "wtf = " << _headers["Host"] << std::endl;
-	std::cout << *_url << std::endl;*/
+	// if (_route->isCgi(_target)) {
+	// 	_cgi = new server::Cgi(this, _route);
+	// 	server::ResourceManager::append(_cgi);
+	// }
 
 	/*
 	std::cout << "-- start-line --" << std::endl;

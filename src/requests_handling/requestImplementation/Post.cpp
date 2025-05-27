@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/03 09:44:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 09:23:54 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ void Post::handleMultipartData(const std::string &body, const std::string &bound
 
 		if (end != std::string::npos) {
 			std::string part_header = body.substr(start, end - start);
-			// std::cout << std::endl << std::endl << std::endl << std::endl;
 			std::string part_content =
 				body.substr(end + 4, body.find(delim, end) - end - 4);
 
@@ -94,7 +93,7 @@ void Post::handleMultipartData(const std::string &body, const std::string &bound
 				outfile.write(part_content.c_str(), part_content.length());
 				outfile.close();
 			} else {
-				std::cerr << "open failed" << std::endl;
+				_log->error("open failed D:");
 			}
 		}
 

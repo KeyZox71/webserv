@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/22 17:36:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 16:48:09 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 
 using namespace webserv::server;
 
-Client::Client(struct pollfd *pfd, config::Server *conf)
-	: _pfd(pfd), _conf(conf) {
+Client::Client(int fd, config::Server *conf)
+	: _fd(fd), _conf(conf) {
 	_request = not_nullptr;
 	log("➕", "Client", "constructor called");
 	_response_done = false;
@@ -28,7 +28,7 @@ Client::Client(struct pollfd *pfd, config::Server *conf)
 
 Client::Client(const Client &cpy) {
 	if (this != &cpy) {
-		_pfd->fd = cpy._pfd->fd;
+		_fd = cpy._fd;
 	}
 }
 
@@ -39,7 +39,7 @@ void Client::parse(void) {
 
 	do {
 		std::memset(buffer, 0, BUFFER_SIZE);
-		bytes_received = recv(_pfd->fd, buffer, BUFFER_SIZE - 1, 0);
+		bytes_received = recv(_fd, buffer, BUFFER_SIZE - 1, 0);
 		if (bytes_received == -1) {
 			_log->error("failed to receive request");
 			throw std::runtime_error("failed to receive request");
@@ -135,7 +135,7 @@ void Client::answer(void) {
 		_bytes_sent = 0;
 	}
 
-	ssize_t sent = send(_pfd->fd, _response_str.c_str() + _bytes_sent,
+	ssize_t sent = send(_fd, _response_str.c_str() + _bytes_sent,
 						_response_str.length() - _bytes_sent, 0);
 
 	if (sent == -1) {

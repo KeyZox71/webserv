@@ -6,23 +6,26 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/26 17:19:01 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 16:16:08 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <config/Route.hpp>
+#include "server/AResource.hpp"
 #include <config/default.hpp>
 #include <cstdio>
-#include <requests/default.hpp>
-#include <server/AResource.hpp>
 
 #include <map>
 #include <string>
 #include <unistd.h>
 
 namespace webserv {
+namespace http {
+class Get;
+class Post;
+class ARequest;
+}; // namespace http
 namespace server {
 
 #define PIPE_READ 0
@@ -34,18 +37,12 @@ class Cgi : public server::AClientResource {
 	Cgi(webserv::http::Post *, webserv::config::Route *);
 	~Cgi(void);
 
+	clientResType type(void) const { return CGI; }
+
 	/**
 	 *	@brief	Can be used to process the Cgi script
 	 */
 	void process(void);
-
-	/**
-	 *	@brief	Can be used to check if the Cgi have been executed
-	 *
-	 *	@note	Need to be used after the process() function and checked before
-	 *			using str()
-	 */
-	bool isProcessed(void) { return _executed; }
 
 	/**
 	 *	@brief	Can be used to get the output of the Cgi
@@ -54,9 +51,10 @@ class Cgi : public server::AClientResource {
 	 */
 	std::string str(void);
 
+	short event(void) const { return POLLIN; }
+
   protected:
   private:
-	bool _executed;
 	bool _is_post;
 
 	void _initEnvp(void);
@@ -77,8 +75,7 @@ class Cgi : public server::AClientResource {
 
 	std::map<std::string, std::string> _envp; // The envp filled with _initEnvp
 	webserv::config::Route *_conf; // The configuration for the route used
-	webserv::http::ARequest
-		*_request; // The requests that will be used for the cgi
+	http::ARequest *_request;	   // The requests that will be used for the cgi
 
 	int _stdin_pipe[2];	 // The pipefd for the stdin of the cgi in the case of a
 						 // post

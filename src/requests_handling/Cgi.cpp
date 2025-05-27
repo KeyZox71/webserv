@@ -6,11 +6,12 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/26 17:22:12 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 13:08:36 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <help.hpp>
+#include <ios>
 #include <requests/default.hpp>
 #include <server/default.hpp>
 
@@ -22,6 +23,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <sys/poll.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -30,18 +32,20 @@ using namespace webserv::server;
 
 // WARN: construtor will probably be changed and practicly do nothing
 Cgi::Cgi(http::Get *req, config::Route *conf)
-	: _executed(false), _is_post(false), _conf(conf), _request(req) {
+	: _is_post(false), _conf(conf), _request(req) {
+	_processed = false;
 	log("➕", "Cgi", "GET constructor called");
 	_initEnvp();
 	_prep();
 }
 
 Cgi::Cgi(http::Post *req, config::Route *conf)
-	: _executed(false), _is_post(true), _conf(conf), _request(req) {
+	: _is_post(true), _conf(conf), _request(req) {
+	_processed = false;
 	log("➕", "Cgi", "POST constructor called");
 	_initEnvp();
 	_prep();
-	CgiIn *in = new CgiIn(_request->getBody(), _stdin_pipe[STDOUT_FILENO]);
+	AClientResource *in = new CgiIn(_request->getBody(), _stdin_pipe[PIPE_WRITE]);
 	ResourceManager::append(in);
 }
 
@@ -53,8 +57,8 @@ void Cgi::_prep(void) {
 			throw std::runtime_error("stdin pipe failed for cgi D:");
 	if (pipe(_stdout_pipe) == -1)
 		throw std::runtime_error("stdout pipe failed for cgi D:");
-	_fd->fd = _stdout_pipe[STDIN_FILENO];
-	_fd->events = POLLIN;
+	_fd= _stdout_pipe[STDIN_FILENO];
+	_pfd_event = POLLIN;
 }
 
 void Cgi::_initEnvp(void) {
@@ -118,19 +122,23 @@ char **Cgi::_genEnv(void) {
 }
 
 void Cgi::process(void) {
+	_processed = true;
 	pid_t forkPid;
 
+	if (access(_script_path.c_str(), X_OK))
+		throw std::runtime_error(
+			"script is not executable please run : chmod +x " + _script_path);
 	forkPid = fork();
 	if (forkPid < 0)
 		throw std::runtime_error("fork failed D:");
 	else if (forkPid == 0) {
-		dup2(_stdin_pipe[0], STDIN_FILENO);
-		close(_stdin_pipe[0]);
-		close(_stdin_pipe[1]);
+		dup2(_stdin_pipe[PIPE_READ], STDIN_FILENO);
+		close(_stdin_pipe[PIPE_READ]);
+		close(_stdin_pipe[PIPE_WRITE]);
 
-		dup2(_stdout_pipe[1], STDOUT_FILENO);
-		close(_stdout_pipe[0]);
-		close(_stdout_pipe[1]);
+		dup2(_stdout_pipe[PIPE_WRITE], STDOUT_FILENO);
+		close(_stdout_pipe[PIPE_READ]);
+		close(_stdout_pipe[PIPE_WRITE]);
 
 		char * argv[] = {const_cast<char *>(_script_path.c_str()), NULL};
 		char **env = _genEnv();
@@ -146,10 +154,9 @@ void Cgi::process(void) {
 			exit(EXIT_FAILURE);
 		}
 	}
-	close(_stdin_pipe[0]);
-	close(_stdout_pipe[1]);
+	close(_stdin_pipe[PIPE_READ]);
+	close(_stdout_pipe[PIPE_WRITE]);
 	waitpid(forkPid, NULL, 0);
-	_executed = true;
 }
 
 std::string Cgi::str(void) {
@@ -165,5 +172,6 @@ std::string Cgi::str(void) {
 			break;
 	}
 	str.append("\0");
+	ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
 	return str;
 }

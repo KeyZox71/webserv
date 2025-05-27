@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:14:45 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/24 11:06:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 13:07:50 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ namespace server {
 class FileUpload : public AClientResource {
   public:
 	FileUpload(int id) { 
-		_fd->fd = id;
-		_fd->events = POLLOUT;
+		_fd = id;
+		_pfd_event = POLLOUT;
 	}
 	~FileUpload(void) {}
 
