@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 17:45:43 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 17:43:21 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:38:04 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@
 #include <fcntl.h>
 #include <log.hpp>
 #include <netinet/in.h>
-#include <stdexcept>
 #include <poll.h>
+#include <server/PfdManager.hpp>
+#include <stdexcept>
 #include <vector>
+#include <webserv.hpp>
 
 namespace webserv {
 namespace server {
@@ -74,11 +76,21 @@ class Server {
 	Client *_getClient(int);
 
 	config::Config
-		   *_conf; // Pointer to the configuration class (with all config in)
+		*	_conf; // Pointer to the configuration class (with all config in)
 	Logger *_log;  // Pointer to the log class
-	std::vector<int>		   _fds_server; // The fds of the sockets
+	std::vector<int> _fds_server; // The fds of the sockets
 	// std::vector<struct pollfd> _client_fds; // A vector of all the poll fd
 	std::vector<Client *> _client_data; // vector of all the client sockaddr_in
+
+	/**
+	 *	@brief Can be used to handle a pollfd that is a server
+	 */
+	void _handle_srv(size_t i);
+
+	/**
+	 *	@brief Can be used to handle pollfd taht is a client
+	 */
+	void _handle_client(size_t *i);
 };
 
 }; // namespace server
