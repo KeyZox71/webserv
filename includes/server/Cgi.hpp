@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/27 16:16:08 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 21:32:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 #include <config/default.hpp>
 #include <cstdio>
 
+#include <exception>
 #include <map>
+#include <server/ResourceManager.hpp>
 #include <string>
 #include <unistd.h>
 
@@ -52,6 +54,13 @@ class Cgi : public server::AClientResource {
 	std::string str(void);
 
 	short event(void) const { return POLLIN; }
+	bool  isReady(void) const {
+		 if (_is_post == false)
+			 return true;
+		 if (ResourceManager::get(_stdin_pipe[PIPE_WRITE])->isProcessed())
+			 return true;
+		 return false;
+	}
 
   protected:
   private:

@@ -6,12 +6,13 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:17:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/04 12:21:03 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 19:46:54 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "log.hpp"
 #include <cstring>
 #include <ostream>
 #include <sstream>
@@ -29,7 +30,7 @@ class URL {
 	}
 
 	int countMatchingSegments(const URL &url) const {
-		if (_path_segments.size() == 0 || url._path_segments.size() == 0) 
+		if (_path_segments.size() == 0 || url._path_segments.size() == 0)
 			return 0;
 		int i = 0;
 
@@ -80,7 +81,7 @@ class URL {
 		}
 	}
 
-	void _splitPath(const std::string		 &path,
+	void _splitPath(const std::string &		  path,
 					std::vector<std::string> &segments) const {
 		std::stringstream ss(path);
 		std::string		  segment;

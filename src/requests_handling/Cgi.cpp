@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/27 13:08:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 22:26:52 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ Cgi::Cgi(http::Post *req, config::Route *conf)
 	log("➕", "Cgi", "POST constructor called");
 	_initEnvp();
 	_prep();
-	AClientResource *in = new CgiIn(_request->getBody(), _stdin_pipe[PIPE_WRITE]);
+	AClientResource *in =
+		new CgiIn(_request->getBody(), _stdin_pipe[PIPE_WRITE]);
 	ResourceManager::append(in);
 }
 
@@ -57,8 +58,12 @@ void Cgi::_prep(void) {
 			throw std::runtime_error("stdin pipe failed for cgi D:");
 	if (pipe(_stdout_pipe) == -1)
 		throw std::runtime_error("stdout pipe failed for cgi D:");
-	_fd= _stdout_pipe[STDIN_FILENO];
+	_script_path = _conf->getRootDir() + _request->getTarget();
+	_fd = _stdout_pipe[STDIN_FILENO];
 	_pfd_event = POLLIN;
+	if (access(_script_path.c_str(), X_OK))
+		throw std::runtime_error(
+			"script is not executable please run : chmod +x " + _script_path);
 }
 
 void Cgi::_initEnvp(void) {
@@ -117,6 +122,7 @@ char **Cgi::_genEnv(void) {
 		std::strcpy(tmp, str.c_str());
 		newEnv[i] = tmp;
 	}
+	newEnv[i] = NULL;
 
 	return newEnv;
 }
@@ -125,16 +131,15 @@ void Cgi::process(void) {
 	_processed = true;
 	pid_t forkPid;
 
-	if (access(_script_path.c_str(), X_OK))
-		throw std::runtime_error(
-			"script is not executable please run : chmod +x " + _script_path);
 	forkPid = fork();
 	if (forkPid < 0)
 		throw std::runtime_error("fork failed D:");
 	else if (forkPid == 0) {
-		dup2(_stdin_pipe[PIPE_READ], STDIN_FILENO);
-		close(_stdin_pipe[PIPE_READ]);
-		close(_stdin_pipe[PIPE_WRITE]);
+		if (_is_post) {
+			dup2(_stdin_pipe[PIPE_READ], STDIN_FILENO);
+			close(_stdin_pipe[PIPE_READ]);
+			close(_stdin_pipe[PIPE_WRITE]);
+		}
 
 		dup2(_stdout_pipe[PIPE_WRITE], STDOUT_FILENO);
 		close(_stdout_pipe[PIPE_READ]);
@@ -153,25 +158,31 @@ void Cgi::process(void) {
 			delete env;
 			exit(EXIT_FAILURE);
 		}
+	} else {
+		if (_is_post)
+			close(_stdin_pipe[PIPE_READ]);
+		close(_stdout_pipe[PIPE_WRITE]);
+		waitpid(forkPid, NULL, 0);
 	}
-	close(_stdin_pipe[PIPE_READ]);
-	close(_stdout_pipe[PIPE_WRITE]);
-	waitpid(forkPid, NULL, 0);
 }
 
 std::string Cgi::str(void) {
-	std::string str;
-	int			max = _conf->getMaxBody();
-	char		buffer[1024];
+	int				   max = _conf->getMaxBody();
+	char			   buffer[1024];
+	std::ostringstream str;
 
 	while (max) {
 		ssize_t count = read(_stdout_pipe[0], buffer, sizeof(buffer));
-		if (count > 0)
-			str.append(buffer);
+		if (count > 0) {
+			str.write(buffer, count);
+			max -= count;
+		} else if (count == 0) {
+			break;
+		}
 		else
 			break;
 	}
-	str.append("\0");
-	ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
-	return str;
+	if (_is_post)
+		ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
+	return str.str();
 }

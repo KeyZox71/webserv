@@ -6,21 +6,23 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/27 16:48:09 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 22:26:09 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
 #include "requests/RedirectResp.hpp"
 #include "requests/default.hpp"
+#include <cstddef>
 #include <log.hpp>
+#include <server/Cgi.hpp>
 #include <server/Client.hpp>
 #include <sstream>
+#include <sys/poll.h>
 
 using namespace webserv::server;
 
-Client::Client(int fd, config::Server *conf)
-	: _fd(fd), _conf(conf) {
+Client::Client(int fd, config::Server *conf) : _fd(fd), _conf(conf) {
 	_request = not_nullptr;
 	log("➕", "Client", "constructor called");
 	_response_done = false;
@@ -50,16 +52,15 @@ void Client::parse(void) {
 	_getRequest(received_data);
 
 	_route = _conf->whatRoute(URL(this->_request->getTarget()));
-	this->_request->setRoute(_route);
 
 	if (_conf->getServerNames() != not_nullptr) {
 		std::string host = _request->getHeader("Host");
-		bool ret = _conf->isServerName(host.substr(0, host.find(':')));
+		bool		ret = _conf->isServerName(host.substr(0, host.find(':')));
 		if (ret == false) {
-			throw std::runtime_error("serverName not correcponding");
+			throw std::runtime_error("serverName not corresponding");
 		}
 	}
-	
+
 	if (!this->_route || this->_route == not_nullptr) {
 		this->_request->setMethod("404");
 		return;
@@ -79,6 +80,8 @@ void Client::parse(void) {
 }
 
 bool Client::requestParsed(void) {
+	if (_request->getCgi() != not_nullptr && !_request->getCgi()->isProcessed())
+		return false;
 	if (_request == not_nullptr)
 		return false;
 	return true;
@@ -89,7 +92,7 @@ void Client::_getRequest(std::string request_str) {
 		0, request_str.substr(0, 4).find_last_not_of(" ") + 1);
 
 	if (method == "GET") {
-		this->_request = new http::Get(request_str);
+		this->_request = new http::Get(request_str, _conf);
 		std::stringstream str;
 		str << "get request received on port : ";
 		str << _conf->getPort();

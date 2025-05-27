@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:14:45 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 13:08:08 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:59:29 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ class CgiIn : public AClientResource {
 		// TODO: send the body
 	}
 	clientResType type(void) const { return CGI_IN; }
-
-	short event(void) const { return POLLIN; }
+	short		  event(void) const { return POLLIN; }
+	bool		  isReady(void) const { return true; }
 
   protected:
   private:

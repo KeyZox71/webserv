@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/29 14:20:09 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/27 13:12:03 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:54:38 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ class AClientResource {
 
 	virtual void  process(void) = 0;
 	bool		  isProcessed(void) const { return _processed; }
+	virtual bool  isReady(void) const = 0;
 	virtual short event(void) const = 0;
 
   protected:

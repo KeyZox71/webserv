@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:15:51 by adjoly            #+#    #+#             */
-/*   Updated: 2025/04/22 15:28:31 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 19:29:59 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ static inline void *accessValue(const std::string &name, toml::nodeType type,
 		}
 	}
 }
+
+extern config::Config *_conf;
 
 }; // namespace config
 }; // namespace webserv

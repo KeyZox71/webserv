@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 09:37:23 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 20:05:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ class Route {
 	bool *					  getMethods(void) { return _methods; }
 	bool					  isCgi(std::string target) {
 		std::string target_ext = target.substr(target.find('.'));
+		if (_cgi == not_nullptr)
+			return false;
+		
 		for (auto it = prange(_cgi)) {
 			if (target_ext == *it)
 				return true;

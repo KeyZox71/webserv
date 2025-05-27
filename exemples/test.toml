@@ -16,6 +16,7 @@ root = "/home/adjoly"
 dirlist = true
 client_max_body_size = "10M"
 index = "index.html"
+cgi = { ".py", ".go" }
 
 [server.location./api]
 methods = { "GET", "POST" }

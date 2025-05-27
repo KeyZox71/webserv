@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:30:15 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 16:49:00 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 22:23:15 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstddef>
 #include <requests/ARequest.hpp>
 
 namespace webserv {
@@ -22,16 +23,19 @@ namespace http {
 class Get : public ARequest {
   public:
 	Get(void) {}
-	Get(std::string &data);
+	Get(std::string &data, config::Server *srv);
 
 	void parse(std::string const &data);
 
 	Response execute(void);
 
-	//   private:
-	// server::Cgi *_cgi;
+	server::Cgi *getCgi() const { return _cgi; }
+
+  private:
+	server::Cgi *_cgi;
 };
 
+// TODO: pass _srv to other
 class Post : public ARequest {
   public:
 	Post(void) {}

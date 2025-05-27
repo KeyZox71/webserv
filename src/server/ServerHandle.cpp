@@ -6,13 +6,15 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 18:38:28 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 22:24:35 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <cstddef>
 #include <iterator>
 #include <server/default.hpp>
+#include <sys/poll.h>
 
 using namespace webserv::server;
 
@@ -33,7 +35,7 @@ void Server::_handle_srv(size_t i) {
 			_log->error(str.str());
 			return;
 		}
-		config::Server *conf_srv = _conf->getServer(i);
+		config::Server *conf_srv = config::_conf->getServer(i);
 		if (conf_srv == not_nullptr) {
 			_log->warn("where the f does he come from"); // does can't
 														 // actually happen
@@ -69,7 +71,7 @@ void Server::_handle_client(size_t *i) {
 			Client *client = _getClient(PfdManager::at(*i).fd);
 			if (client == not_nullptr) {
 				_log->error("client does not exist");
-				return ;
+				return;
 			}
 			try {
 				client->parse();
@@ -107,6 +109,25 @@ void Server::_handle_client(size_t *i) {
 				_log->debug("client removed");
 				i--;
 			}
+		}
+	}
+}
+
+void Server::_handle_resource(size_t i) {
+	struct pollfd	 pfd = PfdManager::at(i);
+	AClientResource *res = ResourceManager::get(pfd.fd);
+	if (res == not_nullptr) {
+		std::cout << "wtff" << std::endl;
+		return;
+	}
+
+	if (!res->isProcessed() && res->isReady()) {
+		if (res->type() == CGI) {
+			res->process();
+			_log->info("processingggg");
+		} else if (pfd.revents & res->event()) {
+			res->process();
+			_log->info("processingggg");
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 18:39:00 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 21:19:49 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <cerrno>
 #include <cmath>
+#include <config/default.hpp>
 #include <cstddef>
 #include <cstring>
 #include <exception>
@@ -68,7 +69,7 @@ std::string getMethod(std::string &data) {
 
 int Server::_fillHostsPorts(std::vector<std::string> &hosts,
 							std::vector<int> &		  ports) {
-	std::vector<config::Server *> config = _conf->getServers();
+	std::vector<config::Server *> config = config::_conf->getServers();
 
 	for (auto it = range(config)) {
 		hosts.push_back((*it)->getHost());
@@ -133,16 +134,15 @@ void Server::_run(void) {
 				_handle_client(&i);
 				break;
 			case RES:
-				_log->warn("not handling resource for now");
+				_handle_resource(i);
 				break;
 			}
 		}
 	}
 }
 
-Server::Server(config::Config *conf) : _conf(conf) {
+Server::Server() {
 	log("➕", "Server::Server", "config constructor called");
-	_log = conf->getLogger();
 	try {
 		_setup();
 		_run();

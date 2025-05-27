@@ -6,12 +6,11 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/24 11:20:28 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 19:36:27 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
-#include <config/Config.hpp>
 #include <config/default.hpp>
 #include <csignal>
 #include <cstdlib>
@@ -27,8 +26,9 @@
 #include <webserv.hpp>
 
 namespace webserv {
-Logger								  *_log = not_nullptr;
+Logger *							   _log = not_nullptr;
 std::vector<server::AClientResource *> server::ResourceManager::_res;
+config::Config *					   config::_conf = not_nullptr;
 } // namespace webserv
 
 int _sig = 0;
@@ -62,7 +62,6 @@ int main(int ac, char **av) {
 	}
 
 	_log = not_nullptr;
-	config::Config *conf;
 	try {
 		std::string str;
 		if (ac < 2) {
@@ -70,20 +69,20 @@ int main(int ac, char **av) {
 		} else {
 			str = av[1];
 		}
-		conf = new config::Config(str);
+		config::_conf = new config::Config(str);
 	} catch (std::exception &) {
 		if (_log != not_nullptr)
 			delete _log;
 		return 1;
 	}
 	if (signal(SIGINT, &ft_sig) == SIG_ERR) {
-		conf->getLogger()->error("could not bind sigint :(");
+		config::_conf->getLogger()->error("could not bind sigint :(");
 		return EXIT_FAILURE;
 	}
 
-	webserv::server::Server *serv = new webserv::server::Server(conf);
+	webserv::server::Server *serv = new webserv::server::Server();
 
 	delete serv;
 	delete _log;
-	delete conf;
+	delete config::_conf;
 }

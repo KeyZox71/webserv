@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:21 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/26 10:16:08 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 19:25:07 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,18 @@
 
 #define auto __auto_type
 
-#include <sys/types.h>
 #include <csignal>
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <netinet/in.h>
+#include <sstream>
 #include <string>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <vector>
-#include <sstream>
-
 
 #define range(x)                                                               \
 	x.begin();                                                                 \
@@ -39,7 +38,4 @@
 
 #define BUFFER_SIZE 4096
 
-namespace webserv {
-
-} // namespace webserv
-
+namespace webserv {} // namespace webserv
