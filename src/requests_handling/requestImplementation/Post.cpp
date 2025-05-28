@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 22:23:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 09:55:37 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <algorithm>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -21,7 +22,12 @@
 
 using namespace webserv::http;
 
-Post::Post(std::string &data) { this->parse(data); }
+Post::Post(std::string &data, config::Server *srv) {
+	_url = not_nullptr;
+	_srv = srv;
+	_cgi = not_nullptr;
+	this->parse(data);
+}
 
 void Post::parse(std::string const &data) {
 	std::istringstream stream(data);

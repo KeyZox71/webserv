@@ -23,8 +23,10 @@ std::vector<std::string> *Route::_parseCGI(toml::ANode *table) {
 	std::vector<std::string> *cgi = new std::vector<std::string>;
 
 	for (auto it = prange(table->getArray())) {
-		if ((*it)->type() == toml::STRING)
-			cgi->push_back(*static_cast<std::string *>((*it)->getValue()));
+		if ((*it)->type() == toml::STRING) {
+			std::string str = *static_cast<std::string *>((*it)->getValue());
+			cgi->push_back(str);
+		}
 		else {
 			std::stringstream str;
 			str << "Was expecting a: " << toml::nodeTypeToStr(toml::STRING);

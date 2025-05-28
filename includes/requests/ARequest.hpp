@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/27 22:22:56 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 09:45:17 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,7 @@ namespace http {
 
 class ARequest : public http::IMessage {
   public:
-	virtual ~ARequest(void) {
-		log("➖", "ARequest", "destructor called");
-		if (_url != not_nullptr)
-			delete _url;
-	}
+	virtual ~ARequest(void) { log("➖", "ARequest", "destructor called"); }
 
 	virtual void	 parse(std::string const &data) = 0;
 	virtual Response execute(void) = 0;

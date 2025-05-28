@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 22:24:35 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 10:49:47 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,15 @@ void Server::_handle_client(size_t *i) {
 			}
 			try {
 				client->parse();
+				if (client->isReadyToClose()) {
+					_client_data.erase(std::find(_client_data.begin(),
+												 _client_data.end(), client));
+					delete client;
+					close(PfdManager::at(*i).fd);
+					PfdManager::remove(PfdManager::at(*i).fd);
+					_log->debug("client removed");
+					i--;
+				}
 			} catch (std::exception &e) {
 				_log->error(e.what());
 				_client_data.erase(std::find(_client_data.begin(),

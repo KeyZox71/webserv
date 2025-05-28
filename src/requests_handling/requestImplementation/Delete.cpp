@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 22:23:22 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 09:55:54 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <algorithm>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -19,7 +20,11 @@
 
 using namespace webserv::http;
 
-Delete::Delete(std::string &data) { this->parse(data); }
+Delete::Delete(std::string &data) {
+	_url = not_nullptr;
+	_srv = not_nullptr;
+	this->parse(data);
+}
 
 void Delete::parse(std::string const &data) {
 	std::istringstream stream(data);
@@ -91,4 +96,3 @@ Response Delete::execute(void) {
 
 	return (response);
 }
-

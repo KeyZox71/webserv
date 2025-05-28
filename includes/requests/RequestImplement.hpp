@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:30:15 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 22:23:15 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 09:55:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class Get : public ARequest {
   public:
 	Get(void) {}
 	Get(std::string &data, config::Server *srv);
+	~Get(void);
 
 	void parse(std::string const &data);
 
@@ -35,11 +36,9 @@ class Get : public ARequest {
 	server::Cgi *_cgi;
 };
 
-// TODO: pass _srv to other
 class Post : public ARequest {
   public:
-	Post(void) {}
-	Post(std::string &data);
+	Post(std::string &data, config::Server *srv);
 
 	void parse(std::string const &data);
 
@@ -49,8 +48,10 @@ class Post : public ARequest {
 
 	Response execute(void);
 
-	//   private:
-	// server::Cgi *_cgi;
+	server::Cgi *getCgi() const { return _cgi; }
+
+  private:
+	server::Cgi *_cgi;
 };
 
 class Delete : public ARequest {
