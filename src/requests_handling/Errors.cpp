@@ -6,39 +6,55 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 14:08:12 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/04/30 14:35:48 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/28 11:33:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <fstream>
+#include <iterator>
+#include <log.hpp>
 #include <requests/Errors.hpp>
+#include <sstream>
+#include <unistd.h>
 
 using namespace webserv;
 using namespace http;
 
-void	Errors::setEntries(const std::map<int, std::string> error_pages)
-{
-	for (std::map<int, std::string>::const_iterator it = error_pages.begin(); it != error_pages.end(); ++it)
-	{
-		if (Errors::set_error_pages.find(it->first) == Errors::set_error_pages.end()) // only insert if key doesn't exist
-		    Errors::set_error_pages[it->first] = it->second;
-	}	
+// void	Errors::setEntries(const std::map<int, std::string> error_pages)
+// {
+// 	for (std::map<int, std::string>::const_iterator it = error_pages.begin(); it
+// != error_pages.end(); ++it)
+// 	{
+// 		if (Errors::set_error_pages.find(it->first) ==
+// Errors::set_error_pages.end()) // only insert if key doesn't exist
+// 		    Errors::set_error_pages[it->first] = it->second;
+// 	}
+// }
+
+std::string Errors::getResponseBody(int error_code, std::string err_file) {
+	std::string body;
+
+	if (err_file == "") {
+		_log->warn("no error file going default");
+		return ("<html><body><h1>" + Errors::message[error_code] +
+				"</h1></body></html>");
+	}
+	if (access(err_file.c_str(), R_OK) != -1) {
+		std::ifstream	  file(err_file.c_str(), std::ios::binary);
+		std::stringstream buf;
+		buf << file.rdbuf();
+		return buf.str();
+	} else {
+		_log->error("could not read file");
+		return ("<html><body><h1>" + Errors::message[error_code] +
+				"</h1></body></html>");
+	}
 }
 
-std::string	Errors::getResponseBody(int error_code)
-{
-	std::string	body;
+std::map<int, std::string> Errors::message = Errors::populateMessages();
+std::map<int, std::string> Errors::set_error_pages;
 
-	if (Errors::set_error_pages.find(error_code) != Errors::set_error_pages.end())
-		return(Errors::set_error_pages[error_code]);
-	else
-		return("<html><body><h1>" + Errors::message[error_code] + "</h1></body></html>");
-}
-
-std::map<int, std::string>	Errors::message = Errors::populateMessages();
-std::map<int, std::string>	Errors::set_error_pages;
-
-std::map<int, std::string>	Errors::populateMessages()
-{
+std::map<int, std::string> Errors::populateMessages() {
 	std::map<int, std::string> m;
 
 	m[100] = "Continue";

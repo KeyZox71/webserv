@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:01:01 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 17:59:37 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:12:13 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,9 @@ class PfdManager {
 		}
 	}
 
-	static struct pollfd *data(void) { return _pfd_vec.data(); }
-	static size_t		  size(void) { return _pfd_vec.size(); }
+	static struct pollfd *			   data(void) { return _pfd_vec.data(); }
+	static size_t					   size(void) { return _pfd_vec.size(); }
+	static std::vector<struct pollfd> *vec(void) { return &_pfd_vec; }
 
 	static void clear(void) {
 		for (auto it = range(_pfd_vec)) {

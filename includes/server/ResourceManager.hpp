@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 17:13:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 17:24:51 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 18:40:54 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,6 @@ class ResourceManager {
 		if (it != _res.end()) {
 			delete (*it);
 			_res.erase(it);
-		}
-	}
-
-	static void process(void) {
-		for (auto it = range(_res)) {
-			(*it)->process();
-			// TODO: check for event and if isProcessed() and process
 		}
 	}
 

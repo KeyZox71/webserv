@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/nix/store/kjvgj2n3yn70hmjifg6y0bk9m4rf7jba-python3-3.12.10/bin/python3
 
 # Import modules for CGI handling
 import cgi
@@ -11,7 +11,9 @@ cgitb.enable()
 form = cgi.FieldStorage()
 
 # Set the content type to HTML
-print("Content-Type: text/html\n")
+print("Content-Type: text/html")
+
+print("")
 
 # Output a simple HTML page
 print("<html>")

@@ -6,13 +6,14 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 14:14:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 16:47:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/27 22:24:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <config/default.hpp>
+#include <cstddef>
 #include <cstdio>
 #include <netinet/in.h>
 #include <requests/default.hpp>

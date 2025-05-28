@@ -6,10 +6,11 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/02 14:53:08 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/05/28 11:29:55 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "cppeleven.hpp"
 #include <algorithm>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -19,7 +20,11 @@
 
 using namespace webserv::http;
 
-Delete::Delete(std::string &data) { this->parse(data); }
+Delete::Delete(std::string &data, config::Server *srv) {
+	_url = not_nullptr;
+	_srv = srv;
+	this->parse(data);
+}
 
 void Delete::parse(std::string const &data) {
 	std::istringstream stream(data);
@@ -85,10 +90,10 @@ Response Delete::execute(void) {
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");
-		response.setBody(
-			http::Errors::getResponseBody(response.getStatusCode()));
+		response.setBody(http::Errors::getResponseBody(
+			response.getStatusCode(),
+			_srv->getErrorPage(response.getStatusCode())));
 	}
 
 	return (response);
 }
-

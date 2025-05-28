@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/09 11:47:48 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:42:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "log.hpp"
 #include <config/default.hpp>
 #include <cstddef>
+#include <sstream>
 #include <utility>
 #include <webserv.hpp>
 
@@ -103,16 +104,15 @@ Server::~Server(void) {
 std::map<int, std::string> *
 Server::_parseErrPages(std::map<std::string, toml::ANode *> *table) {
 	std::map<int, std::string> *errPages = new std::map<int, std::string>;
-	void					   *val;
 	int							nb;
 
 	for (std::map<std::string, toml::ANode *>::iterator it = table->begin();
 		 it != table->end(); it++) {
-		val = accessValue(it->first, toml::STRING, _table, _log);
-		if (val != not_nullptr) {
+		if (it->second->type() == toml::STRING) {
 			nb = std::atoi(it->first.c_str());
 			if (nb >= 400 && nb <= 599)
-				(*errPages)[nb] = *static_cast<std::string *>(val);
+				(*errPages)[nb] =
+					*static_cast<std::string *>(it->second->getValue());
 			else
 				_log->warn("error page - " + it->first + " is not valid :(");
 		}
@@ -133,10 +133,9 @@ Route *Server::whatRoute(const URL &url) {
 	std::map<URL, Route *>::iterator ret = _routes->end();
 
 	int i = 0;
-	
+
 	if (_routes == not_nullptr)
 		return not_nullptr;
-
 
 	for (auto it = prange(_routes)) {
 		if (i < it->first.countMatchingSegments(url)) {

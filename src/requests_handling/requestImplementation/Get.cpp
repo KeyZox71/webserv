@@ -6,25 +6,37 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 16:49:05 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:28:01 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
+#include "requests/Response.hpp"
 #include <algorithm>
+#include <cstddef>
 #include <dirent.h>
+#include <exception>
+#include <sstream>
+#include <string>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <vector>
 
-#include <server/default.hpp>
 #include <requests/default.hpp>
+#include <server/default.hpp>
 
 using namespace webserv::http;
 
-Get::Get(std::string &data) { 
-	// _cgi = not_nullptr;
-	this->parse(data); 
+Get::Get(std::string &data, config::Server *srv) {
+	_cgi = not_nullptr;
+	_srv = srv;
+	_url = not_nullptr;
+	this->parse(data);
+}
+
+Get::~Get(void) {
+	// if (_url != not_nullptr)
+	// 	delete _url;
 }
 
 void Get::parse(std::string const &data) {
@@ -48,6 +60,8 @@ void Get::parse(std::string const &data) {
 		}
 	}
 
+	_route = _srv->whatRoute(URL(_target));
+
 	std::ostringstream body_stream;
 	while (std::getline(stream, line))
 		body_stream << line << "\n";
@@ -55,10 +69,28 @@ void Get::parse(std::string const &data) {
 
 	_url = new URL("http://" + _headers["Host"] + _target);
 
-	// if (_route->isCgi(_target)) {
-	// 	_cgi = new server::Cgi(this, _route);
-	// 	server::ResourceManager::append(_cgi);
-	// }
+	std::string targ = _target;
+
+	if (targ[targ.length() - 1] == '/') {
+		targ += _route->getIndex();
+	}
+
+	if (_route->isCgi(targ)) {
+		_log->info("cgi added");
+		try {
+			_cgi = new server::Cgi(this, _route);
+		} catch (std::exception &e) {
+			_log->error(e.what());
+			_method = "500";
+			return;
+		}
+		server::ResourceManager::append(_cgi);
+		struct pollfd pfd;
+		pfd.events = _cgi->event();
+		pfd.revents = 0;
+		pfd.fd = _cgi->getId();
+		server::PfdManager::append(pfd, server::RES);
+	}
 
 	/*
 	std::cout << "-- start-line --" << std::endl;
@@ -92,8 +124,56 @@ char isDirectory(const std::string &path) {
 	return S_ISDIR(file_stat.st_mode);
 }
 
+Response parseCgiOut(std::string cgi_str) {
+	Response		   response;
+	std::istringstream stream(cgi_str);
+	std::string		   line;
+
+	response.setStatusCode(200);
+	while (std::getline(stream, line) && line != "") {
+		size_t delimiter_index = line.find(':');
+		if (delimiter_index != std::string::npos) {
+			std::string key = line.substr(0, delimiter_index);
+			std::string value = line.substr(delimiter_index + 2);
+			response.addHeader(key, value);
+		}
+	}
+	std::ostringstream body_stream;
+	while (std::getline(stream, line))
+		body_stream << line << "\n";
+	response.setBody(body_stream.str());
+
+	if (response.getHeader("Content-Length") == "") {
+		std::stringstream length;
+		length << response.getBody().length();
+		response.addHeader("Content-Length", length.str());
+	}
+	return response;
+}
+
 Response Get::execute(void) {
 	http::Response response;
+
+	if (_cgi != not_nullptr) {
+		if (_method == "500") {
+			response.setStatusCode(500);
+			response.addHeader("Content-Type", "text/html");
+			response.setBody(http::Errors::getResponseBody(
+				response.getStatusCode(),
+				_srv->getErrorPage(response.getStatusCode())));
+			server::PfdManager::remove(_cgi->getId());
+			server::ResourceManager::remove(_cgi->getId());
+			_cgi = not_nullptr;
+			return response;
+		}
+		std::string str = static_cast<server::Cgi *>(_cgi)->str();
+		response = parseCgiOut(str);
+		response.setProtocol(_protocol);
+		server::PfdManager::remove(_cgi->getId());
+		server::ResourceManager::remove(_cgi->getId());
+		_cgi = not_nullptr;
+		return response;
+	}
 
 	this->_target = this->_route->getRootDir() + this->_target;
 
@@ -117,8 +197,8 @@ Response Get::execute(void) {
 				response.addHeader("Content-Type",
 								   http::Mime::getType(this->_target));
 			} else if (this->_route->getDirList()) {
-				DIR						*dir;
-				struct dirent			*entry;
+				DIR *					 dir;
+				struct dirent *			 entry;
 				struct stat				 file_stat;
 				std::vector<std::string> files;
 
@@ -192,19 +272,17 @@ body {\n\
 			response.setStatusCode(200);
 			response.addHeader("Content-Type",
 							   http::Mime::getType(this->_target));
-
-#ifdef VERBOSE
-			//_log->debug(response.str().c_str());
-#endif
 		}
 	} catch (...) {
 		// TODO: replace with a predefined array of error pages
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");
-		response.setBody(
-			http::Errors::getResponseBody(response.getStatusCode()));
+		response.setBody(http::Errors::getResponseBody(
+			response.getStatusCode(),
+			_srv->getErrorPage(response.getStatusCode())));
 	}
 
+	delete _url;
 	return (response);
 }
