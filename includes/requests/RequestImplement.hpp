@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:30:15 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 09:55:33 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:29:38 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ class Post : public ARequest {
 class Delete : public ARequest {
   public:
 	Delete(void) {}
-	Delete(std::string &data);
+	Delete(std::string &data, config::Server *srv);
 
 	void parse(std::string const &data);
 

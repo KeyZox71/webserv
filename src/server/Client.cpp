@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/28 10:58:11 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:30:11 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ void Client::_getRequest(std::string request_str) {
 		str << _request->getTarget();
 		_log->info(str.str());
 	} else if (method == "DELETE") {
-		_request = new http::Delete(request_str);
+		_request = new http::Delete(request_str, _conf);
 		_log->info("delete request received");
 	} else if (method == "POST") {
 		_request = new http::Post(request_str, _conf);

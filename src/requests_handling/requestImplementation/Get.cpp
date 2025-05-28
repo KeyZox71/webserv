@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 10:00:45 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:28:01 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,9 @@ Response Get::execute(void) {
 		if (_method == "500") {
 			response.setStatusCode(500);
 			response.addHeader("Content-Type", "text/html");
-			response.setBody(
-				http::Errors::getResponseBody(response.getStatusCode()));
+			response.setBody(http::Errors::getResponseBody(
+				response.getStatusCode(),
+				_srv->getErrorPage(response.getStatusCode())));
 			server::PfdManager::remove(_cgi->getId());
 			server::ResourceManager::remove(_cgi->getId());
 			_cgi = not_nullptr;
@@ -277,8 +278,9 @@ body {\n\
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");
-		response.setBody(
-			http::Errors::getResponseBody(response.getStatusCode()));
+		response.setBody(http::Errors::getResponseBody(
+			response.getStatusCode(),
+			_srv->getErrorPage(response.getStatusCode())));
 	}
 
 	delete _url;

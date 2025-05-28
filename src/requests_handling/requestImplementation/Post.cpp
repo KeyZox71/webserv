@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 09:55:37 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:28:35 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 #include <vector>
 
 #include <config/URL.hpp>
-#include <requests/default.hpp>
 #include <log.hpp>
+#include <requests/default.hpp>
 
 using namespace webserv::http;
 
@@ -79,7 +79,8 @@ std::string Post::extractFilename(const std::string &header) {
 	return this->_route->getUpRoot() + header.substr(start, end - start);
 }
 
-void Post::handleMultipartData(const std::string &body, const std::string &boundary) {
+void Post::handleMultipartData(const std::string &body,
+							   const std::string &boundary) {
 	size_t		i = 0;
 	std::string delim = "--" + boundary;
 	delim.erase(delim.size() - 1);
@@ -109,7 +110,7 @@ void Post::handleMultipartData(const std::string &body, const std::string &bound
 
 Response Post::execute(void) {
 	http::Response response;
-	
+
 	try {
 		handleMultipartData(
 			this->_body,
@@ -121,15 +122,15 @@ Response Post::execute(void) {
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(200);
 		response.addHeader("Content-Type", "text/html");
-		response.setBody(
-			http::Errors::getResponseBody(response.getStatusCode()));
+		response.setBody(http::Errors::getResponseBody(
+			response.getStatusCode(),
+			_srv->getErrorPage(response.getStatusCode())));
 	} catch (...) {
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(500);
-		response.addHeader("Content-Type", "text/html");
-		response.setBody(
-			http::Errors::getResponseBody(response.getStatusCode()));
+		response.setBody(http::Errors::getResponseBody(
+			response.getStatusCode(),
+			_srv->getErrorPage(response.getStatusCode())));
 	}
 	return (response);
 }
-

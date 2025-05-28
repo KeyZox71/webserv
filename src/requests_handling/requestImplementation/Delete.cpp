@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 09:55:54 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/28 11:29:55 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 
 using namespace webserv::http;
 
-Delete::Delete(std::string &data) {
+Delete::Delete(std::string &data, config::Server *srv) {
 	_url = not_nullptr;
-	_srv = not_nullptr;
+	_srv = srv;
 	this->parse(data);
 }
 
@@ -90,8 +90,9 @@ Response Delete::execute(void) {
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");
-		response.setBody(
-			http::Errors::getResponseBody(response.getStatusCode()));
+		response.setBody(http::Errors::getResponseBody(
+			response.getStatusCode(),
+			_srv->getErrorPage(response.getStatusCode())));
 	}
 
 	return (response);
