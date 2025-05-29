@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/29 11:44:46 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/29 12:06:54 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include <server/default.hpp>
 
 using namespace webserv::http;
+
+Response parseCgiOut(std::string cgi_str);
 
 Post::Post(std::string &data, config::Server *srv) {
 	_url = not_nullptr;
@@ -51,6 +53,8 @@ void Post::parse(std::string const &data) {
 			this->_headers.insert(std::make_pair(key, _sanitizeStr(value)));
 		}
 	}
+
+	_route = _srv->whatRoute(URL(_target));
 
 	std::ostringstream body_stream;
 	while (std::getline(stream, line))
@@ -117,34 +121,6 @@ void Post::handleMultipartData(const std::string &body,
 		i += delim.length();
 	}
 }
-
-Response parseCgiOut(std::string cgi_str) {
-	Response		   response;
-	std::istringstream stream(cgi_str);
-	std::string		   line;
-
-	response.setStatusCode(200);
-	while (std::getline(stream, line) && line != "") {
-		size_t delimiter_index = line.find(':');
-		if (delimiter_index != std::string::npos) {
-			std::string key = line.substr(0, delimiter_index);
-			std::string value = line.substr(delimiter_index + 2);
-			response.addHeader(key, value);
-		}
-	}
-	std::ostringstream body_stream;
-	while (std::getline(stream, line))
-		body_stream << line << "\n";
-	response.setBody(body_stream.str());
-
-	if (response.getHeader("Content-Length") == "") {
-		std::stringstream length;
-		length << response.getBody().length();
-		response.addHeader("Content-Length", length.str());
-	}
-	return response;
-}
-
 
 Response Post::execute(void) {
 	http::Response response;

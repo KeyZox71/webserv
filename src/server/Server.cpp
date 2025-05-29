@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 10:59:27 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/29 12:07:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,4 +159,5 @@ Server::~Server(void) {
 		delete *it;
 	}
 	PfdManager::clear();
+	ResourceManager::clear();
 }

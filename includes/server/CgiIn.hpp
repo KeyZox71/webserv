@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:14:45 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/29 11:34:40 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/29 12:07:56 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ class CgiIn : public AClientResource {
 	}
 	~CgiIn(void) {
 		log("➖", "CgiIn", "destructor called");
-		close(_fd);
 	}
 
 	void process(void) {
