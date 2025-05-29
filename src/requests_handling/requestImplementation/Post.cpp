@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 11:28:35 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/29 11:44:46 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <config/URL.hpp>
 #include <log.hpp>
 #include <requests/default.hpp>
+#include <server/default.hpp>
 
 using namespace webserv::http;
 
@@ -57,20 +58,29 @@ void Post::parse(std::string const &data) {
 	this->_body = body_stream.str();
 
 	_url = new URL(_target);
-	std::cout << *_url << std::endl;
 
-	/*
-	std::cout << "-- start-line --" << std::endl;
-	std::cout << "method: " << this->_method << std::endl;
-	std::cout << "target: " << this->_target << std::endl;
-	std::cout << "protocol: " << this->_protocol << std::endl;
-	std::cout << std::endl;
-	std::cout << "-- headers --" << std::endl;
-	for (std::map<std::string, std::string>::const_iterator it =
-	this->_headers.begin(); it != this->_headers.end(); ++it) std::cout <<
-	it->first << ": " << it->second << std::endl; std::cout << std::endl;
-	//std::cout << "-- body --" << std::endl << this->_body << std::endl;
-	*/
+	std::string targ = _target;
+
+	if (targ[targ.length() - 1] == '/') {
+		targ += _route->getIndex();
+	}
+
+	if (_route->isCgi(targ)) {
+		_log->info("cgi added");
+		try {
+			_cgi = new server::Cgi(this, _route);
+		} catch (std::exception &e) {
+			_log->error(e.what());
+			_method = "500";
+			return;
+		}
+		server::ResourceManager::append(_cgi);
+		struct pollfd pfd;
+		pfd.events = _cgi->event();
+		pfd.revents = 0;
+		pfd.fd = _cgi->getId();
+		server::PfdManager::append(pfd, server::RES);
+	}
 }
 
 std::string Post::extractFilename(const std::string &header) {
@@ -108,8 +118,57 @@ void Post::handleMultipartData(const std::string &body,
 	}
 }
 
+Response parseCgiOut(std::string cgi_str) {
+	Response		   response;
+	std::istringstream stream(cgi_str);
+	std::string		   line;
+
+	response.setStatusCode(200);
+	while (std::getline(stream, line) && line != "") {
+		size_t delimiter_index = line.find(':');
+		if (delimiter_index != std::string::npos) {
+			std::string key = line.substr(0, delimiter_index);
+			std::string value = line.substr(delimiter_index + 2);
+			response.addHeader(key, value);
+		}
+	}
+	std::ostringstream body_stream;
+	while (std::getline(stream, line))
+		body_stream << line << "\n";
+	response.setBody(body_stream.str());
+
+	if (response.getHeader("Content-Length") == "") {
+		std::stringstream length;
+		length << response.getBody().length();
+		response.addHeader("Content-Length", length.str());
+	}
+	return response;
+}
+
+
 Response Post::execute(void) {
 	http::Response response;
+
+	if (_cgi != not_nullptr) {
+		if (_method == "500") {
+			response.setStatusCode(500);
+			response.addHeader("Content-Type", "text/html");
+			response.setBody(http::Errors::getResponseBody(
+				response.getStatusCode(),
+				_srv->getErrorPage(response.getStatusCode())));
+			server::PfdManager::remove(_cgi->getId());
+			server::ResourceManager::remove(_cgi->getId());
+			_cgi = not_nullptr;
+			return response;
+		}
+		std::string str = static_cast<server::Cgi *>(_cgi)->str();
+		response = parseCgiOut(str);
+		response.setProtocol(_protocol);
+		server::PfdManager::remove(_cgi->getId());
+		server::ResourceManager::remove(_cgi->getId());
+		_cgi = not_nullptr;
+		return response;
+	}
 
 	try {
 		handleMultipartData(

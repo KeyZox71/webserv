@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 11:28:01 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/29 11:44:03 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,28 +91,6 @@ void Get::parse(std::string const &data) {
 		pfd.fd = _cgi->getId();
 		server::PfdManager::append(pfd, server::RES);
 	}
-
-	/*
-	std::cout << "-- start-line --" << std::endl;
-	std::cout << "method: " << this->_method << std::endl;
-	std::cout << "target: " << this->_target << std::You can use every macro and
-define like FD_SET, FD_CLR, FD_ISSET and, FD_ZERO (understanding what they do
-and how they work is very useful). • A request to your server should never hang
-indefinitely. • Your server must be compatible with standard web browsers of
-your choice. • We will consider that NGINX is HTTP 1.1 compliant and may be used
-to compare headers and answer behaviors. • Your HTTP response status codes must
-be accurate. • Your server must have default error pages if none are provided.
-• You can’t use fork for anything other than CGI (like PHP, or Python, and so
-forth). • You must be able to serve a fully static website. • Clients must be
-able to upload files. • You need at least the GET, POST, and DELETE methodendl;
-	std::cout << "protocol: " << this->_protocol << std::endl;
-	std::cout << std::endl;
-	std::cout << "-- headers --" << std::endl;
-	for (std::map<std::string, std::string>::const_iterator it =
-this->_headers.begin(); it != this->_headers.end(); ++it) std::cout << it->first
-<< ": " << it->second << std::endl; std::cout << std::endl; std::cout << "--
-body --" << std::endl << this->_body << std::endl;
-	*/
 }
 
 char isDirectory(const std::string &path) {

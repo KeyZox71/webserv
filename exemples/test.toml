@@ -11,8 +11,8 @@ port = 8080
 402 = "uwu.html"
 
 [server.location./]
-methods = { "GET" }
-root = "/home/adjoly"
+methods = { "GET", "POST" }
+root = "./exemples/webpage"
 dirlist = true
 client_max_body_size = "10M"
 index = "index.html"

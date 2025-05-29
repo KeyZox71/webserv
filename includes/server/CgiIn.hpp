@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:14:45 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 18:59:29 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/29 11:34:40 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "server/AResource.hpp"
 #include <log.hpp>
+#include <stdexcept>
 #include <unistd.h>
 
 namespace webserv {
@@ -34,7 +35,10 @@ class CgiIn : public AClientResource {
 
 	void process(void) {
 		_processed = true;
-		// TODO: send the body
+		ssize_t bytes_written = write(_fd, _body.c_str(), _body.size());
+		if (bytes_written == -1) {
+			throw std::runtime_error("write error could not write body to cgi stdin");
+		}
 	}
 	clientResType type(void) const { return CGI_IN; }
 	short		  event(void) const { return POLLIN; }
