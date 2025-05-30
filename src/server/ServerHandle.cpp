@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/30 15:48:16 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/30 16:30:40 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,11 @@ void Server::_handle_client(size_t *i) {
 	if (PfdManager::getType(PfdManager::at(*i).fd)) {
 		if (PfdManager::at(*i).revents & POLLERR) {
 			_log->debug("pollerr");
-			close(PfdManager::at(*i).fd);
+			Client *client = _getClient(PfdManager::at(*i).fd);
+			_client_data.erase(
+				std::find(_client_data.begin(), _client_data.end(), client));
+			delete client;
 			PfdManager::remove(PfdManager::at(*i).fd);
-			delete _client_data[*i - _fds_server.size()];
-			_client_data.erase(_client_data.begin() + *i);
 		} else if (PfdManager::at(*i).revents & POLLIN) {
 			_log->debug("pollin");
 			Client *client = _getClient(PfdManager::at(*i).fd);
@@ -133,7 +134,7 @@ void Server::_handle_resource(size_t i) {
 	if (!res->isProcessed() && res->isReady()) {
 		res->process();
 		// if (res->type() == CGI) {
-			_log->info("processingggg");
+		_log->info("processingggg");
 		// } else if (pfd.revents & res->event()) {
 		// 	res->process();
 		// 	_log->info("processingggg");

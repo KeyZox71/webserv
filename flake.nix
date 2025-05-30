@@ -67,6 +67,7 @@
               nixd
               nixfmt-rfc-style
               norminette
+              siege
               valgrind
               git
               gdb
