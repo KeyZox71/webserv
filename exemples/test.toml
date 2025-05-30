@@ -6,13 +6,13 @@ host = "0.0.0.0"
 port = 8080
 
 [server.error_pages]
-404 = "not_found.html"
+404 = "exemples/err_pages/not_found.html"
 401 = "unauthorized.html"
 402 = "uwu.html"
 
 [server.location./]
 methods = { "GET", "POST" }
-root = "./exemples/webpage"
+root = "exemples/webpage"
 dirlist = true
 client_max_body_size = "10M"
 index = "index.html"

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 10:49:47 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/30 15:48:16 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,12 +131,12 @@ void Server::_handle_resource(size_t i) {
 	}
 
 	if (!res->isProcessed() && res->isReady()) {
-		if (res->type() == CGI) {
-			res->process();
+		res->process();
+		// if (res->type() == CGI) {
 			_log->info("processingggg");
-		} else if (pfd.revents & res->event()) {
-			res->process();
-			_log->info("processingggg");
-		}
+		// } else if (pfd.revents & res->event()) {
+		// 	res->process();
+		// 	_log->info("processingggg");
+		// }
 	}
 }

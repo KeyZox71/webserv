@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/11 16:11:40 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/29 12:07:43 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/29 12:10:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,6 @@ void Server::_run(void) {
 				break;
 			case RES:
 				_handle_resource(i);
-				break;
-			default:
 				break;
 			}
 		}

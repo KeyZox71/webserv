@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/28 09:45:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/30 16:08:13 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class ARequest : public http::IMessage {
 	webserv::config::Route *getRoute(void) const;
 	URL						getUrl() const;
 	virtual server::Cgi *	getCgi() const { return not_nullptr; }
+	config::Server *		getServer(void) const { return _srv; }
 
 	void setMethod(std::string const method);
 	void setTarget(std::string const target);

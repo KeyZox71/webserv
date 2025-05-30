@@ -6,10 +6,11 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/29 11:30:07 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/30 16:13:54 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "server/PfdManager.hpp"
 #include <help.hpp>
 #include <ios>
 #include <requests/default.hpp>
@@ -30,7 +31,6 @@
 
 using namespace webserv::server;
 
-// WARN: construtor will probably be changed and practicly do nothing
 Cgi::Cgi(http::Get *req, config::Route *conf)
 	: _is_post(false), _conf(conf), _request(req) {
 	_processed = false;
@@ -48,6 +48,11 @@ Cgi::Cgi(http::Post *req, config::Route *conf)
 	AClientResource *in =
 		new CgiIn(_request->getBody(), _stdin_pipe[PIPE_WRITE]);
 	ResourceManager::append(in);
+	struct pollfd pfd;
+	pfd.events = in->event();
+	pfd.revents = 0;
+	pfd.fd = in->getId();
+	server::PfdManager::append(pfd, server::RES);
 }
 
 Cgi::~Cgi(void) { log("➖", "Cgi", "destructor called"); }
@@ -73,21 +78,21 @@ void Cgi::_initEnvp(void) {
 	str.clear();
 	_setEnv("SERVER_NAME", _request->getHeader("Host"));
 	_setEnv("SERVER_PROTOCOL", _request->getProtocol());
-	// setEnv("SERVER_PORT", _request->get); // TODO: need to get the port by a
-	// way i dont know yet
+	str << _request->getServer()->getPort();
+	_setEnv("SERVER_PORT", str.str());
+	str.clear();
+
+	_setEnv("REQUEST_METHOD", _request->getMethod());
 
 	_setEnv("GATEWAY_INTERFACE", "CGI/1.1");
 
-	// setEnv("PATH_TRANSLATED", ); // TODO: wtf should i put here i dont fcking
-	// know
-	// setEnv("PATH_INFO", ); // TODO: wut make no sense
+	_setEnv("PATH_TRANSLATED", _request->getTarget());
+	_setEnv("PATH_INFO", _request->getTarget());
 
 	str << _request->getBody().length();
 	_setEnv("CONTENT_LENGH", str.str());
 	str.clear();
 	_setEnv("CONTENT_TYPE", _request->getHeader("Content-Type"));
-	// setEnv("REMOTE_ADDR", _request->get) // TODO: don't have it yet need to
-	// be passed to the requset :sob:
 	_setEnv("HTTP_ACCEPT", _request->getHeader("Accept"));
 	_setEnv("HTTP_ACCEPT_LANGUAGE", _request->getHeader("Accept-Language"));
 	_setEnv("HTTP_COOKIE", _request->getHeader("Cookie"));
@@ -96,8 +101,8 @@ void Cgi::_initEnvp(void) {
 	_setEnv("HTTP_USER_AGENT", _request->getHeader("User-Agent"));
 
 	_setEnv("SCRIPT_NAME", _request->getTarget());
-
-	_setEnv("QUERY_STRING", _request->getUrl().getQueryString());
+	if (_is_post == false)
+		_setEnv("QUERY_STRING", _request->getUrl().getQueryString());
 }
 
 std::string Cgi::_getEnv(std::string &key) const {
@@ -135,7 +140,7 @@ void Cgi::process(void) {
 	if (forkPid < 0)
 		throw std::runtime_error("fork failed D:");
 	else if (forkPid == 0) {
-		if (_is_post) {
+		if (_is_post == true) {
 			dup2(_stdin_pipe[PIPE_READ], STDIN_FILENO);
 			close(_stdin_pipe[PIPE_READ]);
 			close(_stdin_pipe[PIPE_WRITE]);
@@ -178,11 +183,11 @@ std::string Cgi::str(void) {
 			max -= count;
 		} else if (count == 0) {
 			break;
-		}
-		else
+		} else
 			break;
 	}
-	if (_is_post)
-		ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
+	// if (_is_post)
+	// 	ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
+	// 	FIX: whyyyyy
 	return str.str();
 }
