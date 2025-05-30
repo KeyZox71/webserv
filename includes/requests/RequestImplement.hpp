@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:30:15 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 11:29:38 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/30 16:19:06 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Get : public ARequest {
 class Post : public ARequest {
   public:
 	Post(std::string &data, config::Server *srv);
+	~Post(void);
 
 	void parse(std::string const &data);
 

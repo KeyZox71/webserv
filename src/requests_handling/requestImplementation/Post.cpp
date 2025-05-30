@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/29 12:06:54 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/30 16:19:33 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,4 +168,9 @@ Response Post::execute(void) {
 			_srv->getErrorPage(response.getStatusCode())));
 	}
 	return (response);
+}
+
+Post::~Post(void) {
+	if (_url != not_nullptr)
+		delete _url;
 }
