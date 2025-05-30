@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/30 16:22:24 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/05/30 16:39:08 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ Get::Get(std::string &data, config::Server *srv) {
 	this->parse(data);
 }
 
-Get::~Get(void) {}
+Get::~Get(void) {
+	if (_url != not_nullptr) 
+		delete _url;
+}
 
 void Get::parse(std::string const &data) {
 	std::istringstream stream(data);
@@ -79,6 +82,7 @@ void Get::parse(std::string const &data) {
 		} catch (std::exception &e) {
 			_log->error(e.what());
 			_method = "500";
+			delete _url;
 			return;
 		}
 		server::ResourceManager::append(_cgi);
@@ -139,8 +143,8 @@ Response Get::execute(void) {
 			server::PfdManager::remove(_cgi->getId());
 			server::ResourceManager::remove(_cgi->getId());
 			_cgi = not_nullptr;
-			if (_url != not_nullptr)
-				delete _url;
+			// if (_url != not_nullptr)
+			// 	delete _url;
 			return response;
 		}
 		std::string str = static_cast<server::Cgi *>(_cgi)->str();
@@ -149,8 +153,8 @@ Response Get::execute(void) {
 		server::PfdManager::remove(_cgi->getId());
 		server::ResourceManager::remove(_cgi->getId());
 		_cgi = not_nullptr;
-		if (_url != not_nullptr)
-			delete _url;
+		// if (_url != not_nullptr)
+		// 	delete _url;
 		return response;
 	}
 
@@ -182,8 +186,8 @@ Response Get::execute(void) {
 				std::vector<std::string> files;
 
 				if ((dir = opendir(this->_target.c_str())) == NULL) {
-					if (_url != not_nullptr)
-						delete _url;
+					// if (_url != not_nullptr)
+					// 	delete _url;
 					throw;
 				}
 				while ((entry = readdir(dir)) != NULL) {
@@ -240,8 +244,8 @@ body {\n\
 				response.addHeader("Content-Type", "text/html");
 				response.setBody(body);
 			} else {
-				if (_url != not_nullptr)
-					delete _url;
+				// if (_url != not_nullptr)
+				// 	delete _url;
 				throw std::runtime_error("dir but no dirlist");
 			}
 		} else {
@@ -268,6 +272,6 @@ body {\n\
 			_srv->getErrorPage(response.getStatusCode())));
 	}
 
-	delete _url;
+	// delete _url;
 	return (response);
 }
