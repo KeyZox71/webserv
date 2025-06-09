@@ -26,8 +26,7 @@ std::vector<std::string> *Route::_parseCGI(toml::ANode *table) {
 		if ((*it)->type() == toml::STRING) {
 			std::string str = *static_cast<std::string *>((*it)->getValue());
 			cgi->push_back(str);
-		}
-		else {
+		} else {
 			std::stringstream str;
 			str << "Was expecting a: " << toml::nodeTypeToStr(toml::STRING);
 			str << ", but got a: " << toml::nodeTypeToStr((*it)->type());
@@ -61,10 +60,37 @@ Route::Route(toml::ANode *table) : _max_body(10485760) {
 	void *val;
 	bool  found;
 
+	if (table == not_nullptr) {
+		_log->warn("is empty");
+		_index = "index.html";
+		_redirect = false;
+		_dirlist = false;
+		_up_root = "";
+#ifdef PKGS
+		_root = "/usr/share/webserv";
+#else
+		_root = "./html";
+#endif
+		_cgi = not_nullptr;
+		return;
+	}
 	_table = table;
 	if (_table->type() != toml::TABLE) {
 		_log->warn("location need to be a table and not a :" +
 				   toml::nodeTypeToStr(_table->type()));
+		_index = "index.html";
+		_redirect = false;
+		_dirlist = false;
+		_up_root = "";
+#ifdef PKGS
+		_root = "/usr/share/webserv";
+#else
+		_root = "./html";
+#endif
+		_cgi = not_nullptr;
+		_methods[0] = true;
+		_methods[1] = false;
+		_methods[2] = false;
 		return;
 	}
 	val = accessValue("redirect", toml::STRING, _table, _log);
@@ -79,11 +105,6 @@ Route::Route(toml::ANode *table) : _max_body(10485760) {
 		_dirlist = *static_cast<bool *>(val);
 	else
 		_dirlist = false;
-	/* val = accessValue("cookies", toml::BOOL, _table, _log); */
-	/* if (val != not_nullptr) */
-	/* 	_cookies = *static_cast<bool *>(val); */
-	/* else */
-	/* 	_cookies = false; */
 	val = accessValue("upload_path", toml::STRING, _table, _log);
 	if (val != not_nullptr)
 		_up_root = *static_cast<std::string *>(val);

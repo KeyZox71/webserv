@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 11:42:25 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/09 18:40:23 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,5 +196,7 @@ Server::Server(toml::ANode *node, void *)
 				std::make_pair(URL(it->first), new Route(it->second)));
 		}
 	}
+	else
+		_routes = not_nullptr;
 	// delete _table;
 }
