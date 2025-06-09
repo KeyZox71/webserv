@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 13:08:36 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/08 11:58:13 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/09 18:43:18 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void _generateConf(const std::string path) {
 		std::ofstream file(path.c_str());
 		if (file.is_open()) {
 			file << "[server]\nhost = \"0.0.0.0\"\nport = "
-					"80\n\n[server.location./]\n";
+					"80\n\n[server.location./]\nmethods = { \"GET\" }\n";
 			file.close();
 			_log.info("config file successfully generated");
 		} else {
