@@ -93,7 +93,6 @@ Route::Route(toml::ANode *table) : _max_body(10485760) {
 		_methods[2] = false;
 		return;
 	}
-	std::cout << "tat me re " << std::endl;
 	val = accessValue("redirect", toml::STRING, _table, _log);
 	if (val != not_nullptr) {
 		_root = *static_cast<std::string *>(val);
