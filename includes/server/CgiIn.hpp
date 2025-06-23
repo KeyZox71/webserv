@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:14:45 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/30 16:16:28 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 21:25:26 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ class CgiIn : public AClientResource {
 	~CgiIn(void) { log("➖", "CgiIn", "destructor called"); }
 
 	void process(void) {
-		std::cout << "processing cginin" << std::endl;
 		_processed = true;
 		ssize_t bytes_written = write(_fd, _body.c_str(), _body.size());
 		_log->debug("writting body : " + _body);

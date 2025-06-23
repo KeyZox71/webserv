@@ -6,3 +6,4 @@ host = "0.0.0.0"
 root = "/home/adjoly/workspace/42/webserv/exemples/webpage"
 cgi = { ".py"}
 methods = { "GET", "POST"}
+[server.location./]

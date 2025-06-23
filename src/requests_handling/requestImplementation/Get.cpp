@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 21:16:06 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 21:26:10 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void Get::parse(std::string const &data) {
 	}
 
 	if (_route->isCgi(targ)) {
-		_log->info("cgi added");
+		_log->debug("cgi added");
 		try {
 			_cgi = new server::Cgi(this, _route);
 		} catch (std::exception &e) {
