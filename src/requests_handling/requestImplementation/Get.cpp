@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/17 19:07:39 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 21:03:12 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ Get::Get(std::string &data, config::Server *srv) {
 }
 
 Get::~Get(void) {
-	if (_url != not_nullptr) 
+	if (_url != not_nullptr)
 		delete _url;
 }
 

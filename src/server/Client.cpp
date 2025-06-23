@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/28 11:30:11 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 21:03:10 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void Client::parse(void) {
 		}
 		received_data += std::string(buffer, bytes_received);
 	} while (buffer[bytes_received]);
-
 	_getRequest(received_data);
 
 	if (_request == not_nullptr)
@@ -64,6 +63,7 @@ void Client::parse(void) {
 			throw std::runtime_error("serverName not corresponding");
 		}
 	}
+
 
 	if (!_route || _route == not_nullptr) {
 		_request->setMethod("404");
