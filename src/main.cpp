@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/27 19:36:27 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 20:35:27 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,9 @@ int main(int ac, char **av) {
 			str = av[1];
 		}
 		config::_conf = new config::Config(str);
-	} catch (std::exception &) {
+	} catch (std::exception &e) {
+		Logger log;
+		log.error(e.what());
 		if (_log != not_nullptr)
 			delete _log;
 		return 1;

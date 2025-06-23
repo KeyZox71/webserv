@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/03 09:42:44 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 20:36:47 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "node/default.hpp"
 #include "webserv.hpp"
 #include <config/default.hpp>
+#include <exception>
 #include <netinet/in.h>
 #include <stdexcept>
 
@@ -26,7 +27,9 @@ Config::Config(std::string &filename) {
 
 	try {
 		file->parse();
-	} catch (std::runtime_error &e) {
+	} catch (std::exception &e) {
+		// if (file->getParsedFile() != not_nullptr)
+			// delete file->getParsedFile();
 		delete file;
 		throw e;
 	}

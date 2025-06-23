@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/03 09:42:27 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 20:10:48 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ class Server {
 	 *	@param	The http error code for the page
 	 */
 	std::string getErrorPage(int page) {
+		if (_err_pages == not_nullptr)
+			return "";
 		if (_err_pages->find(page) != _err_pages->end())
 			return (*_err_pages)[page];
 		else
