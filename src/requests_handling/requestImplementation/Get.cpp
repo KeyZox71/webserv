@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 21:03:12 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/23 21:16:06 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ Response Get::execute(void) {
 		}
 		std::string str = static_cast<server::Cgi *>(_cgi)->str();
 		response = parseCgiOut(str);
+		std::cout << response.str();
 		response.setProtocol(_protocol);
 		server::PfdManager::remove(_cgi->getId());
 		server::ResourceManager::remove(_cgi->getId());
