@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 21:26:10 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:02:19 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,6 @@ body {\n\
 							   http::Mime::getType(this->_target));
 		}
 	} catch (...) {
-		// TODO: replace with a predefined array of error pages
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");

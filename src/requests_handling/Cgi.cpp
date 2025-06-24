@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/30 16:13:54 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:02:34 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,8 +186,5 @@ std::string Cgi::str(void) {
 		} else
 			break;
 	}
-	// if (_is_post)
-	// 	ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
-	// 	FIX: whyyyyy
 	return str.str();
 }

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/28 11:29:55 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:02:42 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,10 +83,6 @@ Response Delete::execute(void) {
 		time_t now = std::time(NULL);
 		response.addHeader("Date", std::string(std::ctime(&now)));
 	} catch (...) {
-		// TODO: check errno value and get corresponding error page, check for
-		// corresponding error code :
-		// https://cdn.discordapp.com/attachments/784779058407014403/1350841524778307586/image.png?ex=67d8dd74&is=67d78bf4&hm=c030468d3862627d6402bf200960d1a15249ba2f8dac772af3283b368a77f2f5&
-
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(404);
 		response.addHeader("Content-Type", "text/html");

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 21:25:17 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/24 18:02:10 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,10 +126,8 @@ void Server::_handle_client(size_t *i) {
 void Server::_handle_resource(size_t i) {
 	struct pollfd	 pfd = PfdManager::at(i);
 	AClientResource *res = ResourceManager::get(pfd.fd);
-	if (res == not_nullptr) {
-		std::cout << "wtff" << std::endl;
+	if (res == not_nullptr)
 		return;
-	}
 
 	if (!res->isProcessed() && res->isReady()) {
 		res->process();
