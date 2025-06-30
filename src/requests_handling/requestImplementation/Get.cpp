@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/24 18:02:19 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/06/30 15:03:52 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,6 @@ void Get::parse(std::string const &data) {
 	_url = new URL("http://" + _headers["Host"] + _target);
 
 	std::string targ = _target;
-
-	if (targ[targ.length() - 1] == '/') {
-		targ += _route->getIndex();
-	}
 
 	if (_route->isCgi(targ)) {
 		_log->debug("cgi added");
@@ -162,6 +158,10 @@ Response Get::execute(void) {
 	this->_target = this->_route->getRootDir() + this->_target;
 
 	try {
+		if (!access((this->_target + (this->_target[this->_target.length() - 1] != '/' ? std::string("/") : "") + _route->getIndex()).c_str(), R_OK))
+		{
+			this->_target += (this->_target[this->_target.length() - 1] != '/' ? std::string("/") : "") + _route->getIndex();
+		}
 		if (isDirectory(this->_target)) {
 			if (!access((this->_target + this->_route->getIndex()).c_str(),
 						R_OK)) {
