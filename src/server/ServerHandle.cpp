@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/24 18:02:10 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/01 10:47:05 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,11 +130,7 @@ void Server::_handle_resource(size_t i) {
 		return;
 
 	if (!res->isProcessed() && res->isReady()) {
+		_log->debug("processing resource");
 		res->process();
-		// if (res->type() == CGI) {
-		// } else if (pfd.revents & res->event()) {
-		// 	res->process();
-		// 	_log->info("processingggg");
-		// }
 	}
 }

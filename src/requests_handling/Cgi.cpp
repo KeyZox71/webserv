@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/06/24 18:02:34 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/01 11:26:11 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Cgi::Cgi(http::Post *req, config::Route *conf)
 	pfd.events = in->event();
 	pfd.revents = 0;
 	pfd.fd = in->getId();
+	std::cout << pfd.fd << std::endl;
 	server::PfdManager::append(pfd, server::RES);
 }
 
@@ -64,7 +65,8 @@ void Cgi::_prep(void) {
 	if (pipe(_stdout_pipe) == -1)
 		throw std::runtime_error("stdout pipe failed for cgi D:");
 	_script_path = _conf->getRootDir() + _request->getTarget();
-	_fd = _stdout_pipe[STDIN_FILENO];
+	_fd = _stdout_pipe[PIPE_READ];
+	std::cout << "sus = " << _fd << std::endl;
 	_pfd_event = POLLIN;
 	if (access(_script_path.c_str(), X_OK))
 		throw std::runtime_error(

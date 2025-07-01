@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:14:45 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 21:25:26 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/01 11:17:52 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 #include "server/AResource.hpp"
 #include <log.hpp>
+#include <server/PfdManager.hpp>
 #include <stdexcept>
 #include <unistd.h>
-#include <server/PfdManager.hpp>
 
 namespace webserv {
 namespace server {
@@ -34,6 +34,7 @@ class CgiIn : public AClientResource {
 	~CgiIn(void) { log("➖", "CgiIn", "destructor called"); }
 
 	void process(void) {
+		std::cout << "process" << std::endl;
 		_processed = true;
 		ssize_t bytes_written = write(_fd, _body.c_str(), _body.size());
 		_log->debug("writting body : " + _body);
@@ -49,7 +50,10 @@ class CgiIn : public AClientResource {
 	}
 	clientResType type(void) const { return CGI_IN; }
 	short		  event(void) const { return POLLIN; }
-	bool		  isReady(void) const { return true; }
+	bool		  isReady(void) const {
+		 _log->debug("CgiIn ready");
+		 return true;
+	}
 
   protected:
   private:

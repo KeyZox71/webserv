@@ -6,22 +6,23 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/05/27 21:32:43 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/01 11:21:31 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "server/AResource.hpp"
 #include <config/default.hpp>
 #include <cstdio>
+#include <server/AResource.hpp>
 
 #include <exception>
 #include <map>
+#include <server/CgiIn.hpp>
 #include <server/ResourceManager.hpp>
+#include <sstream>
 #include <string>
 #include <unistd.h>
-
 namespace webserv {
 namespace http {
 class Get;
@@ -55,10 +56,19 @@ class Cgi : public server::AClientResource {
 
 	short event(void) const { return POLLIN; }
 	bool  isReady(void) const {
-		 if (_is_post == false)
+		 if (_is_post == false) {
+			 _log->debug("CGIIII not a post");
 			 return true;
-		 if (ResourceManager::get(_stdin_pipe[PIPE_WRITE])->isProcessed())
+		 }
+		 if (static_cast<CgiIn *>(ResourceManager::get(_stdin_pipe[PIPE_WRITE]))
+				 ->isProcessed() == true) {
+			 std::cout << "in "
+					   << ResourceManager::get(_stdin_pipe[PIPE_WRITE])->getId()
+					   << std::endl;
+			 std::cout << ResourceManager::get(_stdin_pipe[PIPE_WRITE])->type() << std::endl;
+			 _log->debug("CGIIII post readyyy");
 			 return true;
+		 }
 		 return false;
 	}
 

@@ -1,9 +1,8 @@
 [server]
-port = 5000
 host = "0.0.0.0"
+port = 2727
 
 [server.location./]
-root = "/home/adjoly/workspace/42/webserv/exemples"
+root =  "./exemples/webpage"
+methods = { "GET", "POST" }
 cgi = { ".py"}
-methods = { "GET", "POST"}
-[server.location./asdf]
