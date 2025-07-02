@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 18:14:45 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/01 11:17:52 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/02 11:35:04 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <log.hpp>
 #include <server/PfdManager.hpp>
 #include <stdexcept>
+#include <sys/poll.h>
 #include <unistd.h>
 
 namespace webserv {
@@ -51,6 +52,10 @@ class CgiIn : public AClientResource {
 	clientResType type(void) const { return CGI_IN; }
 	short		  event(void) const { return POLLIN; }
 	bool		  isReady(void) const {
+		 if (PfdManager::get(_fd)->revents & event()) {
+			 _log->debug("CgiIn not ready");
+			 return false;
+		 }
 		 _log->debug("CgiIn ready");
 		 return true;
 	}

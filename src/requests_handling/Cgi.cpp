@@ -6,11 +6,12 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/01 11:26:11 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/02 11:37:44 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server/PfdManager.hpp"
+#include "server/ResourceManager.hpp"
 #include <help.hpp>
 #include <ios>
 #include <requests/default.hpp>
@@ -56,7 +57,13 @@ Cgi::Cgi(http::Post *req, config::Route *conf)
 	server::PfdManager::append(pfd, server::RES);
 }
 
-Cgi::~Cgi(void) { log("➖", "Cgi", "destructor called"); }
+Cgi::~Cgi(void) { 
+	log("➖", "Cgi", "destructor called"); 
+	if (_is_post) {
+		PfdManager::remove(_stdin_pipe[PIPE_WRITE]);
+		ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
+	}
+}
 
 void Cgi::_prep(void) {
 	if (_is_post)
