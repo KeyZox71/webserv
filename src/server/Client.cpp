@@ -6,13 +6,15 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/06/23 21:14:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/02 12:58:56 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
 #include "requests/RedirectResp.hpp"
 #include "requests/default.hpp"
+#include "server/PfdManager.hpp"
+#include "server/ResourceManager.hpp"
 #include <cstddef>
 #include <log.hpp>
 #include <server/Cgi.hpp>
@@ -64,7 +66,6 @@ void Client::parse(void) {
 		}
 	}
 
-
 	if (!_route || _route == not_nullptr) {
 		_request->setMethod("404");
 		return;
@@ -83,9 +84,15 @@ void Client::parse(void) {
 bool Client::requestParsed(void) {
 	if (_request == not_nullptr)
 		return false;
-	if (_request->getCgi() != not_nullptr)
+	if (_request->getCgi() != not_nullptr) {
 		if (!_request->getCgi()->isProcessed())
 			return false;
+		else if (_request->getCgi()->isTimedout())
+			return true;
+		else if (!(PfdManager::get(_request->getCgi()->getId())->revents &
+				   _request->getCgi()->event()))
+			return false;
+	}
 	return true;
 }
 

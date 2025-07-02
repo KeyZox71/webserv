@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/30 15:03:52 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/02 13:02:24 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,9 @@ Response Get::execute(void) {
 	http::Response response;
 
 	if (_cgi != not_nullptr) {
-		if (_method == "500") {
+		if (_method == "500" || _cgi->isTimedout()) {
 			response.setStatusCode(500);
+			response.setProtocol(_protocol);
 			response.addHeader("Content-Type", "text/html");
 			response.setBody(http::Errors::getResponseBody(
 				response.getStatusCode(),
@@ -139,13 +140,11 @@ Response Get::execute(void) {
 			server::PfdManager::remove(_cgi->getId());
 			server::ResourceManager::remove(_cgi->getId());
 			_cgi = not_nullptr;
-			// if (_url != not_nullptr)
-			// 	delete _url;
 			return response;
 		}
 		std::string str = static_cast<server::Cgi *>(_cgi)->str();
 		response = parseCgiOut(str);
-		std::cout << response.str();
+		// std::cout << response.str();
 		response.setProtocol(_protocol);
 		server::PfdManager::remove(_cgi->getId());
 		server::ResourceManager::remove(_cgi->getId());
@@ -158,9 +157,17 @@ Response Get::execute(void) {
 	this->_target = this->_route->getRootDir() + this->_target;
 
 	try {
-		if (!access((this->_target + (this->_target[this->_target.length() - 1] != '/' ? std::string("/") : "") + _route->getIndex()).c_str(), R_OK))
-		{
-			this->_target += (this->_target[this->_target.length() - 1] != '/' ? std::string("/") : "") + _route->getIndex();
+		if (!access((this->_target +
+					 (this->_target[this->_target.length() - 1] != '/'
+						  ? std::string("/")
+						  : "") +
+					 _route->getIndex())
+						.c_str(),
+					R_OK)) {
+			this->_target += (this->_target[this->_target.length() - 1] != '/'
+								  ? std::string("/")
+								  : "") +
+							 _route->getIndex();
 		}
 		if (isDirectory(this->_target)) {
 			if (!access((this->_target + this->_route->getIndex()).c_str(),

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/24 18:02:42 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/02 11:57:06 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void Delete::parse(std::string const &data) {
 	this->_body = body_stream.str();
 
 	_url = new URL(_target);
-	std::cout << *_url << std::endl;
+	// std::cout << *_url << std::endl;
 
 	/*
 	std::cout << "-- start-line --" << std::endl;

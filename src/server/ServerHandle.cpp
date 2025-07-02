@@ -6,11 +6,12 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/01 10:47:05 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/02 12:45:52 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cppeleven.hpp"
+#include "server/AResource.hpp"
 #include <cstddef>
 #include <iterator>
 #include <server/default.hpp>
@@ -129,6 +130,9 @@ void Server::_handle_resource(size_t i) {
 	if (res == not_nullptr)
 		return;
 
+	if (res->type() == CGI && static_cast<Cgi *>(res)->isTimedout()) {
+		return;
+	}
 	if (!res->isProcessed() && res->isReady()) {
 		_log->debug("processing resource");
 		res->process();

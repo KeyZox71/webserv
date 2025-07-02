@@ -6,14 +6,17 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/01 11:21:31 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/02 12:50:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "server/PfdManager.hpp"
 #include <config/default.hpp>
+#include <cstddef>
 #include <cstdio>
+#include <ctime>
 #include <server/AResource.hpp>
 
 #include <exception>
@@ -23,6 +26,8 @@
 #include <sstream>
 #include <string>
 #include <unistd.h>
+#include <wait.h>
+
 namespace webserv {
 namespace http {
 class Get;
@@ -62,14 +67,23 @@ class Cgi : public server::AClientResource {
 		 }
 		 if (static_cast<CgiIn *>(ResourceManager::get(_stdin_pipe[PIPE_WRITE]))
 				 ->isProcessed() == true) {
-			 std::cout << "in "
-					   << ResourceManager::get(_stdin_pipe[PIPE_WRITE])->getId()
-					   << std::endl;
-			 std::cout << ResourceManager::get(_stdin_pipe[PIPE_WRITE])->type() << std::endl;
 			 _log->debug("CGIIII post readyyy");
 			 return true;
 		 }
 		 return false;
+	}
+
+	bool isTimedout(void) const {
+		if (!isProcessed() && isReady()) {
+			return false;
+		}
+		if (std::difftime(std::time(NULL), _start_time) >= 1) {
+			kill(_forkPid, SIGKILL);
+			waitpid(_forkPid, NULL, 0);
+			_log->warn("Cgi close due to timeout >= 1s");
+			return true;
+		}
+		return false;
 	}
 
   protected:
@@ -99,6 +113,9 @@ class Cgi : public server::AClientResource {
 	int _stdin_pipe[2];	 // The pipefd for the stdin of the cgi in the case of a
 						 // post
 	int _stdout_pipe[2]; // The pipefd for the stdout of the cgi
+
+	std::time_t _start_time; // To use for timeout
+	pid_t		_forkPid;	 // Can be used to kill the process
 };
 
 }; // namespace server

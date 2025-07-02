@@ -6,12 +6,13 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/02 11:37:44 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/02 12:36:59 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server/PfdManager.hpp"
 #include "server/ResourceManager.hpp"
+#include <ctime>
 #include <help.hpp>
 #include <ios>
 #include <requests/default.hpp>
@@ -53,12 +54,11 @@ Cgi::Cgi(http::Post *req, config::Route *conf)
 	pfd.events = in->event();
 	pfd.revents = 0;
 	pfd.fd = in->getId();
-	std::cout << pfd.fd << std::endl;
 	server::PfdManager::append(pfd, server::RES);
 }
 
-Cgi::~Cgi(void) { 
-	log("➖", "Cgi", "destructor called"); 
+Cgi::~Cgi(void) {
+	log("➖", "Cgi", "destructor called");
 	if (_is_post) {
 		PfdManager::remove(_stdin_pipe[PIPE_WRITE]);
 		ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
@@ -73,7 +73,6 @@ void Cgi::_prep(void) {
 		throw std::runtime_error("stdout pipe failed for cgi D:");
 	_script_path = _conf->getRootDir() + _request->getTarget();
 	_fd = _stdout_pipe[PIPE_READ];
-	std::cout << "sus = " << _fd << std::endl;
 	_pfd_event = POLLIN;
 	if (access(_script_path.c_str(), X_OK))
 		throw std::runtime_error(
@@ -143,12 +142,12 @@ char **Cgi::_genEnv(void) {
 
 void Cgi::process(void) {
 	_processed = true;
-	pid_t forkPid;
+	_start_time = std::time(NULL);
 
-	forkPid = fork();
-	if (forkPid < 0)
+	_forkPid = fork();
+	if (_forkPid < 0)
 		throw std::runtime_error("fork failed D:");
-	else if (forkPid == 0) {
+	else if (_forkPid == 0) {
 		if (_is_post == true) {
 			dup2(_stdin_pipe[PIPE_READ], STDIN_FILENO);
 			close(_stdin_pipe[PIPE_READ]);
@@ -164,7 +163,7 @@ void Cgi::process(void) {
 
 		if (execve(_script_path.c_str(), argv, env) == -1) {
 			std::stringstream str;
-			str << "how did you do that ???? : ";
+			str << "execve failed D:";
 			str << errno;
 			_log->error(str.str());
 			for (int i = 0; env[i] != NULL; i++)
@@ -176,7 +175,7 @@ void Cgi::process(void) {
 		if (_is_post)
 			close(_stdin_pipe[PIPE_READ]);
 		close(_stdout_pipe[PIPE_WRITE]);
-		waitpid(forkPid, NULL, 0);
+		// waitpid(_forkPid, NULL, 0);
 	}
 }
 
