@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/07 19:06:55 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/07 19:10:10 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,7 @@ void Client::parse(void) {
 	if (_request == not_nullptr)
 		return;
 
-	std::cout << "before: " << this->_request->_target << std::endl;
 	_route = _conf->whichRoute(this->_request->_target);
-	std::cout << "after: " << this->_request->_target << std::endl;
 
 	if (_request->getMethod() != "501" &&
 		_conf->getServerNames() != not_nullptr) {
