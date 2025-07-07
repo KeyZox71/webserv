@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:17:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/27 19:46:54 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/05 17:54:18 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,42 @@ class URL {
 	std::string getFullUrl(void) const { return _full_url; }
 	std::string getQueryString(void) const { return _query_string; }
 	std::string getPort(void) const { return _port; }
+
+	URL truncate() const {
+		std::vector<std::string> segments = _path_segments;
+		if (!segments.empty())
+			segments.erase(segments.begin());
+
+		std::string truncatedPath = "/";
+		for (size_t i = 0; i < segments.size(); ++i) {
+			truncatedPath += segments[i];
+			if (i != segments.size() - 1)
+				truncatedPath += "/";
+		}
+
+		// Reconstruct full URL with scheme, port, etc.
+		size_t scheme_pos = _full_url.find("://");
+		std::string prefix = "";
+
+		if (scheme_pos != std::string::npos) {
+			prefix = _full_url.substr(0, scheme_pos + 3);
+			size_t host_end = _full_url.find('/', scheme_pos + 3);
+			if (host_end != std::string::npos)
+				prefix += _full_url.substr(scheme_pos + 3, host_end - (scheme_pos + 3));
+			else
+				prefix += _full_url.substr(scheme_pos + 3);
+		}
+
+		if (!_port.empty())
+			prefix += ":" + _port;
+
+		if (!_query_string.empty())
+			truncatedPath += "?" + _query_string;
+
+		return URL(prefix + truncatedPath);
+	}
+
+
 
   private:
 	void _parse() {

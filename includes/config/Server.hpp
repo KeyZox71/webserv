@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:11:28 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 20:10:48 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/05 16:39:51 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ class Server {
 	bool	isServerName(const std::string &);
 
 	// @brief	Can be used to get the route correcponding
-	Route	*whatRoute(const URL &);
+	Route	*whatRoute(URL url);
+	Route	*whichRoute(std::string &target);
 
   protected:
   private:

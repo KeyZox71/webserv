@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/02 11:57:06 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/07 19:06:38 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void Delete::parse(std::string const &data) {
 		_method = _sanitizeStr(_method);
 		_target = _sanitizeStr(_target);
 		_protocol = _sanitizeStr(_protocol);
-		// this->_target.insert(this->_target.begin(), '.');
 	}
 
 	while (std::getline(stream, line) && line != "\r") {

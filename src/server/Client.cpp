@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/02 12:58:56 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/07 19:06:55 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "server/PfdManager.hpp"
 #include "server/ResourceManager.hpp"
 #include <cstddef>
+#include <cstdlib>
 #include <log.hpp>
 #include <server/Cgi.hpp>
 #include <server/Client.hpp>
@@ -55,7 +56,9 @@ void Client::parse(void) {
 	if (_request == not_nullptr)
 		return;
 
-	_route = _conf->whatRoute(URL(this->_request->getTarget()));
+	std::cout << "before: " << this->_request->_target << std::endl;
+	_route = _conf->whichRoute(this->_request->_target);
+	std::cout << "after: " << this->_request->_target << std::endl;
 
 	if (_request->getMethod() != "501" &&
 		_conf->getServerNames() != not_nullptr) {
@@ -78,7 +81,7 @@ void Client::parse(void) {
 		this->_request->setMethod("405");
 
 	if (received_data.length() > (unsigned long)(_route->getMaxBody()))
-		_request->setMethod("413");
+		this->_request->setMethod("413");
 }
 
 bool Client::requestParsed(void) {
@@ -101,8 +104,9 @@ void Client::_getRequest(std::string request_str) {
 		_response_done = true;
 		return;
 	}
-	std::string method = request_str.substr(
-		0, request_str.substr(0, 4).find_last_not_of(" ") + 1);
+	std::istringstream strm(request_str);
+	std::string method;
+	strm >> method;
 
 	if (method == "GET") {
 		_request = new http::Get(request_str, _conf);
@@ -131,22 +135,31 @@ void Client::answer(void) {
 		return;
 	}
 
-	if (_route != not_nullptr && _route->getRedirect() == true) {
+	if (_route != not_nullptr && _route->getRedirect() == true)
+	{
 		http::Redirect redir(_route->getRootDir());
 		_response = redir;
 		_response_str = _response.str();
 		_bytes_sent = 0;
-	} else if (_response_str.empty()) {
+	}
+	else if (_response_str.empty())
+	{
 		if (this->_request->getMethod() == "GET" ||
 			this->_request->getMethod() == "DELETE" ||
-			this->_request->getMethod() == "POST") {
+			this->_request->getMethod() == "POST")
+		{
 			_response = this->_request->execute();
 			_response_str = _response.str();
-		} else {
-			this->_response.setStatusCode(501);
-			_response_str = "HTTP/1.1 501 Not Implemented\r\nContent-Type: "
-							"text/html\r\n\r\n<html><body><h1>501 Not "
-							"Implemented</h1></body></html>";
+		}
+		else
+		{
+			this->_response.setProtocol(this->_request->getProtocol());
+			this->_response.setStatusCode(std::atoi(this->_request->getMethod().c_str()));
+			this->_response.addHeader("Content-Type", "text/html");
+			this->_response.setBody(http::Errors::getResponseBody(
+				this->_response.getStatusCode(),
+				this->_conf->getErrorPage(this->_response.getStatusCode())));
+			this->_response_str = this->_response.str();
 		}
 		_bytes_sent = 0;
 	}

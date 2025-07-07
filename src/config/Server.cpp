@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:10:07 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/17 19:14:04 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/05 17:56:40 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ bool Server::isServerName(const std::string &server_name) {
 	return false;
 }
 
-Route *Server::whatRoute(const URL &url) {
+Route *Server::whatRoute(URL url) {
 	std::map<URL, Route *>::iterator ret = _routes->end();
 
 	int i = 0;
@@ -149,6 +149,31 @@ Route *Server::whatRoute(const URL &url) {
 	if (ret == _routes->end())
 		return _routes->find(URL("/"))->second;
 
+	return ret->second;
+}
+
+Route *Server::whichRoute(std::string &target) {
+	URL url(target);
+	std::map<URL, Route *>::iterator ret = _routes->end();
+
+	int i = 0;
+
+	if (_routes == not_nullptr)
+		return not_nullptr;
+
+	for (auto it = prange(_routes)) {
+		if (i < it->first.countMatchingSegments(url)) {
+			i = it->first.countMatchingSegments(url);
+			ret = it;
+		}
+	}
+
+	if (ret == _routes->end())
+		return _routes->find(URL("/"))->second;
+
+	for (; i > 0; i--)
+		url = url.truncate();
+	target = url.getFullUrl();
 	return ret->second;
 }
 

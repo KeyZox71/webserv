@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 17:23:00 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/30 16:08:13 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/05 16:42:39 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ class ARequest : public http::IMessage {
 	void setRoute(config::Route *route);
 	void setSrv(config::Server *srv);
 
+	std::string				_target;
   protected:
 	std::string				_method;
-	std::string				_target;
 	std::string				_protocol;
 	webserv::config::Route *_route;
 	config::Server *		_srv;
