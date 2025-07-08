@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/07 19:10:10 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/08 18:29:20 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,21 +37,59 @@ Client::Client(const Client &cpy) {
 	}
 }
 
-void Client::parse(void) {
+std::string	readFd(int fd)
+{
 	std::string received_data;
 	char		buffer[BUFFER_SIZE];
 	ssize_t		bytes_received;
 
-	do {
-		std::memset(buffer, 0, BUFFER_SIZE);
-		bytes_received = recv(_fd, buffer, BUFFER_SIZE - 1, 0);
-		if (bytes_received == -1) {
+	while (received_data.find("\r\n\r\n") == std::string::npos)
+	{
+		bytes_received = recv(fd, buffer, BUFFER_SIZE, 0);
+		if (bytes_received <= 0)
+			break;
+		received_data.append(buffer, bytes_received);
+    }
+
+    std::string headers = received_data.substr(0, received_data.find("\r\n\r\n"));
+    size_t body_start = received_data.find("\r\n\r\n") + 4;
+    std::string body = received_data.substr(body_start);
+
+	std::istringstream stream(headers);
+	int64_t content_length = -1;
+	std::string line;
+	while (std::getline(stream, line))
+	{
+		size_t delimiter_index = line.find(':');
+		if (delimiter_index != std::string::npos && line.substr(0, delimiter_index) == "Content-Length")
+			content_length = std::atoi(line.c_str() + 15);
+	}
+
+    while (int64_t(body.size()) < content_length) {
+        bytes_received = recv(fd, buffer, BUFFER_SIZE, 0);
+        if (bytes_received <= 0) break;
+        body.append(buffer, bytes_received);
+    }
+
+	return (headers + "\r\n\r\n" + body);
+}
+
+void Client::parse(void)
+{
+	std::string received_data;
+
+	try {
+	received_data = readFd(_fd);
+	}
+	catch (...) {
 			_log->error("failed to receive request");
 			throw std::runtime_error("failed to receive request");
-		}
-		received_data += std::string(buffer, bytes_received);
-	} while (buffer[bytes_received]);
+	}
+	std::cout << "reading passed :thumbsupcat:" << std::endl;
+
 	_getRequest(received_data);
+
+	std::cout << "request get passed :thumbsupcat:" << std::endl;
 
 	if (_request == not_nullptr)
 		return;
@@ -125,7 +163,6 @@ void Client::_getRequest(std::string request_str) {
 		_request->setMethod("501");
 		_log->info("unsupported request received");
 	}
-	// set target to correct target with the conf
 }
 
 void Client::answer(void) {
