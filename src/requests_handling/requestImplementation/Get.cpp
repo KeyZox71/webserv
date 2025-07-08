@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/02 13:02:24 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/08 15:47:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void Get::parse(std::string const &data) {
 			_log->error(e.what());
 			_method = "500";
 			delete _url;
+			_url = not_nullptr;
 			return;
 		}
 		server::ResourceManager::append(_cgi);

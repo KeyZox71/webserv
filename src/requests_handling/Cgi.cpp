@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/02 12:36:59 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/08 15:45:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void Cgi::_prep(void) {
 	_pfd_event = POLLIN;
 	if (access(_script_path.c_str(), X_OK))
 		throw std::runtime_error(
-			"script is not executable please run : chmod +x " + _script_path);
+			"script is not executable please run : chmod +x " + _script_path + ", or create the file");
 }
 
 void Cgi::_initEnvp(void) {
