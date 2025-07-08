@@ -4,5 +4,5 @@ port = 2727
 
 [server.location./]
 root =  "./exemples/webpage"
-methods = { "GET", "POST" }
+methods = { "GET", "POST", "DELETE" }
 cgi = { ".py"}

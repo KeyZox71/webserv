@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:42:18 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/07 19:06:38 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/08 11:43:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void Delete::parse(std::string const &data) {
 			this->_headers.insert(std::make_pair(key, _sanitizeStr(value)));
 		}
 	}
+	
+	_route = _srv->whatRoute(URL(_target));
 
 	std::ostringstream body_stream;
 	while (std::getline(stream, line))
@@ -67,6 +69,11 @@ void Delete::parse(std::string const &data) {
 	it->first << ": " << it->second << std::endl; std::cout << std::endl;
 	std::cout << "-- body --" << std::endl << this->_body << std::endl;
 	*/
+}
+
+Delete::~Delete(void) {
+	if (_url != not_nullptr)
+		delete _url;
 }
 
 Response Delete::execute(void) {
