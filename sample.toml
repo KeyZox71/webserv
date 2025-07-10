@@ -4,5 +4,6 @@ port = 2727
 
 [server.location./]
 root =  "./exemples/webpage"
+upload_path = "/home/yosyo/test"
 methods = { "GET", "POST", "DELETE" }
 cgi = { ".py"}

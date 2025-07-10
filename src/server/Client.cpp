@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/08 18:29:20 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/10 19:08:02 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,20 @@ std::string	readFd(int fd)
 	char		buffer[BUFFER_SIZE];
 	ssize_t		bytes_received;
 
-	while (received_data.find("\r\n\r\n") == std::string::npos)
+	while (true)
 	{
-		bytes_received = recv(fd, buffer, BUFFER_SIZE, 0);
+		memset(buffer, 0, BUFFER_SIZE);
+		bytes_received = recv(fd, buffer, BUFFER_SIZE, MSG_DONTWAIT);
 		if (bytes_received <= 0)
 			break;
 		received_data.append(buffer, bytes_received);
+		if (received_data.find("\r\n\r\n") != std::string::npos)
+			break;
     }
 
-    std::string headers = received_data.substr(0, received_data.find("\r\n\r\n"));
-    size_t body_start = received_data.find("\r\n\r\n") + 4;
-    std::string body = received_data.substr(body_start);
+    size_t body_start = received_data.find("\r\n\r\n");
+    std::string headers = received_data.substr(0, body_start);
+    std::string body = received_data.substr(body_start + 4);
 
 	std::istringstream stream(headers);
 	int64_t content_length = -1;
@@ -65,8 +68,10 @@ std::string	readFd(int fd)
 			content_length = std::atoi(line.c_str() + 15);
 	}
 
-    while (int64_t(body.size()) < content_length) {
-        bytes_received = recv(fd, buffer, BUFFER_SIZE, 0);
+    //while (int64_t(body.size()) < content_length) {
+    while (content_length == -1 || (int64_t)body.size() < content_length) {
+		std::memset(buffer, 0, BUFFER_SIZE);
+        bytes_received = recv(fd, buffer, BUFFER_SIZE, MSG_DONTWAIT);
         if (bytes_received <= 0) break;
         body.append(buffer, bytes_received);
     }
@@ -85,11 +90,7 @@ void Client::parse(void)
 			_log->error("failed to receive request");
 			throw std::runtime_error("failed to receive request");
 	}
-	std::cout << "reading passed :thumbsupcat:" << std::endl;
-
 	_getRequest(received_data);
-
-	std::cout << "request get passed :thumbsupcat:" << std::endl;
 
 	if (_request == not_nullptr)
 		return;

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/02 13:01:28 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/10 18:09:03 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,12 @@ Post::Post(std::string &data, config::Server *srv) {
 }
 
 void Post::parse(std::string const &data) {
-	std::istringstream stream(data);
+	size_t header_end = data.find("\r\n\r\n");
+	if (header_end == std::string::npos)
+		throw std::runtime_error("Invalid HTTP request");
+	this->_body = data.substr(header_end + 4);
+
+	std::istringstream stream(data.substr(0, header_end));
 	std::string		   line;
 
 	if (std::getline(stream, line)) {
@@ -42,7 +47,6 @@ void Post::parse(std::string const &data) {
 		_method = _sanitizeStr(_method);
 		_target = _sanitizeStr(_target);
 		_protocol = _sanitizeStr(_protocol);
-		// this->_target.insert(this->_target.begin(), '.');
 	}
 
 	while (std::getline(stream, line) && line != "\r") {
@@ -55,11 +59,6 @@ void Post::parse(std::string const &data) {
 	}
 
 	_route = _srv->whatRoute(URL(_target));
-
-	std::ostringstream body_stream;
-	while (std::getline(stream, line))
-		body_stream << line << "\n";
-	this->_body = body_stream.str();
 
 	_url = new URL(_target);
 
@@ -95,6 +94,7 @@ std::string Post::extractFilename(const std::string &header) {
 
 void Post::handleMultipartData(const std::string &body,
 							   const std::string &boundary) {
+	_log->info("handling MultipartData upload...");
 	size_t		i = 0;
 	std::string delim = "--" + boundary;
 	delim.erase(delim.size() - 1);
@@ -108,7 +108,7 @@ void Post::handleMultipartData(const std::string &body,
 			std::string part_content =
 				body.substr(end + 4, body.find(delim, end) - end - 4);
 
-			std::ofstream outfile(extractFilename(part_header).c_str(),
+			std::ofstream outfile((this->_route->getUpRoot() + extractFilename(part_header)).c_str(),
 								  std::ios::binary);
 			if (outfile.is_open()) {
 				outfile.write(part_content.c_str(), part_content.length());
@@ -119,6 +119,22 @@ void Post::handleMultipartData(const std::string &body,
 		}
 
 		i += delim.length();
+	}
+}
+
+void Post::handleBinaryUpload()
+{
+	_log->info("handling binary upload...");
+	std::cout << (this->_route->getUpRoot() + this->_target) << std::endl;
+	std::ofstream outfile((this->_route->getUpRoot() + this->_target).c_str(), std::ios::binary);
+
+	if (outfile.is_open()) {
+		outfile.write(this->_body.data(), this->_body.length());
+		outfile.close();
+	}
+	else
+	{
+		_log->error("open failed D:");
 	}
 }
 
@@ -148,12 +164,14 @@ Response Post::execute(void) {
 	}
 
 	try {
-		handleMultipartData(
-			this->_body,
-			this->getHeaders()["Content-Type"].substr(
-				this->getHeaders()["Content-Type"].find(
-					"=", this->getHeaders()["Content-Type"].find(";")) +
-				1));
+		if (this->getHeaders()["Content-Type"].substr(0, 19) == "multipart/form-data")
+			handleMultipartData(
+				this->_body,
+				this->getHeaders()["Content-Type"].substr(
+					this->getHeaders()["Content-Type"].find(
+						"=", this->getHeaders()["Content-Type"].find(";")) + 1));
+		else
+			handleBinaryUpload();
 
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(200);

@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:30:15 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/08 11:42:46 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/10 16:51:32 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,15 +43,15 @@ class Post : public ARequest {
 
 	void parse(std::string const &data);
 
-	std::string extractFilename(const std::string &header);
-	void		handleMultipartData(const std::string &body,
-									const std::string &boundary);
-
 	Response execute(void);
 
 	server::Cgi *getCgi() const { return _cgi; }
 
   private:
+	std::string extractFilename(const std::string &header);
+	void		handleMultipartData(const std::string &body,
+									const std::string &boundary);
+	void	handleBinaryUpload();
 	server::Cgi *_cgi;
 };
 
