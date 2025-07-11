@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/02 12:50:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/11 17:02:37 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ class Cgi : public server::AClientResource {
 		if (!isProcessed() && isReady()) {
 			return false;
 		}
-		if (std::difftime(std::time(NULL), _start_time) >= 1) {
+		if (std::difftime(std::time(NULL), _start_time) >= 10) {
 			kill(_forkPid, SIGKILL);
 			waitpid(_forkPid, NULL, 0);
-			_log->warn("Cgi close due to timeout >= 1s");
+			_log->warn("Cgi close due to timeout >= 10s");
 			return true;
 		}
 		return false;
