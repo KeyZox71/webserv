@@ -125,8 +125,13 @@ Route::Route(toml::ANode *table) : _max_body(10485760) {
 		_root = "./html";
 #endif
 	val = accessValue("client_max_body_size", toml::STRING, _table, _log);
-	if (val != not_nullptr)
+	if (val != not_nullptr) {
 		_max_body = _parseSize(*static_cast<std::string *>(val));
+		if (_max_body == -1)
+			_max_body = 10485760;
+	} else {
+		_max_body = 10485760;
+	}
 	std::map<std::string, toml::ANode *>::iterator it =
 		_table->accessIt("cgi", toml::ARRAY, found);
 	if (found == true && it != _table->getTable()->end())

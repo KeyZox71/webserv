@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/12 08:54:08 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/12 13:48:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@ void Post::parse(std::string const &data) {
 	}
 
 	_route = _srv->whatRoute(URL(_target));
+	if (_route->getMaxBody() != -1 &&
+		(int32_t)_body.length() > _route->getMaxBody()) {
+		_method = "413";
+		_log->warn("post body too large");
+		return;
+	}
 
 	_url = new URL(_target);
 
@@ -108,8 +114,10 @@ void Post::handleMultipartData(const std::string &body,
 			std::string part_content =
 				body.substr(end + 4, body.find(delim, end) - end - 4);
 
-			std::ofstream outfile((this->_route->getUpRoot() + extractFilename(part_header)).c_str(),
-								  std::ios::binary);
+			std::ofstream outfile(
+				(this->_route->getUpRoot() + extractFilename(part_header))
+					.c_str(),
+				std::ios::binary);
 			if (outfile.is_open()) {
 				outfile.write(part_content.c_str(), part_content.length());
 				outfile.close();
@@ -123,18 +131,16 @@ void Post::handleMultipartData(const std::string &body,
 	}
 }
 
-void Post::handleBinaryUpload()
-{
+void Post::handleBinaryUpload() {
 	_log->info("handling binary upload...");
 	std::cout << (this->_route->getUpRoot() + this->_target) << std::endl;
-	std::ofstream outfile((this->_route->getUpRoot() + this->_target).c_str(), std::ios::binary);
+	std::ofstream outfile((this->_route->getUpRoot() + this->_target).c_str(),
+						  std::ios::binary);
 
 	if (outfile.is_open()) {
 		outfile.write(this->_body.data(), this->_body.length());
 		outfile.close();
-	}
-	else
-	{
+	} else {
 		_log->error("open failed D:");
 		throw std::runtime_error("open failed");
 	}
@@ -166,18 +172,19 @@ Response Post::execute(void) {
 	}
 
 	try {
-		if (this->_route->getUpRoot().empty())
-		{
+		if (this->_route->getUpRoot().empty()) {
 			_log->error("invalid upload path");
 			throw std::runtime_error("invalid upload path");
 		}
 
-		if (this->getHeaders()["Content-Type"].substr(0, 19) == "multipart/form-data")
+		if (this->getHeaders()["Content-Type"].substr(0, 19) ==
+			"multipart/form-data")
 			handleMultipartData(
 				this->_body,
 				this->getHeaders()["Content-Type"].substr(
 					this->getHeaders()["Content-Type"].find(
-						"=", this->getHeaders()["Content-Type"].find(";")) + 1));
+						"=", this->getHeaders()["Content-Type"].find(";")) +
+					1));
 		else
 			handleBinaryUpload();
 

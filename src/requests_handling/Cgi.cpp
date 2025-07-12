@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/08 15:45:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/12 13:22:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,15 +180,16 @@ void Cgi::process(void) {
 }
 
 std::string Cgi::str(void) {
-	int				   max = _conf->getMaxBody();
+	// int				   max = _conf->getMaxBody();
 	char			   buffer[1024];
 	std::ostringstream str;
 
-	while (max) {
+	// while (max) {
+	while (727) {
 		ssize_t count = read(_stdout_pipe[0], buffer, sizeof(buffer));
 		if (count > 0) {
 			str.write(buffer, count);
-			max -= count;
+			// max -= count;
 		} else if (count == 0) {
 			break;
 		} else

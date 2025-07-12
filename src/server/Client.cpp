@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/10 19:08:02 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/12 13:44:56 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,8 @@ void Client::parse(void)
 			   (_request->getMethod() == "DELETE" && !_route->getMethods()[2]))
 		this->_request->setMethod("405");
 
-	if (received_data.length() > (unsigned long)(_route->getMaxBody()))
-		this->_request->setMethod("413");
+	// if (received_data.length() > (unsigned long)(_route->getMaxBody()))
+	// 	this->_request->setMethod("413");
 }
 
 bool Client::requestParsed(void) {

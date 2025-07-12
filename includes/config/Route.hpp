@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 14:59:41 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 21:03:07 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/12 13:42:03 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,11 +107,11 @@ class Route {
 	 *	@return	The number in bytes
 	 */
 	int32_t _parseSize(std::string size) {
-		if (size[size.size()] == 'M')
+		if (size[size.length() - 1] == 'M')
 			return std::atoi(size.c_str()) * 1024 * 1024;
-		if (size[size.size()] == 'K')
+		if (size[size.length() - 1] == 'K')
 			return std::atoi(size.c_str()) * 1024;
-		if (isalpha(size[size.size()]))
+		if (!isalpha(size[size.length() - 1]))
 			return std::atoi(size.c_str());
 		return -1;
 	}
