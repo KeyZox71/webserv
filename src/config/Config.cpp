@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 12:53:54 by adjoly            #+#    #+#             */
-/*   Updated: 2025/06/23 20:36:47 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/12 21:40:21 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ Config::Config(std::string &filename) {
 
 	try {
 		file->parse();
-	} catch (std::exception &e) {
+	} catch (const std::exception &e) {
 		// if (file->getParsedFile() != not_nullptr)
 			// delete file->getParsedFile();
+		std::runtime_error excep(e.what());
 		delete file;
-		throw e;
+		throw excep;
 	}
 	toml::ANode *table = file->getParsedFile();
 
