@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/12 13:48:25 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/12 18:00:40 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,12 @@ void Post::parse(std::string const &data) {
 	}
 
 	_route = _srv->whatRoute(URL(_target));
-	if (_route->getMaxBody() != -1 &&
+	/*if (_route->getMaxBody() != -1 &&
 		(int32_t)_body.length() > _route->getMaxBody()) {
 		_method = "413";
 		_log->warn("post body too large");
 		return;
-	}
+	}*/
 
 	_url = new URL(_target);
 
@@ -100,7 +100,7 @@ std::string Post::extractFilename(const std::string &header) {
 
 void Post::handleMultipartData(const std::string &body,
 							   const std::string &boundary) {
-	_log->info("handling MultipartData upload...");
+	_log->debug("handling MultipartData upload...");
 	size_t		i = 0;
 	std::string delim = "--" + boundary;
 	delim.erase(delim.size() - 1);
@@ -132,18 +132,19 @@ void Post::handleMultipartData(const std::string &body,
 }
 
 void Post::handleBinaryUpload() {
-	_log->info("handling binary upload...");
+	_log->debug("handling binary upload...");
 	std::cout << (this->_route->getUpRoot() + this->_target) << std::endl;
 	std::ofstream outfile((this->_route->getUpRoot() + this->_target).c_str(),
 						  std::ios::binary);
 
 	if (outfile.is_open()) {
 		outfile.write(this->_body.data(), this->_body.length());
-		outfile.close();
 	} else {
 		_log->error("open failed D:");
+		outfile.close();
 		throw std::runtime_error("open failed");
 	}
+	outfile.close();
 }
 
 Response Post::execute(void) {

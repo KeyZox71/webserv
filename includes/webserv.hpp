@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/11 13:29:21 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/05/27 19:25:07 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/12 17:55:18 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,6 @@
 	it != x->end();                                                            \
 	it++
 
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 1024
 
 namespace webserv {} // namespace webserv

@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/12 13:44:56 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/12 17:51:43 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ void Client::parse(void)
 			_log->error("failed to receive request");
 			throw std::runtime_error("failed to receive request");
 	}
+	size_t tmp_size = received_data.length();
 	_getRequest(received_data);
 
 	if (_request == not_nullptr)
@@ -117,8 +118,8 @@ void Client::parse(void)
 			   (_request->getMethod() == "DELETE" && !_route->getMethods()[2]))
 		this->_request->setMethod("405");
 
-	// if (received_data.length() > (unsigned long)(_route->getMaxBody()))
-	// 	this->_request->setMethod("413");
+	 if (tmp_size > (unsigned long)(_route->getMaxBody()))
+	 	this->_request->setMethod("413");
 }
 
 bool Client::requestParsed(void) {
