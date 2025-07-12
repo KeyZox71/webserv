@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/12 17:51:43 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/12 20:11:17 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ void Client::_getRequest(std::string request_str) {
 		_request = new http::Post(request_str, _conf);
 		_log->info("post request received");
 	} else {
-		_request = new http::Get();
+		_request = new http::Get(request_str, _conf);
 		_request->setMethod("501");
 		_log->info("unsupported request received");
 	}
