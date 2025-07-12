@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/10 18:09:03 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/12 08:54:08 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void Post::handleMultipartData(const std::string &body,
 				outfile.close();
 			} else {
 				_log->error("open failed D:");
+				throw std::runtime_error("open failed");
 			}
 		}
 
@@ -135,6 +136,7 @@ void Post::handleBinaryUpload()
 	else
 	{
 		_log->error("open failed D:");
+		throw std::runtime_error("open failed");
 	}
 }
 
@@ -164,6 +166,12 @@ Response Post::execute(void) {
 	}
 
 	try {
+		if (this->_route->getUpRoot().empty())
+		{
+			_log->error("invalid upload path");
+			throw std::runtime_error("invalid upload path");
+		}
+
 		if (this->getHeaders()["Content-Type"].substr(0, 19) == "multipart/form-data")
 			handleMultipartData(
 				this->_body,
@@ -182,6 +190,7 @@ Response Post::execute(void) {
 	} catch (...) {
 		response.setProtocol(this->_protocol);
 		response.setStatusCode(500);
+		response.addHeader("Content-Type", "text/html");
 		response.setBody(http::Errors::getResponseBody(
 			response.getStatusCode(),
 			_srv->getErrorPage(response.getStatusCode())));
