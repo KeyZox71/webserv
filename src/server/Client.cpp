@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 11:12:41 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/12 20:11:17 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:27:20 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ bool Client::requestParsed(void) {
 	if (_request->getCgi() != not_nullptr) {
 		if (!_request->getCgi()->isProcessed())
 			return false;
-		else if (_request->getCgi()->isTimedout())
+		else if (_request->getCgi()->isTimedout() || _request->getCgi()->isErr())
 			return true;
 		else if (!(PfdManager::get(_request->getCgi()->getId())->revents &
 				   _request->getCgi()->event()))

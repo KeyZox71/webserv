@@ -6,12 +6,13 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/12 13:22:20 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/15 20:28:18 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server/PfdManager.hpp"
 #include "server/ResourceManager.hpp"
+#include <cmath>
 #include <ctime>
 #include <help.hpp>
 #include <ios>
@@ -31,10 +32,14 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+webserv::Logger _log;
+// webserv::config::Config *config::_conf;
+webserv::server::Server *_server_wtf;
+
 using namespace webserv::server;
 
 Cgi::Cgi(http::Get *req, config::Route *conf)
-	: _is_post(false), _conf(conf), _request(req) {
+	: _is_post(false), _conf(conf), _request(req), _forkPid(-1), _err(false) {
 	_processed = false;
 	log("➕", "Cgi", "GET constructor called");
 	_initEnvp();
@@ -42,7 +47,7 @@ Cgi::Cgi(http::Get *req, config::Route *conf)
 }
 
 Cgi::Cgi(http::Post *req, config::Route *conf)
-	: _is_post(true), _conf(conf), _request(req) {
+	: _is_post(true), _conf(conf), _request(req), _forkPid(-1), _err(false) {
 	_processed = false;
 	log("➕", "Cgi", "POST constructor called");
 	_initEnvp();
@@ -158,17 +163,35 @@ void Cgi::process(void) {
 		close(_stdout_pipe[PIPE_READ]);
 		close(_stdout_pipe[PIPE_WRITE]);
 
+		std::string target = _request->getTarget();
+		std::string dir = "/";
+		std::size_t pos = target.find_last_of('/');
+		if (pos != std::string::npos)
+			dir = target.substr(0, pos + 1);
+		chdir((_request->getRoute()->getRootDir() + dir).c_str());
+
+		std::cerr << _request->getRoute()->getRootDir() + dir << std::endl;
+		std::cerr << _script_path << std::endl;
 		char * argv[] = {const_cast<char *>(_script_path.c_str()), NULL};
 		char **env = _genEnv();
+		_script_path = target.substr(pos + 1);
 
-		if (execve(_script_path.c_str(), argv, env) == -1) {
+			if (execve(_script_path.c_str(), argv, env) == -1) {
 			std::stringstream str;
 			str << "execve failed D:";
 			str << errno;
 			_log->error(str.str());
+			if (_is_post) {
+				PfdManager::remove(_stdin_pipe[PIPE_WRITE]);
+				ResourceManager::remove(_stdin_pipe[PIPE_WRITE]);
+			}
 			for (int i = 0; env[i] != NULL; i++)
 				delete env[i];
 			delete env;
+			delete _server_wtf;
+			delete _log;
+			delete config::_conf;
+
 			exit(EXIT_FAILURE);
 		}
 	} else {

@@ -6,16 +6,18 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/11 17:02:37 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/15 20:27:43 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include "log.hpp"
 #include "server/PfdManager.hpp"
 #include <config/default.hpp>
 #include <cstddef>
 #include <cstdio>
+#include <cstdlib>
 #include <ctime>
 #include <server/AResource.hpp>
 
@@ -73,7 +75,7 @@ class Cgi : public server::AClientResource {
 		 return false;
 	}
 
-	bool isTimedout(void) const {
+	bool isTimedout(void) {
 		if (!isProcessed() && isReady()) {
 			return false;
 		}
@@ -84,6 +86,56 @@ class Cgi : public server::AClientResource {
 			return true;
 		}
 		return false;
+	}
+
+	bool isErr(void) {
+		if (_err == true) {
+			return true;
+		}
+		if (_forkPid == -1) {
+			return false;
+		}
+
+		int	  status = 0;
+		pid_t result = waitpid(_forkPid, &status, WNOHANG);
+
+		if (result == 0 ) {
+			return false;
+		} else if (result == -1) {
+			if (errno == ECHILD) {
+				_log->warn("CGI child already reaped");
+				_err = true;
+				return true;
+			}
+			_log->error("waitpid failed: " + std::string(std::strerror(errno)));
+			_err = true;
+			return true;
+		}
+
+		if (WIFEXITED(status)) {
+			int code = WEXITSTATUS(status);
+			if (code != 0) {
+				std::stringstream str;
+				str << "CGI exited with status code " << code;
+				_log->error(str.str());
+				_err = true;
+				return true;
+			}
+			return false;
+		}
+
+		if (WIFSIGNALED(status)) {
+			std::stringstream str;
+			str << "CGI terminated by signal: ";
+			str << WTERMSIG(status);
+			_log->error(str.str());
+			_err = true;
+			return true;
+		}
+
+		_log->error("CGI ended abnormally");
+		_err = true;
+		return true;
 	}
 
   protected:
@@ -116,6 +168,7 @@ class Cgi : public server::AClientResource {
 
 	std::time_t _start_time; // To use for timeout
 	pid_t		_forkPid;	 // Can be used to kill the process
+	bool		_err;
 };
 
 }; // namespace server

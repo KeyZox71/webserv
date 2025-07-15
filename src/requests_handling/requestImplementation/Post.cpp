@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:50:20 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/15 19:17:08 by mmoussou         ###   ########.fr       */
+/*   Updated: 2025/07/15 20:28:41 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ Response Post::execute(void) {
 	http::Response response;
 
 	if (_cgi != not_nullptr) {
-		if (_method == "500" || _cgi->isTimedout()) {
+		if (_method == "500" || _cgi->isTimedout() || _cgi->isErr()) {
 			response.setStatusCode(500);
 			response.setProtocol(_protocol);
 			response.addHeader("Content-Type", "text/html");

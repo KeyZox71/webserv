@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:22:48 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/02 12:45:52 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/15 19:17:25 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void Server::_handle_resource(size_t i) {
 	if (res == not_nullptr)
 		return;
 
-	if (res->type() == CGI && static_cast<Cgi *>(res)->isTimedout()) {
+	if (res->type() == CGI && (static_cast<Cgi *>(res)->isTimedout() || static_cast<Cgi *>(res)->isErr())) {
 		return;
 	}
 	if (!res->isProcessed() && res->isReady()) {

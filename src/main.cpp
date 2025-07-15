@@ -6,7 +6,7 @@
 /*   By: mmoussou <mmoussou@student.42angouleme.fr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 15:45:07 by mmoussou          #+#    #+#             */
-/*   Updated: 2025/07/12 21:38:36 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/15 20:28:04 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ namespace webserv {
 Logger *							   _log = not_nullptr;
 std::vector<server::AClientResource *> server::ResourceManager::_res;
 config::Config *					   config::_conf = not_nullptr;
+server::Server						   *_server_wtf;
 } // namespace webserv
 
 int _sig = 0;
@@ -82,9 +83,9 @@ int main(int ac, char **av) {
 		return EXIT_FAILURE;
 	}
 
-	webserv::server::Server *serv = new webserv::server::Server();
+	_server_wtf = new webserv::server::Server();
 
-	delete serv;
+	delete _server_wtf;
 	delete _log;
 	delete config::_conf;
 }
