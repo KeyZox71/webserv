@@ -6,7 +6,7 @@
 /*   By: gadelbes <gadelbes@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:46:34 by gadelbes          #+#    #+#             */
-/*   Updated: 2025/07/15 20:28:18 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/15 20:29:46 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,8 +170,6 @@ void Cgi::process(void) {
 			dir = target.substr(0, pos + 1);
 		chdir((_request->getRoute()->getRootDir() + dir).c_str());
 
-		std::cerr << _request->getRoute()->getRootDir() + dir << std::endl;
-		std::cerr << _script_path << std::endl;
 		char * argv[] = {const_cast<char *>(_script_path.c_str()), NULL};
 		char **env = _genEnv();
 		_script_path = target.substr(pos + 1);
