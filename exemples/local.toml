@@ -6,9 +6,9 @@ host = "0.0.0.0"
 port = 8080
 
 [server.error_pages]
-404 = "not_found.html"
 401 = "unauthorized.html"
 402 = "uwu.html"
+404 = "not_found.html"
 
 [server.location./]
 methods = { "GET" }
@@ -20,13 +20,13 @@ client_max_body_size = "10M"
 methods = { "GET", "POST" }
 root = "./api"
 upload_path = "./up"
-cgi.go = "/bin/go"
+cgi = { ".go" }
 
 [server.location./redir]
 redirect = "https://kanel.ovh"
 
 [serverr]
-server_names = { "ptnnnn.local"}
+server_names = { "testing.local"}
 host = "127.0.0.1"
 port = 9090
 
@@ -37,4 +37,4 @@ port = 9090
 methods = { "GET", "DELETE" }
 root = "/var/lib/docker/volumes/test_data/_data"
 dirlist = false
-cgi.py = "/bin/python"
+cgi.py = { ".py" }

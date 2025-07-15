@@ -1,14 +1,13 @@
 log_file = "test.log"
 
 [server]
-# server_names = { "localhost", "2B5.local" }
 host = "0.0.0.0"
 port = 8080
 
 [server.error_pages]
-404 = "exemples/err_pages/not_found.html"
 401 = "unauthorized.html"
 402 = "uwu.html"
+404 = "exemples/err_pages/not_found.html"
 
 [server.location./]
 methods = { "GET", "POST" }
@@ -20,7 +19,7 @@ cgi = { ".py", ".go" }
 
 [server.location./api]
 methods = { "GET", "POST" }
-root = "/nfs/homes/mmoussou"
+root = "/home/mmoussou"
 upload_path = "/etc/webserv/up"
 cgi = { ".py", ".go" }
 
@@ -38,5 +37,3 @@ port = 9090
 methods = { "GET", "DELETE" }
 root = "/var/lib/docker/volumes/test_data/_data"
 dirlist = false
-cgi.py = "/bin/python"
-
