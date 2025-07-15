@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 09:40:16 by adjoly            #+#    #+#             */
-/*   Updated: 2025/07/08 15:47:43 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/15 19:16:46 by mmoussou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,21 @@ Get::~Get(void) {
 		delete _url;
 }
 
+static std::string urlDecode(const std::string& str) {
+    std::ostringstream decoded;
+    for (size_t i = 0; i < str.length(); ++i) {
+        if (str[i] == '%' && i + 2 < str.length()) {
+            std::string hex = str.substr(i + 1, 2);
+            char decodedChar = static_cast<char>(std::strtol(hex.c_str(), 0, 16));
+            decoded << decodedChar;
+            i += 2;
+        } else {
+            decoded << str[i];
+        }
+    }
+    return decoded.str();
+}
+
 void Get::parse(std::string const &data) {
 	std::istringstream stream(data);
 	std::string		   line;
@@ -47,7 +62,7 @@ void Get::parse(std::string const &data) {
 		std::istringstream line_stream(line);
 		line_stream >> this->_method >> this->_target >> this->_protocol;
 		_method = _sanitizeStr(_method);
-		_target = _sanitizeStr(_target);
+		_target = urlDecode(_sanitizeStr(_target));
 		_protocol = _sanitizeStr(_protocol);
 	}
 
