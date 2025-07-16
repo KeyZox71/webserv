@@ -6,7 +6,7 @@
 /*   By: adjoly <adjoly@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 17:13:39 by adjoly            #+#    #+#             */
-/*   Updated: 2025/05/29 12:08:41 by adjoly           ###   ########.fr       */
+/*   Updated: 2025/07/16 10:39:39 by adjoly           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,9 @@ class ResourceManager {
 		auto it = std::find_if(_res.begin(), _res.end(), CompareId(id));
 
 		if (it != _res.end()) {
-			delete (*it);
+			auto oh = *it;
 			_res.erase(it);
+			delete oh;
 		}
 	}
 
