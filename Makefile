@@ -24,7 +24,7 @@ SRCS = $(shell find . -name '*.cpp')
 
 OBJS = $(addprefix $(OBJSDIR), $(SRCS:.cpp=.o))
 
-FLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP -g #-fsanitize=address
+# CXXFLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP -g #-fsanitize=address
 
 RED = \033[0;31m
 GREEN = \033[0;32m
@@ -48,12 +48,12 @@ endif
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@$(CC) $(FLAGS) -I$(INCLUDES) $(OBJS) -o $(NAME)
+	@$(CC) $(CXXFLAGS) -I$(INCLUDES) $(OBJS) -o $(NAME)
 	@printf "$(YELLOW)「✨」 feat($(NAME)): program compiled\n"
 
 $(OBJSDIR)%.o: %.cpp
 	@mkdir -p $(@D)
-	@$(CC) $(FLAGS) -I$(INCLUDES) -Ilib/tomlpp/includes -c $< -o $@
+	@$(CC) $(CXXFLAGS) -I$(INCLUDES) -Ilib/tomlpp/includes -c $< -o $@
 	@printf "$(DELETE)$(GREEN)「🔨」 build($<): object compiled\n"
 
 clean:

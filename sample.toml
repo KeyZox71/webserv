@@ -8,3 +8,8 @@ upload_path = "/home/mmoussou/test"
 dirlist = true
 methods = { "GET", "POST", "DELETE" }
 cgi = { ".py"}
+
+[server.error_pages]
+401 = "unauthorized.html"
+402 = "uwu.html"
+404 = "exemples/err_pages/not_found.html"

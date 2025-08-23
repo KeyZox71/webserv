@@ -1,4 +1,4 @@
-FROM		alpine:3.21 AS builder
+FROM		alpine:3.22 AS builder
 
 COPY		./ /build
 
@@ -8,9 +8,9 @@ ENV			TTY=true
 RUN			apk add --no-cache bash clang make
 
 RUN			cd /build \
-			&& PKGS=true make -j re
+			&& CXXFLAGS="-std=c++98" PKGS=true make -j re
 
-FROM		alpine:3.21
+FROM		alpine:3.22
 
 RUN			apk add --no-cache libstdc++
 
